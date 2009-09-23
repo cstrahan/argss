@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CodeLite_Project Name="ARGSS" InternalType="Console">
+  <Plugins>
+    <Plugin Name="qmake">
+      <![CDATA[00010001N0005Debug000000000000
+    ]]>
+    </Plugin>
+  </Plugins>
+  <Description/>
+  <Dependencies/>
+  <VirtualDirectory Name="src">
+    <VirtualDirectory Name="classes">
+      <File Name="src\classes\tone.cpp"/>
+      <File Name="src\classes\aerror.cpp"/>
+      <File Name="src\classes\bitmap.cpp"/>
+      <File Name="src\classes\color.cpp"/>
+      <File Name="src\classes\rect.cpp"/>
+      <File Name="src\classes\sprite.cpp"/>
+    </VirtualDirectory>
+    <VirtualDirectory Name="modules">
+      <File Name="src\modules\keys.cpp"/>
+      <File Name="src\modules\console.cpp"/>
+      <File Name="src\modules\graphics.cpp"/>
+      <File Name="src\modules\input.cpp"/>
+    </VirtualDirectory>
+    <VirtualDirectory Name="tools">
+      <VirtualDirectory Name="simpleini">
+        <File Name="src\tools\simpleini\ConvertUTF.c"/>
+      </VirtualDirectory>
+      <File Name="src\tools\HSLRGB.cpp"/>
+    </VirtualDirectory>
+    <File Name="src\sys.cpp"/>
+    <File Name="src\argss.cpp"/>
+    <File Name="src\aruby.cpp"/>
+    <File Name="src\main.cpp"/>
+    <File Name="src\objs.cpp"/>
+    <File Name="src\sfml.cpp"/>
+  </VirtualDirectory>
+  <VirtualDirectory Name="headers">
+    <VirtualDirectory Name="classes">
+      <File Name="src\classes\tone.h"/>
+      <File Name="src\classes\aerror.h"/>
+      <File Name="src\classes\bitmap.h"/>
+      <File Name="src\classes\color.h"/>
+      <File Name="src\classes\rect.h"/>
+      <File Name="src\classes\sprite.h"/>
+    </VirtualDirectory>
+    <VirtualDirectory Name="tools">
+      <VirtualDirectory Name="simpleini">
+        <File Name="src\tools\simpleini\ConvertUTF.h"/>
+        <File Name="src\tools\simpleini\SimpleIni.h"/>
+      </VirtualDirectory>
+      <File Name="src\tools\HSLRGB.h"/>
+    </VirtualDirectory>
+    <VirtualDirectory Name="modules">
+      <File Name="src\modules\keys.h"/>
+      <File Name="src\modules\console.h"/>
+      <File Name="src\modules\graphics.h"/>
+      <File Name="src\modules\input.h"/>
+    </VirtualDirectory>
+    <File Name="src\sys.h"/>
+    <File Name="src\argss.h"/>
+    <File Name="src\aruby.h"/>
+    <File Name="src\main.h"/>
+    <File Name="src\objs.h"/>
+    <File Name="src\sfml.h"/>
+    <File Name="src\sfmlargss.h"/>
+  </VirtualDirectory>
+  <VirtualDirectory Name="resources">
+    <File Name="resources\Windows\icon.rc"/>
+  </VirtualDirectory>
+  <Settings Type="Executable">
+    <Configuration Name="Debug" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
+      <Compiler Options="-Wall;-Wextra;" Required="yes">
+        <IncludePath Value="."/>
+        <IncludePath Value="sfml"/>
+        <IncludePath Value="ruby/i386-mingw32"/>
+        <IncludePath Value="sfml/include"/>
+        <Preprocessor Value="SFML_DYNAMIC"/>
+        <Preprocessor Value="UNICODE"/>
+      </Compiler>
+      <Linker Options="-mwindows -lmingw32  -Wl --enable-auto-import -lsfml-graphics-d -lsfml-window-d -lsfml-system-d -lmsvcrt-ruby18" Required="yes">
+        <LibraryPath Value="sfml/lib/mingw/"/>
+        <LibraryPath Value="ruby/"/>
+      </Linker>
+      <ResourceCompiler Options="" Required="yes"/>
+      <General OutputFile="bin/Debug/ARGSS.exe" IntermediateDirectory="obj/Debug" Command="bin/Debug" CommandArguments="" WorkingDirectory="bin/Debug" PauseExecWhenProcTerminates="yes"/>
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort="" DebuggerPath="">
+        <PostConnectCommands/>
+        <StartupCommands/>
+      </Debugger>
+      <PreBuild/>
+      <PostBuild/>
+      <CustomBuild Enabled="no">
+        <CleanCommand/>
+        <BuildCommand/>
+        <PreprocessFileCommand/>
+        <SingleFileCommand/>
+        <MakefileGenerationCommand/>
+        <ThirdPartyToolName>None</ThirdPartyToolName>
+        <WorkingDirectory/>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild/>
+        <CustomPreBuild/>
+      </AdditionalRules>
+    </Configuration>
+    <Configuration Name="Release" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
+      <Compiler Options="" Required="yes">
+        <IncludePath Value="."/>
+      </Compiler>
+      <Linker Options="-O2" Required="yes"/>
+      <ResourceCompiler Options="" Required="no"/>
+      <General OutputFile="$(IntermediateDirectory)/$(ProjectName)" IntermediateDirectory="./Release" Command="./$(ProjectName)" CommandArguments="" WorkingDirectory="$(IntermediateDirectory)" PauseExecWhenProcTerminates="yes"/>
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort="" DebuggerPath="">
+        <PostConnectCommands/>
+        <StartupCommands/>
+      </Debugger>
+      <PreBuild/>
+      <PostBuild/>
+      <CustomBuild Enabled="no">
+        <CleanCommand/>
+        <BuildCommand/>
+        <PreprocessFileCommand/>
+        <SingleFileCommand/>
+        <MakefileGenerationCommand/>
+        <ThirdPartyToolName>None</ThirdPartyToolName>
+        <WorkingDirectory/>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild/>
+        <CustomPreBuild/>
+      </AdditionalRules>
+    </Configuration>
+    <GlobalSettings>
+      <Compiler Options="">
+        <IncludePath Value="."/>
+      </Compiler>
+      <Linker Options="">
+        <LibraryPath Value="."/>
+      </Linker>
+      <ResourceCompiler Options=""/>
+    </GlobalSettings>
+  </Settings>
+  <Dependencies Name="Debug"/>
+</CodeLite_Project>
