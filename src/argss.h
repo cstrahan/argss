@@ -2,15 +2,12 @@
 #define _ARGSS_H_
 
 #include <functional>
-//#include <map>
 #include <list>
 #include <string>
-//#include <SFML/Graphics/Image.hpp>
-//#include <SFML/Graphics/Sprite.hpp>
 extern "C" {
     #include "ruby.h"
 }
-#include "objs.h"
+#include "zobj.h"
 
 void Init_ARGSS();
 
@@ -33,15 +30,10 @@ extern VALUE ARGSS_Console;
 extern VALUE ARGSS_Graphics;
 extern VALUE ARGSS_Input;
 extern VALUE ARGSS_Audio;
-extern VALUE ARGSS_Keys;
 
 extern int ARGSS_FrameRate;
-extern unsigned long ARGSS_FrameCount;
+extern VALUE ARGSS_FrameCount;
 extern int ARGSS_FPS;
-
-//ARGSS Objects
-//extern std::map<VALUE, sf::Image> ARGSS_mapBitmaps;
-//extern std::map<VALUE, sf::Sprite> ARGSS_mapSprites;
 
 extern VALUE ARGSS_CreationTime;
 

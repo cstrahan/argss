@@ -1,16 +1,19 @@
 #include "sys.h"
-#include "tools/simpleini/simpleini.h"
+#include "simpleini.h"
 
 void Init_Sys()
 {
+	Sys_Res[0] = 640;
+	Sys_Res[1] = 480;
+	Sys_Res[2] = 32;
 	CSimpleIniA ini(true, false, false);
     SI_Error rc = ini.LoadFile(".\\ARGSS.ini");
     if (rc < 0) {
-        //Error
+        fprintf(stderr, "ARGSS could not open \"ARGSS.ini\" file.\n");
     }
     Sys_ScriptsPath = ini.GetValue("Game", "Scripts", "NULL");
     if (Sys_ScriptsPath == "NULL") {
-        //Error
+        fprintf(stderr, "ARGSS could not find the scripts path on \"ARGSS.ini\".\n");
     }
     Sys_Title = ini.GetValue("Game", "Title", "ARGSS");
     int i, e;

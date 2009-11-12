@@ -1,24 +1,26 @@
 #include "argss.h"
 #include "sys.h"
 #include "aruby.h"
-#include "sfml.h"
+#include "argss_sdl.h"
 extern "C" {
     #include "ruby.h"
 }
-#include "classes/aerror.h"
-#include "classes/bitmap.h"
-#include "classes/color.h"
-#include "classes/tone.h"
-#include "classes/rect.h"
-#include "classes/sprite.h"
-#include "modules/console.h"
-#include "modules/graphics.h"
-#include "modules/input.h"
+#include "aerror.h"
+#include "bitmap.h"
+#include "color.h"
+#include "tone.h"
+#include "rect.h"
+#include "sprite.h"
+#include "console.h"
+#include "graphics.h"
+#include "input.h"
+#include "zobj.h"
 
 void Init_ARGSS()
 {
     ruby_init();
-
+	ruby_init_loadpath();
+	
     Init_ARuby();
 
     Init_ARGSSError();
@@ -38,28 +40,34 @@ void Init_ARGSS()
 }
 
 void argss_update() {
-    sf::Event Event;
+    SDL_Event event;
+
     bool result;
+	
     while (true) {
-        result = SFML_Window.GetEvent(Event);
-        if(Event.Type == sf::Event::Closed) {
+        result = SDL_PollEvent(&event);
+        if(event.type == SDL_QUIT) {
             rb_exit(1);
             FreeConsole();
-            SFML_Window.Close();
+            SDL_Quit();
         }
-        else if(Event.Type == sf::Event::LostFocus) {
-            Sys_Focus = false;
-            Input_RestartKeys();
-            if(Sys_FocusPauseAudio) {
-                //Audio_Pause();
-            }
-        }
-        else if(Event.Type == sf::Event::GainedFocus) {
-            Sys_Focus = true;
-            if(Sys_FocusPauseAudio) {
-                //Audio_Play();
-            }
-        }
+        /*else if(event.type == SDL_ACTIVEEVENT) {
+			if(event.active.type == SDL_APPACTIVE) {
+				if(event.active.gain) {
+					Sys_Focus = false;
+					Input_RestartKeys();
+					if(Sys_FocusPauseAudio) {
+						//Audio_Pause();
+					}
+				}
+				else {
+					Sys_Focus = true;
+					if(Sys_FocusPauseAudio) {
+						//Audio_Play();
+					}
+				}
+			}
+        }*/
         if(!result && !(Sys_FocusPauseGame && !Sys_Focus)) {
             break;
         }
@@ -68,13 +76,17 @@ void argss_update() {
 
 bool compare_zobj(Z_Obj &first, Z_Obj &second) {
     if (first.get_z() < second.get_z()) {
-        return true;}
+        return true;
+	}
     else if (first.get_z() > second.get_z()) {
-        return false;}
+        return false;
+	}
     else {
         if (first.get_creation() < second.get_creation()) {
-            return true;}
+            return true;
+		}
         else {
-            return false;}
+            return false;
+		}
     }
 }
