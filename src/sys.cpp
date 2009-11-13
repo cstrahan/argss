@@ -18,10 +18,11 @@ void Init_Sys()
 		exit(-1);
     }
     Sys_Title = ini.GetValue("Game", "Title", "ARGSS");
-    int i;
+    int i, e;
     char rtp[4];
     for(i = 0; i < 3; i++) {
-        sprintf(rtp, "RTP%d", i + 1);
+		e = i + 1;
+        sprintf(rtp, "RTP%d", e);
         Sys_RTPS[i] = ini.GetValue("Game", rtp, "");
     }
     Sys_Res[0] = ini.GetLongValue("Game", "ResW", 640);

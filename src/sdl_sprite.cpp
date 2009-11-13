@@ -118,15 +118,16 @@ void SDL_Sprite::apply_tone() {
 		}
 	}
 	else {
-		int gray_f = 255 / 3 * tone.gray;
+		double factor = (255 - tone.gray) / 255.0;
 		int gray;
 		for (int yy = 0; yy < sprite->h; yy++) {
 			for (int xx = 0; xx < sprite->w; xx++) {
 				surface_getpixelcolor(sprite, xx, yy, srccolor);
-				gray = (srccolor->r + srccolor->g + srccolor->b) * gray_f;
-				dstcolor->r = min(max(gray + tone.r, 255), 0);
-				dstcolor->g = min(max(gray + tone.g, 255), 0);
-				dstcolor->b = min(max(gray + tone.b, 255), 0);
+				gray = srccolor->r * 0.299 + srccolor->g * 0.587 + srccolor->b * 0.114;
+				dstcolor->r = (Uint8)max(min((srccolor->r - gray) * factor + gray + tone.r + 0.5, 255), 0);
+				dstcolor->g = (Uint8)max(min((srccolor->g - gray) * factor + gray + tone.g + 0.5, 255), 0);
+				dstcolor->b = (Uint8)max(min((srccolor->b - gray) * factor + gray + tone.b + 0.5, 255), 0);
+				dstcolor->unused = srccolor->unused;
 				surface_putpixelcolor(sprite, xx, yy, dstcolor);				
 			}
 		}

@@ -3,7 +3,7 @@
   <Project Name="ARGSS" Path="ARGSS.project" Active="Yes"/>
   <BuildMatrix>
     <WorkspaceConfiguration Name="Mingw" Selected="yes">
-      <Project Name="ARGSS" ConfigName="Release"/>
+      <Project Name="ARGSS" ConfigName="Debug"/>
     </WorkspaceConfiguration>
   </BuildMatrix>
 </CodeLite_Workspace>
