@@ -47,9 +47,9 @@ void argss_update() {
     while (true) {
         result = SDL_PollEvent(&event);
         if(event.type == SDL_QUIT) {
-            rb_exit(1);
             FreeConsole();
             SDL_Quit();
+			rb_exit(1);
         }
         /*else if(event.type == SDL_ACTIVEEVENT) {
 			if(event.active.type == SDL_APPACTIVE) {
