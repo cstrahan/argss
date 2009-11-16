@@ -124,7 +124,13 @@ static VALUE argss_graphics_width(VALUE self) {
 static VALUE argss_graphics_height(VALUE self) {
     return INT2NUM(Sys_Res[1]);
 }
-
+static VALUE argss_graphics_wait(VALUE self, VALUE duration) {
+	Check_Type(duration, T_FIXNUM);
+	for(int frames = NUM2INT(duration); frames > 0; frames--) {
+		argss_graphics_update(self);
+	}
+	return Qnil;
+}
 void Init_Graphics()
 {
     ARGSS_FPS = 0;
@@ -149,4 +155,5 @@ void Init_Graphics()
     rb_define_singleton_method(ARGSS_Graphics, "backcolor=", (rubyfunc)argss_graphics_backcolorE, 1);
     rb_define_singleton_method(ARGSS_Graphics, "width", (rubyfunc)argss_graphics_width, 0);
     rb_define_singleton_method(ARGSS_Graphics, "height", (rubyfunc)argss_graphics_height, 0);
+	rb_define_singleton_method(ARGSS_Graphics, "wait", (rubyfunc)argss_graphics_wait, 1);
 }

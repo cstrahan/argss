@@ -1,5 +1,8 @@
 #include "sdl_sprite.h"
 #include "argss_sdl.h"
+#include "SDL_rotozoom.h"
+//#include <string.h>
+#include <math.h>
 
 #define max(a, b)  (((a) > (b)) ? (a) : (b))
 #define min(a, b)  (((a) < (b)) ? (a) : (b))
@@ -62,6 +65,8 @@ void SDL_Sprite::draw(SDL_Surface* surface) {
 }
 
 void SDL_Sprite::refresh() {
+	needs_refresh = false;
+	
     SDL_FreeSurface(sprite);
 	
 	SDL_Rect rect;
@@ -85,54 +90,245 @@ void SDL_Sprite::refresh() {
 	surface_enablealpha(bitmap);
 		
 	if(tone.r != 0 || tone.b != 0 || tone.g != 0 || tone.gray != 0) {
-		SDL_Sprite::apply_tone();
+		apply_tone();
+	}
+	if(opacity < 255 || bush_depth > 0) {
+		apply_opacity();
 	}
 	
-	//bush_depth
-	//flipx
-    //flipy
-	//zoom_x
-    //zoom_y
-    //angle
+	/*bool flip = flipx || flipy;
+	bool zoom = zoom_x != 1.0 || zoom_y != 1.0;
+	bool rotation = angle != 0;
 	
-	needs_refresh = false;
+	if(flip || zoom || rotation) {
+		
+		SDL_Surface* temp;
+		
+		if(rotation) {
+			if(zoom || flip) {
+				temp = rotozoomSurfaceXY(sprite, angle, zoom_x * (flipx ? -1 : 1), zoom_y * (flipy ? -1 : 1), 0);
+			}
+			else {
+				temp = rotozoomSurface(sprite, angle, 1, 0);
+			}
+		}
+		else if(zoom || flip) {
+			temp = zoomSurface(sprite, zoom_x * (flipx ? -1 : 1), zoom_y * (flipy ? -1 : 1), 0);
+		}
+	
+		SDL_FreeSurface(sprite);
+		
+		sprite = temp;
+	}*/
+	
+	if(flipx || flipy) {
+		apply_flip();
+	}
+	if(zoom_x != 1.0 || zoom_y != 1.0) {
+		apply_zoom();
+	}
+	if(angle != 0) {
+		apply_angle();
+	}
 }
 
 void SDL_Sprite::apply_tone() {
 	SDL_LockSurface(sprite);
 
-	SDL_Color* srccolor;
-	SDL_Color* dstcolor;
-	srccolor = new SDL_Color;
-	dstcolor = new SDL_Color;
+	Uint8 *pixels = (Uint8 *)sprite->pixels;
+	
 	if(tone.gray == 0) {
 		for (int yy = 0; yy < sprite->h; yy++) {
 			for (int xx = 0; xx < sprite->w; xx++) {
-				surface_getpixelcolor(sprite, xx, yy, srccolor);
-				dstcolor->r = max(min(srccolor->r + tone.r, 255), 0);
-				dstcolor->g = max(min(srccolor->g + tone.g, 255), 0);
-				dstcolor->b = max(min(srccolor->b + tone.b, 255), 0);
-				dstcolor->unused = srccolor->unused;
-				surface_putpixelcolor(sprite, xx, yy, dstcolor);
+				Uint8 *pixel = pixels;
+				pixel[0] = max(min(pixel[0] + tone.r, 255), 0);
+				pixel[1] = max(min(pixel[1] + tone.g, 255), 0);
+				pixel[2] = max(min(pixel[2] + tone.b, 255), 0);
+				pixels += 4;
 			}
 		}
 	}
 	else {
 		double factor = (255 - tone.gray) / 255.0;
-		int gray;
+		double gray;
 		for (int yy = 0; yy < sprite->h; yy++) {
 			for (int xx = 0; xx < sprite->w; xx++) {
-				surface_getpixelcolor(sprite, xx, yy, srccolor);
-				gray = srccolor->r * 0.299 + srccolor->g * 0.587 + srccolor->b * 0.114;
-				dstcolor->r = (Uint8)max(min((srccolor->r - gray) * factor + gray + tone.r + 0.5, 255), 0);
-				dstcolor->g = (Uint8)max(min((srccolor->g - gray) * factor + gray + tone.g + 0.5, 255), 0);
-				dstcolor->b = (Uint8)max(min((srccolor->b - gray) * factor + gray + tone.b + 0.5, 255), 0);
-				dstcolor->unused = srccolor->unused;
-				surface_putpixelcolor(sprite, xx, yy, dstcolor);				
+				Uint8 *pixel = pixels;
+				
+				gray = pixel[0] * 0.299 + pixel[1] * 0.587 + pixel[2] * 0.114;
+				pixel[0] = (Uint8)max(min((pixel[0] - gray) * factor + gray + tone.r + 0.5, 255), 0);
+				pixel[1] = (Uint8)max(min((pixel[1] - gray) * factor + gray + tone.g + 0.5, 255), 0);
+				pixel[2] = (Uint8)max(min((pixel[2] - gray) * factor + gray + tone.b + 0.5, 255), 0);
+				pixels += 4;
 			}
 		}
 	}
 	SDL_UnlockSurface(sprite);
+}
+void SDL_Sprite::apply_opacity() {
+	SDL_LockSurface(sprite);
+	
+	Uint8 *pixels = (Uint8 *)sprite->pixels;
+	
+	int start_bush = max(sprite->h - bush_depth, 0);
+	
+	if (opacity < 255) {
+		for (int yy = 0; yy < start_bush; yy++) {
+			for (int xx = 0; xx < sprite->w; xx++) {
+				Uint8 *pixel = pixels;
+				pixel[3] = pixel[3] * opacity / 255;
+				pixels += 4;
+			}
+		}
+		for (int yy = start_bush; yy < sprite->h; yy++) {
+			for (int xx = 0; xx < sprite->w; xx++) {
+				Uint8 *pixel = pixels;
+				pixel[3] = (pixel[3] / 2) * opacity / 255;
+				pixels += 4;
+			}
+		}
+	}
+	else {
+		pixels += start_bush * sprite->w * 4;
+		for (int yy = start_bush; yy < sprite->h; yy++) {
+			for (int xx = 0; xx < sprite->w; xx++) {
+				Uint8 *pixel = pixels;
+				pixel[3] = pixel[3] / 2;
+				pixels += 4;
+			}
+		}
+	}
+	SDL_UnlockSurface(sprite);
+}
+void SDL_Sprite::apply_flip() {
+	SDL_LockSurface(sprite);
+	
+	SDL_Surface* temp = SDL_CreateRGBSurface(SDL_SWSURFACE | SDL_SRCALPHA, sprite->w, sprite->h, 32, rmask, gmask, bmask, amask);
+	
+	SDL_LockSurface(temp);
+	
+	Uint32* srcpixels = (Uint32*)sprite->pixels;
+	Uint32* dstpixels = (Uint32*)temp->pixels;
+	
+	if(flipx && flipy) {
+		long srcpixel = 0;
+		long dstpixel = sprite->w + (sprite->h - 1) * sprite->w - 1;
+		for(int yy = 0; yy < sprite->h; yy++) {
+			for(int xx = 0; xx < sprite->w; xx++) {
+				dstpixels[dstpixel] = srcpixels[srcpixel];
+				
+				srcpixel += 1;
+				dstpixel -= 1;
+			}
+		}
+	}
+	else if(flipx) {
+		long srcpixel = 0;
+		long dstpixel = sprite->w - 1;
+		for(int yy = 0; yy < sprite->h; yy++) {
+			for(int xx = 0; xx < sprite->w; xx++) {
+				dstpixels[dstpixel] = srcpixels[srcpixel];
+				
+				srcpixel += 1;
+				dstpixel -= 1;
+			}
+			dstpixel += sprite->w * 2;
+		}
+	}
+	else if(flipy) {
+		dstpixels += (sprite->h - 1) * sprite->w;
+		for(int yy = 0; yy < sprite->h; yy++) {
+			memcpy(dstpixels, srcpixels,  sprite->w * 4);
+			srcpixels += sprite->w;
+			dstpixels -= sprite->w;
+		}
+	}
+	
+	SDL_UnlockSurface(sprite);
+	SDL_UnlockSurface(temp);
+	
+	SDL_BlitSurface(temp, NULL, sprite, NULL);
+}
+void SDL_Sprite::apply_zoom() {
+	SDL_LockSurface(sprite);
+	
+	int scalew = (int)(sprite->w * zoom_x);
+	int scaleh = (int)(sprite->h * zoom_y);
+	
+	SDL_Surface* nsprite = SDL_CreateRGBSurface(SDL_SWSURFACE | SDL_SRCALPHA, scalew, scaleh, 32, rmask, gmask, bmask, amask);
+	
+	SDL_LockSurface(nsprite);
+	
+    Uint8* srcpixels = (Uint8*)sprite->pixels;
+	Uint8* dstpixels = (Uint8*)nsprite->pixels;
+
+    int row = sprite->w * 4;
+
+    for(int yy = 0; yy < nsprite->h; yy++) {
+        int nearest_matchy = (int)(yy / zoom_y) * row;
+        for(int xx = 0; xx < nsprite->w; xx++) {
+            int nearest_match = nearest_matchy + (int)(xx / zoom_x) * 4;
+            dstpixels[0] = srcpixels[nearest_match];
+            dstpixels[1] = srcpixels[nearest_match + 1];
+            dstpixels[2] = srcpixels[nearest_match + 2];
+            dstpixels[3] = srcpixels[nearest_match + 3];
+			dstpixels += 4;
+        }
+    }
+	
+	SDL_UnlockSurface(nsprite);
+	SDL_FreeSurface(sprite);
+	
+	sprite = nsprite;
+}
+void SDL_Sprite::apply_angle() {
+	/*SDL_LockSurface(sprite);
+	
+	float radians = (2 * 3.14159265 * angle) / 360; 
+
+	float cosine = (float)cos(radians); 
+	float sine = (float)sin(radians); 
+
+	float p1x = -sprite->h * sine;
+	float p1y = sprite->h * cosine;
+	float p2x = sprite->w * cosine - sprite->h * sine;
+	float p2y = sprite->h * cosine + sprite->w * sine;
+	float p3x = sprite->w * cosine;
+	float p3y = sprite->w * sine;
+
+	float minx = min(0, min(p1x, min(p2x, p3x))); 
+	float miny = min(0, min(p1y, min(p2y, p3y))); 
+	float maxx = max(p1x, max(p2x, p3x)); 
+	float maxy = max(p1y, max(p2y, p3y)); 
+
+	int DestBitmapWidth=(int)ceil(fabs(maxx)-minx); 
+	int DestBitmapHeight=(int)ceil(fabs(maxy)-miny);
+	
+	SDL_Surface* nsprite = SDL_CreateRGBSurface(SDL_SWSURFACE | SDL_SRCALPHA, scalew, scaleh, 32, rmask, gmask, bmask, amask);
+	
+	SDL_LockSurface(nsprite);
+	
+    Uint8* srcpixels = (Uint8*)sprite->pixels;
+	Uint8* dstpixels = (Uint8*)nsprite->pixels;
+
+    int row = sprite->w * 4;
+
+    for(int yy = 0; yy < nsprite->h; yy++) {
+        int nearest_matchy = (int)(yy / zoom_y) * row;
+        for(int xx = 0; xx < nsprite->w; xx++) {
+            int nearest_match = nearest_matchy + (int)(xx / zoom_x) * 4;
+            dstpixels[0] = srcpixels[nearest_match];
+            dstpixels[1] = srcpixels[nearest_match + 1];
+            dstpixels[2] = srcpixels[nearest_match + 2];
+            dstpixels[3] = srcpixels[nearest_match + 3];
+			dstpixels += 4;
+        }
+    }
+	
+	SDL_UnlockSurface(nsprite);
+	SDL_FreeSurface(sprite);
+	
+	sprite = nsprite;*/
 }
 
 int SDL_Sprite::get_width() {

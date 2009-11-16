@@ -4,6 +4,7 @@
     <Plugin Name="qmake">
       <![CDATA[00020001N0005Debug0000000000000001N0007Release000000000000
     
+    
     ]]>
     </Plugin>
   </Plugins>
@@ -81,6 +82,7 @@
     <File Name="src\sys.cpp"/>
     <File Name="src\sys.h"/>
   </VirtualDirectory>
+  <Dependencies Name="Release"/>
   <Settings Type="Executable">
     <Configuration Name="Debug" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
       <Compiler Options="-g" Required="yes">
@@ -88,7 +90,7 @@
         <IncludePath Value="dependencies/mingw/ruby1.8.6/i386-mingw32"/>
         <IncludePath Value="dependencies/mingw/sdl/include/sdl"/>
       </Compiler>
-      <Linker Options="-mwindows -lmingw32 -lSDLmain -lSDL -lSDL_mixer -lSDL_gfx -lSDL_ttf -lSDL_image" Required="yes">
+      <Linker Options="-mwindows -lmingw32 -lSDLmain -lSDL -lSDL_mixer -lSDL_ttf -lSDL_image -lSDL_gfx" Required="yes">
         <LibraryPath Value="dependencies/mingw/ruby1.8.6"/>
         <LibraryPath Value="dependencies/mingw/sdl/lib"/>
         <Library Value="msvcrt-ruby18"/>
@@ -158,6 +160,5 @@
       <ResourceCompiler Options=""/>
     </GlobalSettings>
   </Settings>
-  <Dependencies Name="Release"/>
   <Dependencies Name="Debug"/>
 </CodeLite_Project>

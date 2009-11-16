@@ -13,11 +13,8 @@ public:
 	~SDL_Sprite();
 	
 	void draw(SDL_Surface* surface);
-	void refresh();
-	void apply_tone();
 	int get_width();
 	int get_height();
-	bool needs_refresh;
 	
 	void update();
 	void flash(SDL_Color color, int duration);
@@ -76,9 +73,9 @@ private:
     int z;
     int ox;
     int oy;
-    float zoom_x;
-    float zoom_y;
-    float angle;
+    double zoom_x;
+    double zoom_y;
+    double angle;
     bool flipx;
     bool flipy;
     int bush_depth;
@@ -90,5 +87,13 @@ private:
 	SDL_Color flash_color;
 	int flash_duration;
 	int flash_frame;
+	
+	void refresh();
+	void apply_tone();
+	void apply_opacity();
+	void apply_flip();
+	void apply_zoom();
+	void apply_angle();
+	bool needs_refresh;
 };
 #endif // __sdl_sprite__
