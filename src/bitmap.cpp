@@ -155,21 +155,23 @@ static VALUE argss_bitmap_clear(int argc, VALUE *argv, VALUE self) {
 	SDL_FillRect(ARGSS_mapBitmaps[self], NULL, color);
     return self;
 }
-/*static VALUE argss_bitmap_get_pixel(VALUE self, VALUE x, VALUE y) {
+static VALUE argss_bitmap_get_pixel(VALUE self, VALUE x, VALUE y) {
     argss_bitmap_check(self);
     Check_Kind(x, rb_cNumeric);
     Check_Kind(y, rb_cNumeric);
-    return argss_color_new3(ARGSS_mapBitmaps[self].GetPixel(NUM2INT(x), NUM2INT(y)));
+	Uint32 color = surface_getpixel(ARGSS_mapBitmaps[self], NUM2INT(x), NUM2INT(y));
+    return argss_color_new3(color, ARGSS_mapBitmaps[self]->format);
 }
 static VALUE argss_bitmap_set_pixel(VALUE self, VALUE x, VALUE y, VALUE color) {
     argss_bitmap_check(self);
     Check_Kind(x, rb_cNumeric);
     Check_Kind(y, rb_cNumeric);
     Check_Class(color, ARGSS_Color);
-    ARGSS_mapBitmaps[self].SetPixel(NUM2INT(x), NUM2INT(y), argss_color_getsf(color));
+    Uint32 pixel = argss_color_getuint32(color, ARGSS_mapBitmaps[self]->format);
+	surface_putpixel(ARGSS_mapBitmaps[self], NUM2INT(x), NUM2INT(y), pixel);
     return self;
 }
-static VALUE argss_bitmap_hue_change(VALUE self, VALUE hue) {
+/*static VALUE argss_bitmap_hue_change(VALUE self, VALUE hue) {
     argss_bitmap_check(self);
     Check_Kind(hue, rb_cNumeric);
     sf::Color col;
@@ -287,8 +289,8 @@ void Init_Bitmap() {
     //rb_define_method(ARGSS_Bitmap, "stretch_blt", (rubyfunc)argss_bitmap_stretch_blt, -1);
     rb_define_method(ARGSS_Bitmap, "fill_rect", (rubyfunc)argss_bitmap_fill_rect, -1);
     rb_define_method(ARGSS_Bitmap, "clear", (rubyfunc)argss_bitmap_clear, -1);
-    //rb_define_method(ARGSS_Bitmap, "get_pixel", (rubyfunc)argss_bitmap_get_pixel, 2);
-    //rb_define_method(ARGSS_Bitmap, "set_pixel", (rubyfunc)argss_bitmap_set_pixel, 3);
+    rb_define_method(ARGSS_Bitmap, "get_pixel", (rubyfunc)argss_bitmap_get_pixel, 2);
+    rb_define_method(ARGSS_Bitmap, "set_pixel", (rubyfunc)argss_bitmap_set_pixel, 3);
     //rb_define_method(ARGSS_Bitmap, "hue_change", (rubyfunc)argss_bitmap_hue_change, 1);
     //rb_define_method(ARGSS_Bitmap, "saturation_change", (rubyfunc)argss_bitmap_saturation_change, 1);
     //rb_define_method(ARGSS_Bitmap, "luminance_change", (rubyfunc)argss_bitmap_luminance_change, 1);

@@ -31,9 +31,11 @@ VALUE argss_color_new2(float r, float g, float b, float a) {
     VALUE args[4] = {rb_float_new(r), rb_float_new(g), rb_float_new(b), rb_float_new(a)};
     return rb_class_new_instance(4, args, ARGSS_Color);
 }
-VALUE argss_color_new3(Uint32 color) {
-	//VALUE args[4] = {rb_float_new(color.r), rb_float_new(color.g), rb_float_new(color.b), rb_float_new(color.a)};
-    //return rb_class_new_instance(4, args, ARGSS_Color);
+VALUE argss_color_new3(Uint32 color, SDL_PixelFormat* format) {
+	Uint8 r, g, b, a;
+	SDL_GetRGBA(color, format, &r, &g, &b, &a);
+	VALUE args[4] = {INT2NUM(r), INT2NUM(g), INT2NUM(b), INT2NUM(a)};
+    return rb_class_new_instance(4, args, ARGSS_Color);
 }
 VALUE argss_color_new4(SDL_Color color) {
     VALUE args[4] = {rb_float_new(color.r), rb_float_new(color.g), rb_float_new(color.b), rb_float_new(color.unused)};

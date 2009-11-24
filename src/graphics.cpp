@@ -111,7 +111,7 @@ static VALUE argss_graphics_fps(VALUE self) {
     return INT2FIX(ARGSS_FPS);
 }
 static VALUE argss_graphics_backcolor(VALUE self) {
-    return argss_color_new3(ARGSS_Graphics_BackColor);
+    return argss_color_new3(ARGSS_Graphics_BackColor, screen->format);
 }
 static VALUE argss_graphics_backcolorE(VALUE self, VALUE backcolor) {
     Check_Class(backcolor, ARGSS_Color);
