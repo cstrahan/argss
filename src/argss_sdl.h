@@ -41,4 +41,9 @@ void surface_putpixelcolor(SDL_Surface *surface, int x, int y, SDL_Color* color)
 void surface_enablealpha(SDL_Surface *surface);
 void surface_disablealpha(SDL_Surface *surface);
 
+void surface_blit(SDL_Surface *src, SDL_Rect src_rect, SDL_Surface *dst, int dstx, int dsty, int opacity, bool alphablend);
+
+SDL_Surface* surface_creatergb(int w, int h);
+SDL_Surface* surface_creatergba(int w, int h);
+
 #endif

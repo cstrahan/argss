@@ -11,7 +11,7 @@ SDL_Sprite::SDL_Sprite()
 {
 	viewport = NULL;
 	
-	sprite = SDL_CreateRGBSurface(SDL_SWSURFACE, 1, 1, 32, rmask, gmask, bmask, amask);
+	sprite = surface_creatergba(1, 1);
 	if(sprite == NULL) {
 		rb_raise(ARGSS_Error, "SDL could not create sprite surface.\n%s\n", SDL_GetError());
 	}
@@ -72,7 +72,7 @@ void SDL_Sprite::refresh() {
 	SDL_Rect rect;
 	
 	if(src_rect.w == 0 && src_rect.h == 0) {
-		sprite = SDL_CreateRGBSurface(SDL_SWSURFACE | SDL_SRCALPHA, bitmap->w, bitmap->h, 32, rmask, gmask, bmask, amask);
+		sprite = surface_creatergba(bitmap->w, bitmap->h);
 		if(sprite == NULL) {
 			rb_raise(ARGSS_Error, "SDL could not create sprite surface.\n%s\n", SDL_GetError());
 		}
@@ -80,7 +80,7 @@ void SDL_Sprite::refresh() {
 		SDL_BlitSurface(bitmap, NULL, sprite, NULL);
 	}
 	else {
-		sprite = SDL_CreateRGBSurface(SDL_SWSURFACE | SDL_SRCALPHA, src_rect.w, src_rect.h, 32, rmask, gmask, bmask, amask);
+		sprite = surface_creatergba(src_rect.w, src_rect.h);
 		if(sprite == NULL) {
 			rb_raise(ARGSS_Error, "SDL could not create sprite surface.\n%s\n", SDL_GetError());
 		}
@@ -203,7 +203,7 @@ void SDL_Sprite::apply_opacity() {
 void SDL_Sprite::apply_flip() {
 	SDL_LockSurface(sprite);
 	
-	SDL_Surface* temp = SDL_CreateRGBSurface(SDL_SWSURFACE | SDL_SRCALPHA, sprite->w, sprite->h, 32, rmask, gmask, bmask, amask);
+	SDL_Surface* temp = surface_creatergba(sprite->w, sprite->h);
 	
 	SDL_LockSurface(temp);
 	
@@ -255,7 +255,7 @@ void SDL_Sprite::apply_zoom() {
 	int scalew = (int)(sprite->w * zoom_x);
 	int scaleh = (int)(sprite->h * zoom_y);
 	
-	SDL_Surface* nsprite = SDL_CreateRGBSurface(SDL_SWSURFACE | SDL_SRCALPHA, scalew, scaleh, 32, rmask, gmask, bmask, amask);
+	SDL_Surface* nsprite = surface_creatergba(scalew, scaleh);
 	
 	SDL_LockSurface(nsprite);
 	
@@ -304,7 +304,7 @@ void SDL_Sprite::apply_angle() {
 	int DestBitmapWidth=(int)ceil(fabs(maxx)-minx); 
 	int DestBitmapHeight=(int)ceil(fabs(maxy)-miny);
 	
-	SDL_Surface* nsprite = SDL_CreateRGBSurface(SDL_SWSURFACE | SDL_SRCALPHA, scalew, scaleh, 32, rmask, gmask, bmask, amask);
+	SDL_Surface* nsprite = surface_creatergba(scalew, scaleh);
 	
 	SDL_LockSurface(nsprite);
 	

@@ -9,7 +9,7 @@ void Init_SDL() {
 	
 	atexit(SDL_Quit);
 
-    screen = SDL_SetVideoMode(Sys_Res[0], Sys_Res[1], Sys_Res[2], SDL_SWSURFACE);
+    screen = SDL_SetVideoMode(Sys_Res[0], Sys_Res[1], Sys_Res[2], SDL_HWSURFACE);
     if (screen == NULL ) {
         fprintf(stderr, "SDL could not set %dx%dx%d video mode.\n%s\n", 
 			Sys_Res[0], Sys_Res[1], Sys_Res[2], SDL_GetError());
@@ -98,4 +98,86 @@ void surface_enablealpha(SDL_Surface *surface) {
 }
 void surface_disablealpha(SDL_Surface *surface) {
 	SDL_SetAlpha(surface, 0, surface->format->alpha);
+}
+void surface_blit(SDL_Surface *src, SDL_Rect src_rect, SDL_Surface *dst, int dstx, int dsty, int opacity, bool alphablend) {
+	if ((src->w == 0) || (src->h == 0) || (dst->w == 0) || (dst->h == 0))
+        return;
+	
+	SDL_Rect rect = src_rect;
+    if (rect.w == 0 || rect.h == 0)
+    {
+        rect.x = 0;
+        rect.y = 0;
+        rect.w = src->w;
+        rect.h = src->h;
+    }
+    else
+    {
+        if (rect.x < 0) rect.x = 0;
+        if (rect.y < 0) rect.y  = 0;
+        if (rect.w > src->w) rect.w = src->w;
+        if (rect.h > src->h) rect.h = src->h;
+    }
+		
+	if(dstx + rect.w > dst->w) rect.w = dst->w - dstx;
+    if(dsty + rect.h > dst->h) rect.h = dst->h - dsty;
+
+    if(rect.w <= 0 || rect.h <= 0) return;
+	
+	SDL_LockSurface(src);
+	SDL_LockSurface(dst);
+	
+    int          Pitch     = rect.w * 4;
+    int          SrcStride = src->w * 4;
+    int          DstStride = dst->w * 4;
+    const Uint8* SrcPixels = ((Uint8*)src->pixels) + (rect.x + rect.y * src->w) * 4;
+    Uint8*       DstPixels = ((Uint8*)dst->pixels) + (dstx + dsty * dst->w) * 4;
+
+	if(alphablend) {
+        if (opacity > 255) opacity = 255;
+        if (opacity > 0) {
+            for (int i = 0; i < rect.h; ++i) {
+                for (int j = 0; j < rect.w; ++j) {
+                    const Uint8* Src   = SrcPixels + j * 4;
+                    Uint8*       Dst   = DstPixels + j * 4;
+
+                    Uint8 SrcA = Src[3] * opacity / 255;
+                    Dst[0] = (Dst[0] * (255 - SrcA) + Src[0] * SrcA) / 255;
+                    Dst[1] = (Dst[1] * (255 - SrcA) + Src[1] * SrcA) / 255;
+                    Dst[2] = (Dst[2] * (255 - SrcA) + Src[2] * SrcA) / 255;
+                    Dst[3] = Dst[3] * (255 - SrcA) / 255 + SrcA;
+                }
+                SrcPixels += SrcStride;
+                DstPixels += DstStride;
+            }
+        }
+    }
+    else {
+        for (int i = 0; i < rect.h; ++i) {
+            memcpy(DstPixels, SrcPixels, Pitch);
+            SrcPixels += SrcStride;
+            DstPixels += DstStride;
+        }
+    }
+	
+	SDL_UnlockSurface(src);
+	SDL_UnlockSurface(dst);
+}
+
+SDL_Surface* surface_creatergb(int w, int h) {
+	SDL_Surface* temp;
+	SDL_Surface* formated;
+	temp = SDL_CreateRGBSurface(SDL_SWSURFACE | SDL_SRCALPHA, w, h, 32, rmask, gmask, bmask, amask);
+	formated = SDL_DisplayFormat(temp);
+	SDL_FreeSurface(temp);
+	return formated;
+}
+
+SDL_Surface* surface_creatergba(int w, int h) {
+	SDL_Surface* temp;
+	SDL_Surface* formated;
+	temp = SDL_CreateRGBSurface(SDL_SWSURFACE | SDL_SRCALPHA, w, h, 32, rmask, gmask, bmask, amask);
+	formated = SDL_DisplayFormatAlpha(temp);
+	SDL_FreeSurface(temp);
+	return formated;
 }

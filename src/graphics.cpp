@@ -115,7 +115,7 @@ static VALUE argss_graphics_backcolor(VALUE self) {
 }
 static VALUE argss_graphics_backcolorE(VALUE self, VALUE backcolor) {
     Check_Class(backcolor, ARGSS_Color);
-    ARGSS_Graphics_BackColor = argss_color_getuint32(backcolor);
+    ARGSS_Graphics_BackColor = argss_color_getuint32(backcolor, screen->format);
     return backcolor;
 }
 static VALUE argss_graphics_width(VALUE self) {

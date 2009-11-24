@@ -8,11 +8,12 @@ double valuecapcolor(double v) {
     return (v > 255) ? 255 : (v < 0) ? 0 : v;
 }
 
-Uint32 argss_color_getuint32(VALUE self) {
-	return SDL_MapRGB(screen->format,
+Uint32 argss_color_getuint32(VALUE self, SDL_PixelFormat* format) {
+	return SDL_MapRGBA(format,
 						NUM2INT(rb_iv_get(self, "@red")),
 						NUM2INT(rb_iv_get(self, "@green")),
-						NUM2INT(rb_iv_get(self, "@blue")));
+						NUM2INT(rb_iv_get(self, "@blue")),
+						NUM2INT(rb_iv_get(self, "@alpha")));
 }
 SDL_Color argss_color_getsdl(VALUE self) {
 	SDL_Color color;

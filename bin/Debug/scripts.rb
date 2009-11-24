@@ -6,28 +6,25 @@ begin
 	Console.initialize
 
 	#Assigning a white background
-	Graphics.backcolor = Color.new(0, 0, 0)
+	Graphics.backcolor = Color.new(0,0,0)
 
 	Graphics.frame_rate = 60
 
 	#Testing
-	bmp = Bitmap.new('test6.png')
-	sprite = Sprite.new
-	sprite.bitmap = bmp
-	sprite.tone = Tone.new(64,0,0,255)
-	sprite2 = Sprite.new
-	sprite2.bitmap = bmp
-	sprite2.x = 240
-	sprite2.tone = Tone.new(64,0,0,192)
-	sprite3 = Sprite.new
-	sprite3.bitmap = bmp
-	sprite3.y = 240
-	sprite3.tone = Tone.new(64,0,0,128)
-	sprite4 = Sprite.new
-	sprite4.bitmap = bmp
-	sprite4.x = 240
-	sprite4.y = 240
-	sprite4.tone = Tone.new(64,0,0,0)
+	bmp = Bitmap.new(60, 60)
+	bmp.fill_rect(15, 15, 30, 30, Color.new(255, 0, 255, 255))
+	spr = Sprite.new
+	spr.bitmap = Bitmap.new('test3.png')
+	spr.bitmap.blt(50, 50, bmp, Rect.new(0, 0, 60, 60), 255)
+	
+	spr2 = Sprite.new
+	spr2.bitmap = Bitmap.new('test3.png')
+	spr2.bitmap.blt(50, 50, bmp, Rect.new(0, 0, 60, 60), 192)
+	spr2.x = 128
+
+	spr3 = Sprite.new
+	spr3.bitmap = bmp
+	spr3.x = 256
 	loop do
 		Graphics.update
 		Input.update
