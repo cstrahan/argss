@@ -36,8 +36,8 @@ void Init_SDL();
 
 Uint32 surface_getpixel(SDL_Surface *surface, int x, int y);
 void surface_putpixel(SDL_Surface *surface, int x, int y, Uint32 pixel);
-void surface_getpixelcolor(SDL_Surface *surface, int x, int y, SDL_Color* color);
-void surface_putpixelcolor(SDL_Surface *surface, int x, int y, SDL_Color* color);
+SDL_Color surface_getpixelcolor(SDL_Surface *surface, int x, int y);
+void surface_putpixelcolor(SDL_Surface *surface, int x, int y, SDL_Color color);
 void surface_enablealpha(SDL_Surface *surface);
 void surface_disablealpha(SDL_Surface *surface);
 

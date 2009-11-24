@@ -9,7 +9,7 @@ struct ColorHSL {
     float l;
 };
 
-ColorHSL RGB2HSL(sf::Color col) {
+ColorHSL RGB2HSL(SDL_Color col) {
     ColorHSL ncol;
     float vmin, vmax, delta;
     float dr, dg, db;
@@ -57,13 +57,13 @@ float Hue_2_RGB(float v1, float v2, float vH) {
    return v1;
 }
 
-sf::Color HSL2RGB(ColorHSL col) {
-    sf::Color ncol;
+SDL_Color HSL2RGB(ColorHSL col) {
+    SDL_Color ncol;
     float v1, v2;
     if(col.s == 0) {
-        ncol.r = (sf::Uint8)(col.l * 255);
-        ncol.g = (sf::Uint8)(col.l * 255);
-        ncol.b = (sf::Uint8)(col.l * 255);
+        ncol.r = (Uint8)(col.l * 255);
+        ncol.g = (Uint8)(col.l * 255);
+        ncol.b = (Uint8)(col.l * 255);
     }
     else {
         if(col.l < 0.5) {
@@ -73,16 +73,16 @@ sf::Color HSL2RGB(ColorHSL col) {
             v2 = (col.l + col.s) - (col.s * col.l);
         }
         v1 = 2 * col.l - v2;
-        ncol.r = (sf::Uint8)(255 * Hue_2_RGB(v1, v2, col.h + (1.0 / 3)));
-        ncol.g = (sf::Uint8)(255 * Hue_2_RGB(v1, v2, col.h));
-        ncol.b = (sf::Uint8)(255 * Hue_2_RGB(v1, v2, col.h - (1.0 / 3)));
+        ncol.r = (Uint8)(255 * Hue_2_RGB(v1, v2, col.h + (1.0 / 3)));
+        ncol.g = (Uint8)(255 * Hue_2_RGB(v1, v2, col.h));
+        ncol.b = (Uint8)(255 * Hue_2_RGB(v1, v2, col.h - (1.0 / 3)));
     }
     return ncol;
 }
 
-sf::Color RGBAdjustHSL(sf::Color col, int h, float s, float l) {
+SDL_Color RGBAdjustHSL(SDL_Color col, int h, float s, float l) {
     ColorHSL hsl;
-    sf::Color rgb = col;
+    SDL_Color rgb = col;
     hsl = RGB2HSL(rgb);
     hsl.h = hsl.h + h / 360.0;
     while(hsl.h > 1) {hsl.h -= 1;}
@@ -94,6 +94,6 @@ sf::Color RGBAdjustHSL(sf::Color col, int h, float s, float l) {
     if (hsl.l > 1) {hsl.l = 1;}
     if (hsl.l < 0) {hsl.l = 0;}
     rgb = HSL2RGB(hsl);
-    rgb.a = col.a;
+    rgb.unused = col.unused;
     return rgb;
 }

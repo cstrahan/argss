@@ -83,14 +83,16 @@ void surface_putpixel(SDL_Surface *surface, int x, int y, Uint32 pixel)
     }
 }*/
 
-void surface_getpixelcolor(SDL_Surface *surface, int x, int y, SDL_Color* color)
+SDL_Color surface_getpixelcolor(SDL_Surface *surface, int x, int y)
 {
-	SDL_GetRGBA(surface_getpixel(surface, x, y), surface->format, &color->r, &color->g, &color->b, &color->unused);
+	SDL_Color color;
+	SDL_GetRGBA(surface_getpixel(surface, x, y), surface->format, &color.r, &color.g, &color.b, &color.unused);
+	return color;
 }
 
-void surface_putpixelcolor(SDL_Surface *surface, int x, int y, SDL_Color* color)
+void surface_putpixelcolor(SDL_Surface *surface, int x, int y, SDL_Color color)
 {
-	surface_putpixel(surface, x, y, SDL_MapRGBA(surface->format, color->r, color->g, color->b, color->unused));
+	surface_putpixel(surface, x, y, SDL_MapRGBA(surface->format, color.r, color.g, color.b, color.unused));
 }
 
 void surface_enablealpha(SDL_Surface *surface) {

@@ -171,16 +171,15 @@ static VALUE argss_bitmap_set_pixel(VALUE self, VALUE x, VALUE y, VALUE color) {
 	surface_putpixel(ARGSS_mapBitmaps[self], NUM2INT(x), NUM2INT(y), pixel);
     return self;
 }
-/*static VALUE argss_bitmap_hue_change(VALUE self, VALUE hue) {
+static VALUE argss_bitmap_hue_change(VALUE self, VALUE hue) {
     argss_bitmap_check(self);
     Check_Kind(hue, rb_cNumeric);
-    sf::Color col;
+    SDL_Color color;
     int h = NUM2INT(hue);
-    //ARGSS_mapBitmaps[self].HSL_Adjust(h, 0, 1, sf::IntRect(0, 0, 0, 0));
-    for(unsigned int y = 0; y < ARGSS_mapBitmaps[self].h; y++) {
-        for(unsigned int x = 0; x < ARGSS_mapBitmaps[self].w; x++) {
-            col = ARGSS_mapBitmaps[self].GetPixel(x, y);
-            ARGSS_mapBitmaps[self].SetPixel(x, y, RGBAdjustHSL(col, h, 0, 1));
+    for(unsigned int y = 0; y < ARGSS_mapBitmaps[self]->h; y++) {
+        for(unsigned int x = 0; x < ARGSS_mapBitmaps[self]->w; x++) {
+			color = surface_getpixelcolor(ARGSS_mapBitmaps[self], x, y);
+			surface_putpixelcolor(ARGSS_mapBitmaps[self], x, y, RGBAdjustHSL(color, h, 0, 1));
         }
     }
     return self;
@@ -188,13 +187,12 @@ static VALUE argss_bitmap_set_pixel(VALUE self, VALUE x, VALUE y, VALUE color) {
 static VALUE argss_bitmap_saturation_change(VALUE self, VALUE sat) {
     argss_bitmap_check(self);
     Check_Kind(sat, rb_cNumeric);
-    sf::Color col;
+    SDL_Color color;
     float s = (float)NUM2DBL(sat);
-    //ARGSS_mapBitmaps[self].HSL_Adjust(0, s, 1, sf::IntRect(0, 0, 0, 0));
-    for(unsigned int y = 0; y < ARGSS_mapBitmaps[self].h; y++) {
-        for(unsigned int x = 0; x < ARGSS_mapBitmaps[self].w; x++) {
-            col = ARGSS_mapBitmaps[self].GetPixel(x, y);
-            ARGSS_mapBitmaps[self].SetPixel(x, y, RGBAdjustHSL(col, 0, s, 1));
+    for(unsigned int y = 0; y < ARGSS_mapBitmaps[self]->h; y++) {
+        for(unsigned int x = 0; x < ARGSS_mapBitmaps[self]->w; x++) {
+			color = surface_getpixelcolor(ARGSS_mapBitmaps[self], x, y);
+			surface_putpixelcolor(ARGSS_mapBitmaps[self], x, y, RGBAdjustHSL(color, 0, s, 1));
         }
     }
     return self;
@@ -202,13 +200,12 @@ static VALUE argss_bitmap_saturation_change(VALUE self, VALUE sat) {
 static VALUE argss_bitmap_luminance_change(VALUE self, VALUE lum) {
     argss_bitmap_check(self);
     Check_Kind(lum, rb_cNumeric);
-    sf::Color col;
+    SDL_Color color;
     float l = (float)NUM2DBL(lum);
-    //ARGSS_mapBitmaps[self].HSL_Adjust(0, 0, l, sf::IntRect(0, 0, 0, 0));
-    for(unsigned int y = 0; y < ARGSS_mapBitmaps[self].h; y++) {
-        for(unsigned int x = 0; x < ARGSS_mapBitmaps[self].w; x++) {
-            col = ARGSS_mapBitmaps[self].GetPixel(x, y);
-            ARGSS_mapBitmaps[self].SetPixel(x, y, RGBAdjustHSL(col, 0, 0, l));
+    for(unsigned int y = 0; y < ARGSS_mapBitmaps[self]->h; y++) {
+        for(unsigned int x = 0; x < ARGSS_mapBitmaps[self]->w; x++) {
+			color = surface_getpixelcolor(ARGSS_mapBitmaps[self], x, y);
+			surface_putpixelcolor(ARGSS_mapBitmaps[self], x, y, RGBAdjustHSL(color, 0, 0, l));
         }
     }
     return self;
@@ -223,49 +220,39 @@ static VALUE argss_bitmap_hsl_change(int argc, VALUE *argv, VALUE self) {
     int h = NUM2INT(argv[0]);
     float s = (float)NUM2DBL(argv[1]);
     float l = (float)NUM2DBL(argv[2]);
-    sf::IntRect Rect;
+    SDL_Rect rect = {0, 0, 0, 0};
     if (argc == 4) {
-        Rect = argss_rect_intrect(argv[3]);
+        rect = argss_rect_getsdl(argv[3]);
     }
-    else {
-        Rect = sf::IntRect(0, 0, 0, 0);
-    }
-    //ARGSS_mapBitmaps[self].HSL_Adjust(h, s, l, rect);
-
-    if ((ARGSS_mapBitmaps[self].w == 0) || (ARGSS_mapBitmaps[self].h == 0)) {
+    if ((ARGSS_mapBitmaps[self]->w == 0) || (ARGSS_mapBitmaps[self]->h == 0)) {
         return self;
     }
 
-    if ((Rect.w == 0) || (Rect.h == 0)) {
-        Rect.Right  = ARGSS_mapBitmaps[self].w;
-        Rect.Bottom = ARGSS_mapBitmaps[self].h;
+    if (rect.w == 0 || rect.h == 0) {
+        rect.w  = ARGSS_mapBitmaps[self]->w;
+        rect.h = ARGSS_mapBitmaps[self]->h;
     }
     else {
-        if (Rect.Right  > static_cast<int>(ARGSS_mapBitmaps[self].w))  Rect.Right  = ARGSS_mapBitmaps[self].w;
-        if (Rect.Bottom > static_cast<int>(ARGSS_mapBitmaps[self].h)) Rect.Bottom = ARGSS_mapBitmaps[self].h;
+        if (rect.w  > ARGSS_mapBitmaps[self]->w) rect.w  = ARGSS_mapBitmaps[self]->w;
+        if (rect.h > ARGSS_mapBitmaps[self]->h) rect.h = ARGSS_mapBitmaps[self]->h;
     }
-    if (Rect.Left   < 0) Rect.Left = 0;
-    if (Rect.Top    < 0) Rect.Top  = 0;
+    if (rect.x   < 0) rect.x = 0;
+    if (rect.y    < 0) rect.y  = 0;
 
-    sf::Color col;
+    SDL_Color color;
 
-    for(int y = Rect.Top; y < Rect.Bottom; y++) {
-        for(int x = Rect.Left; x < Rect.Right; x++) {
-            col = ARGSS_mapBitmaps[self].GetPixel(x, y);
-            ARGSS_mapBitmaps[self].SetPixel(x, y, RGBAdjustHSL(col, h, s, l));
+    for(int y = rect.y; y < rect.y + rect.h; y++) {
+        for(int x = rect.x; x < rect.x + rect.w; x++) {
+			color = surface_getpixelcolor(ARGSS_mapBitmaps[self], x, y);
+			surface_putpixelcolor(ARGSS_mapBitmaps[self], x, y, RGBAdjustHSL(color, h, s, l));
         }
     }
     return self;
 }
 static VALUE argss_bitmap_draw_text(int argc, VALUE *argv, VALUE self) {
-
-    // ): Hate Freetype and OpenGL :(
-    // To Finish
-
     argss_bitmap_check(self);
 
-    sf::Color col(255, 0, 0, 255);
-    ARGSS_mapBitmaps[self].DDrawText(0, 0, 100, 100, "Hola", col);
+    SDL_Color col = {255, 0, 0, 255};
 
     return self;
 }
@@ -274,7 +261,7 @@ static VALUE argss_bitmap_text_size(VALUE self, VALUE str) {
     Check_Type(str, T_STRING);
     //ToDo
     return self;
-}*/
+}
 
 void Init_Bitmap() {
     typedef VALUE (*rubyfunc)(...);
@@ -291,11 +278,11 @@ void Init_Bitmap() {
     rb_define_method(ARGSS_Bitmap, "clear", (rubyfunc)argss_bitmap_clear, -1);
     rb_define_method(ARGSS_Bitmap, "get_pixel", (rubyfunc)argss_bitmap_get_pixel, 2);
     rb_define_method(ARGSS_Bitmap, "set_pixel", (rubyfunc)argss_bitmap_set_pixel, 3);
-    //rb_define_method(ARGSS_Bitmap, "hue_change", (rubyfunc)argss_bitmap_hue_change, 1);
-    //rb_define_method(ARGSS_Bitmap, "saturation_change", (rubyfunc)argss_bitmap_saturation_change, 1);
-    //rb_define_method(ARGSS_Bitmap, "luminance_change", (rubyfunc)argss_bitmap_luminance_change, 1);
-    //rb_define_method(ARGSS_Bitmap, "hsl_change", (rubyfunc)argss_bitmap_hsl_change, -1);
-    //rb_define_method(ARGSS_Bitmap, "draw_text", (rubyfunc)argss_bitmap_draw_text, -1);
-    //rb_define_method(ARGSS_Bitmap, "text_size", (rubyfunc)argss_bitmap_text_size, 1);
+    rb_define_method(ARGSS_Bitmap, "hue_change", (rubyfunc)argss_bitmap_hue_change, 1);
+    rb_define_method(ARGSS_Bitmap, "saturation_change", (rubyfunc)argss_bitmap_saturation_change, 1);
+    rb_define_method(ARGSS_Bitmap, "luminance_change", (rubyfunc)argss_bitmap_luminance_change, 1);
+    rb_define_method(ARGSS_Bitmap, "hsl_change", (rubyfunc)argss_bitmap_hsl_change, -1);
+    rb_define_method(ARGSS_Bitmap, "draw_text", (rubyfunc)argss_bitmap_draw_text, -1);
+    rb_define_method(ARGSS_Bitmap, "text_size", (rubyfunc)argss_bitmap_text_size, 1);
 }
 

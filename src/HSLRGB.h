@@ -1,6 +1,8 @@
 #ifndef _HSLRGB_H_
 #define _HSLRGB_H_
 
-//sf::Color RGBAdjustHSL(sf::Color col, int h, float s, float l);
+#include "SDL.h"
+
+SDL_Color RGBAdjustHSL(SDL_Color col, int h, float s, float l);
 
 #endif

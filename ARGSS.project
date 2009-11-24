@@ -67,6 +67,8 @@
     </VirtualDirectory>
     <VirtualDirectory Name="tools">
       <File Name="src\simpleini.h"/>
+      <File Name="src\HSLRGB.cpp"/>
+      <File Name="src\HSLRGB.h"/>
     </VirtualDirectory>
     <File Name="src\argss.cpp"/>
     <File Name="src\argss.h"/>
