@@ -1,3 +1,24 @@
+// Copyright (c) 2009, Alejandro Marzini (vgvgf) - All rights reserved.
+//
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions are met:
+//     * Redistributions of source code must retain the above copyright
+//       notice, this list of conditions and the following disclaimer.
+//     * Redistributions in binary form must reproduce the above copyright
+//       notice, this list of conditions and the following disclaimer in the
+//       documentation and/or other materials provided with the distribution.
+//
+// THIS SOFTWARE IS PROVIDED BY THE AUTHOR ''AS IS'' AND ANY
+// EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+// WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+// DISCLAIMED. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY
+// DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+// (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+// LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+// ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+// SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 #include "sdl_sprite.h"
 #include "argss_sdl.h"
 #include "SDL_rotozoom.h"
@@ -19,20 +40,20 @@ SDL_Sprite::SDL_Sprite()
 	src_rect.y = 0;
 	src_rect.w = 0;
 	src_rect.h = 0;
-    visible = true;
-    x = 0;
-    y = 0;
-    z = 0;
-    ox = 0;
-    oy = 0;
-    zoom_x = 1.0;
-    zoom_y = 1.0;
-    angle = 0;
-    flipx = false;
-    flipy = false;
-    bush_depth = 0;
-    opacity = 255;
-    blend_type = 0;
+	visible = true;
+	x = 0;
+	y = 0;
+	z = 0;
+	ox = 0;
+	oy = 0;
+	zoom_x = 1.0;
+	zoom_y = 1.0;
+	angle = 0;
+	flipx = false;
+	flipy = false;
+	bush_depth = 0;
+	opacity = 255;
+	blend_type = 0;
 	color.r = 0;
 	color.g = 0;
 	color.b = 0;
@@ -56,18 +77,18 @@ void SDL_Sprite::draw(SDL_Surface* surface) {
 	if(needs_refresh) {
 		refresh();
 	}
-    SDL_Rect offset;
+	SDL_Rect offset;
 
-    offset.x = x;
-    offset.y = y;
+	offset.x = x;
+	offset.y = y;
 
-    SDL_BlitSurface(sprite, NULL, surface, &offset);
+	SDL_BlitSurface(sprite, NULL, surface, &offset);
 }
 
 void SDL_Sprite::refresh() {
 	needs_refresh = false;
 	
-    SDL_FreeSurface(sprite);
+	SDL_FreeSurface(sprite);
 	
 	SDL_Rect rect;
 	
@@ -259,22 +280,22 @@ void SDL_Sprite::apply_zoom() {
 	
 	SDL_LockSurface(nsprite);
 	
-    Uint8* srcpixels = (Uint8*)sprite->pixels;
+	Uint8* srcpixels = (Uint8*)sprite->pixels;
 	Uint8* dstpixels = (Uint8*)nsprite->pixels;
 
-    int row = sprite->w * 4;
+	int row = sprite->w * 4;
 
-    for(int yy = 0; yy < nsprite->h; yy++) {
-        int nearest_matchy = (int)(yy / zoom_y) * row;
-        for(int xx = 0; xx < nsprite->w; xx++) {
-            int nearest_match = nearest_matchy + (int)(xx / zoom_x) * 4;
-            dstpixels[0] = srcpixels[nearest_match];
-            dstpixels[1] = srcpixels[nearest_match + 1];
-            dstpixels[2] = srcpixels[nearest_match + 2];
-            dstpixels[3] = srcpixels[nearest_match + 3];
+	for(int yy = 0; yy < nsprite->h; yy++) {
+		int nearest_matchy = (int)(yy / zoom_y) * row;
+		for(int xx = 0; xx < nsprite->w; xx++) {
+			int nearest_match = nearest_matchy + (int)(xx / zoom_x) * 4;
+			dstpixels[0] = srcpixels[nearest_match];
+			dstpixels[1] = srcpixels[nearest_match + 1];
+			dstpixels[2] = srcpixels[nearest_match + 2];
+			dstpixels[3] = srcpixels[nearest_match + 3];
 			dstpixels += 4;
-        }
-    }
+		}
+	}
 	
 	SDL_UnlockSurface(nsprite);
 	SDL_FreeSurface(sprite);
@@ -308,22 +329,22 @@ void SDL_Sprite::apply_angle() {
 	
 	SDL_LockSurface(nsprite);
 	
-    Uint8* srcpixels = (Uint8*)sprite->pixels;
+	Uint8* srcpixels = (Uint8*)sprite->pixels;
 	Uint8* dstpixels = (Uint8*)nsprite->pixels;
 
-    int row = sprite->w * 4;
+	int row = sprite->w * 4;
 
-    for(int yy = 0; yy < nsprite->h; yy++) {
-        int nearest_matchy = (int)(yy / zoom_y) * row;
-        for(int xx = 0; xx < nsprite->w; xx++) {
-            int nearest_match = nearest_matchy + (int)(xx / zoom_x) * 4;
-            dstpixels[0] = srcpixels[nearest_match];
-            dstpixels[1] = srcpixels[nearest_match + 1];
-            dstpixels[2] = srcpixels[nearest_match + 2];
-            dstpixels[3] = srcpixels[nearest_match + 3];
+	for(int yy = 0; yy < nsprite->h; yy++) {
+		int nearest_matchy = (int)(yy / zoom_y) * row;
+		for(int xx = 0; xx < nsprite->w; xx++) {
+			int nearest_match = nearest_matchy + (int)(xx / zoom_x) * 4;
+			dstpixels[0] = srcpixels[nearest_match];
+			dstpixels[1] = srcpixels[nearest_match + 1];
+			dstpixels[2] = srcpixels[nearest_match + 2];
+			dstpixels[3] = srcpixels[nearest_match + 3];
 			dstpixels += 4;
-        }
-    }
+		}
+	}
 	
 	SDL_UnlockSurface(nsprite);
 	SDL_FreeSurface(sprite);
