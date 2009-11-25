@@ -93,7 +93,8 @@ void SDL_Sprite::refresh() {
 	SDL_Rect rect;
 	
 	if(src_rect.w == 0 && src_rect.h == 0) {
-		sprite = surface_creatergba(bitmap->w, bitmap->h);
+		//sprite = surface_creatergba(bitmap->w, bitmap->h);
+		sprite = SDL_CreateRGBSurface(SDL_SWSURFACE | SDL_SRCALPHA, bitmap->w, bitmap->h, 32, rmask, gmask, bmask, amask);
 		if(sprite == NULL) {
 			rb_raise(ARGSS_Error, "SDL could not create sprite surface.\n%s\n", SDL_GetError());
 		}
@@ -101,7 +102,8 @@ void SDL_Sprite::refresh() {
 		SDL_BlitSurface(bitmap, NULL, sprite, NULL);
 	}
 	else {
-		sprite = surface_creatergba(src_rect.w, src_rect.h);
+		//sprite = surface_creatergba(src_rect.w, src_rect.h);
+		sprite = SDL_CreateRGBSurface(SDL_SWSURFACE | SDL_SRCALPHA, src_rect.w, src_rect.h, 32, rmask, gmask, bmask, amask);
 		if(sprite == NULL) {
 			rb_raise(ARGSS_Error, "SDL could not create sprite surface.\n%s\n", SDL_GetError());
 		}

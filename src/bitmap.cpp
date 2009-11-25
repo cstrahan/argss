@@ -156,8 +156,8 @@ static VALUE argss_bitmap_fill_rect(int argc, VALUE *argv, VALUE self) {
 		Check_Kind(argv[3], rb_cNumeric);
 		rect.x = NUM2INT(argv[0]);
 		rect.y = NUM2INT(argv[1]);
-		rect.w = NUM2INT(argv[0]) + NUM2INT(argv[2]);
-		rect.h = NUM2INT(argv[1]) + NUM2INT(argv[3]);
+		rect.w = NUM2INT(argv[2]);
+		rect.h = NUM2INT(argv[3]);
 		Check_Class(argv[4], ARGSS_Color);
 		color = argss_color_getuint32(argv[4], ARGSS_mapBitmaps[self]->format);
     }
