@@ -303,18 +303,46 @@ static VALUE argss_bitmap_draw_text(int argc, VALUE *argv, VALUE self) {
 	SDL_Surface *text_surface;
 	if(!(text_surface = TTF_RenderUTF8_Blended(ttf_font, text.c_str(), color))) {
 		rb_raise(ARGSS_Error, "SDL could not draw text %s with Font(%x).\n%s\n", text.c_str(), font, TTF_GetError());
-	} else {
-		SDL_Rect src_rect = {0, 0, rect.w, rect.h};
-		surface_blit(text_surface, src_rect, ARGSS_mapBitmaps[self], rect.x, rect.y, 255, true);
-		SDL_FreeSurface(text_surface);
 	}
+	
+	if(text_surface->w > rect.w) {
+		int stretch = (int)(text_surface->w * 0.6);
+		if(rect.w > stretch) stretch = rect.w;
+		SDL_Rect resample_rect = {0, 0, text_surface->w, text_surface->h};
+		SDL_Surface* resampled = surface_resample(text_surface, stretch, text_surface->h, resample_rect);
+		SDL_FreeSurface(text_surface);
+		text_surface = resampled;
+	}
+	SDL_Rect src_rect = {0, 0, rect.w, rect.h};
+	int y = rect.y;
+	if(rect.h > text_surface->h) y += ((rect.h - text_surface->h) / 2);
+	int x = rect.x;
+	if(rect.w > text_surface->w) {
+		if(align == 1) {
+			x += (rect.w - text_surface->w) / 2;
+		}
+		else if (align == 2) {
+			x += rect.w - text_surface->w;
+		}
+	}
+	surface_blit(text_surface, src_rect, ARGSS_mapBitmaps[self], x, y, 255, true);
+	SDL_FreeSurface(text_surface);
     return self;
 }
 static VALUE argss_bitmap_text_size(VALUE self, VALUE str) {
     argss_bitmap_check(self);
     Check_Type(str, T_STRING);
-    //ToDo
-    return self;
+    int w, h;
+	
+	std::string text = StringValuePtr(str);
+	
+	VALUE font = rb_iv_get(self, "@font");
+	TTF_Font* ttf_font = argss_font_getttf(font);
+	
+	if(TTF_SizeUTF8(ttf_font, text.c_str(), &w, &h)) {
+		rb_raise(ARGSS_Error, "SDL could not determine text size %s with Font(%x).\n%s\n", text.c_str(), font, TTF_GetError());
+	}
+    return argss_rect_new2(0, 0, w, h);
 }
 
 void Init_Bitmap() {
