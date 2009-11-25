@@ -63,7 +63,7 @@ static struct types {
     {-1,	0}
 };
 
-void Check_Types2(VALUE x, int t1, int t2)
+void Check_Types2(VALUE x, VALUE t1, VALUE t2)
 {
     struct types *type = builtin_types;
     if (x == Qundef) {rb_bug("undef leaked to the Ruby space");}

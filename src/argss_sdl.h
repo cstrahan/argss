@@ -25,6 +25,7 @@
 #include <map>
 #include "argss.h"
 #include "SDL.h"
+#include "SDL_ttf.h"
 #include "sdl_sprite.h"
 #include "sdl_viewport.h"
 #include "sdl_plane.h"
@@ -66,5 +67,9 @@ void surface_blit(SDL_Surface *src, SDL_Rect src_rect, SDL_Surface *dst, int dst
 
 SDL_Surface* surface_creatergb(int w, int h);
 SDL_Surface* surface_creatergba(int w, int h);
+
+SDL_Surface* surface_resample(SDL_Surface* surface, int new_w, int new_h, SDL_Rect src_rect);
+
+void sdl_rect_adjust(SDL_Rect* rect, SDL_Surface* surface);
 
 #endif

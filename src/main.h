@@ -26,6 +26,7 @@
 #include <list>
 #include <map>
 #include "SDL.h"
+#include "SDL_ttf.h"
 #include "sdl_sprite.h"
 #include "sdl_viewport.h"
 #include "sdl_plane.h"

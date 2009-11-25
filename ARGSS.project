@@ -34,6 +34,8 @@
       <File Name="src\viewport.h"/>
       <File Name="src\window.cpp"/>
       <File Name="src\window.h"/>
+      <File Name="src\font.h"/>
+      <File Name="src\font.cpp"/>
     </VirtualDirectory>
     <VirtualDirectory Name="modules">
       <File Name="src\audio.cpp"/>

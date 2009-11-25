@@ -27,7 +27,7 @@
 #include "color.h"
 #include "HSLRGB.h"
 #include "SDL_image.h"
-#include "SDL_ttf.h"
+#include "font.h"
 
 void argss_bitmap_check(VALUE bmp) {
     if (ARGSS_mapBitmaps.count(bmp) == 0) {
@@ -54,7 +54,6 @@ static VALUE argss_bitmap_initialize(int argc, VALUE *argv, VALUE self) {
     else if (argc == 2) {
         Check_Kind(argv[0], rb_cNumeric);
         Check_Kind(argv[1], rb_cNumeric);
-		
 		ARGSS_mapBitmaps[self] = surface_creatergba(NUM2INT(argv[0]), NUM2INT(argv[1]));
 		if(ARGSS_mapBitmaps[self] == NULL) {
 			rb_raise(ARGSS_Error, "SDL could not create %dx%d image.\n%s\n", NUM2INT(argv[0]), NUM2INT(argv[1]), SDL_GetError());
@@ -62,6 +61,7 @@ static VALUE argss_bitmap_initialize(int argc, VALUE *argv, VALUE self) {
     }
     else if (argc == 0) {raise_argn(argc, 1);}
     else {raise_argn(argc, 2);}
+	rb_iv_set(self, "@font", argss_font_new());
     return self;
 }
 static VALUE argss_bitmap_dispose(VALUE self) {
@@ -101,43 +101,39 @@ static VALUE argss_bitmap_blt(int argc, VALUE *argv, VALUE self) {
         Check_Kind(argv[4], rb_cNumeric);
         alpha = NUM2INT(argv[4]);
     }
-	
-	//SDL_Rect offset;
 	int x = NUM2INT(argv[0]);
 	int y = NUM2INT(argv[1]);
-	//surface_disablealpha(ARGSS_mapBitmaps[argv[2]]);
-	//surface_enablealpha(ARGSS_mapBitmaps[self]);
-	//SDL_BlitSurface(ARGSS_mapBitmaps[argv[2]], &rect, ARGSS_mapBitmaps[self], &offset);
-	//surface_enablealpha(ARGSS_mapBitmaps[argv[2]]);
 	surface_blit(ARGSS_mapBitmaps[argv[2]], rect, ARGSS_mapBitmaps[self], x, y, alpha, true);
     return self;
 }
-/*static VALUE argss_bitmap_stretch_blt(int argc, VALUE *argv, VALUE self) {
+static VALUE argss_bitmap_stretch_blt(int argc, VALUE *argv, VALUE self) {
     argss_bitmap_check(self);
     if (argc < 3) {raise_argn(argc, 3);}
     else if (argc > 4) {raise_argn(argc, 4);}
     Check_Class(argv[0], ARGSS_Rect);
-    sf::IntRect drect = argss_rect_intrect(argv[0]);
+    SDL_Rect dst_rect = argss_rect_getsdl(argv[0]);
     Check_Class(argv[1], ARGSS_Bitmap);
     argss_bitmap_check(argv[1]);
     Check_Class(argv[2], ARGSS_Rect);
-    sf::IntRect srect = argss_rect_intrect(argv[2]);
+    SDL_Rect src_rect = argss_rect_getsdl(argv[2]);
     int alpha = 255;
     if (argc == 5) {
         Check_Kind(argv[3], rb_cNumeric);
         alpha = NUM2INT(argv[3]);
     }
-    if (srect.w == drect.w && srect.h == drect.h) {
-        ARGSS_mapBitmaps[self].CopyA(ARGSS_mapBitmaps[argv[1]], drect.Left, drect.Top, srect, true, alpha);
+    if (src_rect.w == dst_rect.w && src_rect.h == dst_rect.h) {
+		surface_blit(ARGSS_mapBitmaps[argv[1]], src_rect, ARGSS_mapBitmaps[self], dst_rect.x, dst_rect.y, alpha, true);
     }
     else {
-         sf::Image img = ARGSS_mapBitmaps[argv[1]].Resample(drect.w, drect.h, srect);
-         ARGSS_mapBitmaps[self];
-         sf::IntRect rect(0, 0, 0, 0);
-         ARGSS_mapBitmaps[self].CopyA(img, drect.Left, drect.Top, rect, true, alpha);
+		sdl_rect_adjust(&src_rect, ARGSS_mapBitmaps[argv[1]]);
+		if(src_rect.w <= 0 || src_rect.h <= 0) return self;
+		
+		SDL_Surface* resampled = surface_resample(ARGSS_mapBitmaps[argv[1]], dst_rect.w, dst_rect.h, src_rect);
+		SDL_Rect rect = {0, 0, dst_rect.w, dst_rect.h};
+		surface_blit(resampled, rect, ARGSS_mapBitmaps[self], dst_rect.x, dst_rect.y, alpha, true);
     }
     return self;
-}*/
+}
 static VALUE argss_bitmap_fill_rect(int argc, VALUE *argv, VALUE self) {
     argss_bitmap_check(self);
     SDL_Rect rect;
@@ -162,6 +158,9 @@ static VALUE argss_bitmap_fill_rect(int argc, VALUE *argv, VALUE self) {
 		color = argss_color_getuint32(argv[4], ARGSS_mapBitmaps[self]->format);
     }
     else {raise_argn(argc, 5);}
+	sdl_rect_adjust(&rect, ARGSS_mapBitmaps[self]);
+	if(rect.w <= 0 || rect.h <= 0) return self;
+	
 	SDL_FillRect(ARGSS_mapBitmaps[self], &rect, color);
     return self;
 }
@@ -249,16 +248,8 @@ static VALUE argss_bitmap_hsl_change(int argc, VALUE *argv, VALUE self) {
         return self;
     }
 
-    if (rect.w == 0 || rect.h == 0) {
-        rect.w  = ARGSS_mapBitmaps[self]->w;
-        rect.h = ARGSS_mapBitmaps[self]->h;
-    }
-    else {
-        if (rect.w  > ARGSS_mapBitmaps[self]->w) rect.w  = ARGSS_mapBitmaps[self]->w;
-        if (rect.h > ARGSS_mapBitmaps[self]->h) rect.h = ARGSS_mapBitmaps[self]->h;
-    }
-    if (rect.x   < 0) rect.x = 0;
-    if (rect.y    < 0) rect.y  = 0;
+	sdl_rect_adjust(&rect, ARGSS_mapBitmaps[self]);
+	if(rect.w <= 0 || rect.h <= 0) return self;
 
     SDL_Color color;
 
@@ -272,9 +263,51 @@ static VALUE argss_bitmap_hsl_change(int argc, VALUE *argv, VALUE self) {
 }
 static VALUE argss_bitmap_draw_text(int argc, VALUE *argv, VALUE self) {
     argss_bitmap_check(self);
-
-    SDL_Color col = {255, 0, 0, 255};
-
+	SDL_Rect rect;
+	std::string text;
+	int align = 0;
+	if(argc < 2) raise_argn(argc, 2);
+	else if(argc < 4) {
+		Check_Class(argv[0], ARGSS_Rect);
+		Check_Type(argv[1], T_STRING);
+		rect = argss_rect_getsdl(argv[0]);
+		text = StringValuePtr(argv[1]);
+		if(argc == 3) {
+			Check_Type(argv[2], T_FIXNUM);
+			align = NUM2INT(argv[2]);
+		}
+	}
+	else if(argc == 4) raise_argn(argc, 3);
+	else if(argc < 7) {
+		Check_Type(argv[0], T_FIXNUM);
+		Check_Type(argv[1], T_FIXNUM);
+		Check_Type(argv[2], T_FIXNUM);
+		Check_Type(argv[3], T_FIXNUM);
+		Check_Type(argv[4], T_STRING);
+		rect.x = NUM2INT(argv[0]);
+		rect.y = NUM2INT(argv[1]);
+		rect.w = NUM2INT(argv[2]);
+		rect.h = NUM2INT(argv[3]);
+		text = StringValuePtr(argv[4]);
+		if(argc == 6) {
+			Check_Type(argv[5], T_FIXNUM);
+			align = NUM2INT(argv[5]);
+		}
+	}
+	else raise_argn(argc, 6);
+	
+	VALUE font = rb_iv_get(self, "@font");
+	TTF_Font* ttf_font = argss_font_getttf(font);
+    SDL_Color color = argss_color_getsdl(rb_iv_get(font, "@color"));
+	
+	SDL_Surface *text_surface;
+	if(!(text_surface = TTF_RenderUTF8_Blended(ttf_font, text.c_str(), color))) {
+		rb_raise(ARGSS_Error, "SDL could not draw text %s with Font(%x).\n%s\n", text.c_str(), font, TTF_GetError());
+	} else {
+		SDL_Rect src_rect = {0, 0, rect.w, rect.h};
+		surface_blit(text_surface, src_rect, ARGSS_mapBitmaps[self], rect.x, rect.y, 255, true);
+		SDL_FreeSurface(text_surface);
+	}
     return self;
 }
 static VALUE argss_bitmap_text_size(VALUE self, VALUE str) {
@@ -294,7 +327,7 @@ void Init_Bitmap() {
     rb_define_method(ARGSS_Bitmap, "height", (rubyfunc)argss_bitmap_height, 0);
     rb_define_method(ARGSS_Bitmap, "rect", (rubyfunc)argss_bitmap_rect, 0);
     rb_define_method(ARGSS_Bitmap, "blt", (rubyfunc)argss_bitmap_blt, -1);
-    //rb_define_method(ARGSS_Bitmap, "stretch_blt", (rubyfunc)argss_bitmap_stretch_blt, -1);
+    rb_define_method(ARGSS_Bitmap, "stretch_blt", (rubyfunc)argss_bitmap_stretch_blt, -1);
     rb_define_method(ARGSS_Bitmap, "fill_rect", (rubyfunc)argss_bitmap_fill_rect, -1);
     rb_define_method(ARGSS_Bitmap, "clear", (rubyfunc)argss_bitmap_clear, -1);
     rb_define_method(ARGSS_Bitmap, "get_pixel", (rubyfunc)argss_bitmap_get_pixel, 2);
