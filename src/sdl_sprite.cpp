@@ -24,6 +24,9 @@
 #include "SDL_rotozoom.h"
 //#include <string.h>
 #include <math.h>
+#include "rect.h"
+#include "color.h"
+#include "tone.h"
 
 #define max(a, b)  (((a) > (b)) ? (a) : (b))
 #define min(a, b)  (((a) < (b)) ? (a) : (b))
@@ -32,14 +35,8 @@ SDL_Sprite::SDL_Sprite()
 {
 	viewport = NULL;
 	
-	sprite = surface_creatergba(1, 1);
-	if(sprite == NULL) {
-		rb_raise(ARGSS_Error, "SDL could not create sprite surface.\n%s\n", SDL_GetError());
-	}
-	src_rect.x = 0;
-	src_rect.y = 0;
-	src_rect.w = 0;
-	src_rect.h = 0;
+	bitmap = NULL;
+	sprite = NULL;
 	visible = true;
 	x = 0;
 	y = 0;
@@ -54,14 +51,6 @@ SDL_Sprite::SDL_Sprite()
 	bush_depth = 0;
 	opacity = 255;
 	blend_type = 0;
-	color.r = 0;
-	color.g = 0;
-	color.b = 0;
-	color.unused = 0;
-	tone.r = 0;
-	tone.g = 0;
-	tone.b = 0;
-	tone.gray = 0;
 }
 
 SDL_Sprite::SDL_Sprite(SDL_Viewport* viewport)
@@ -71,12 +60,24 @@ SDL_Sprite::SDL_Sprite(SDL_Viewport* viewport)
 
 SDL_Sprite::~SDL_Sprite()
 {
+	SDL_FreeSurface(sprite);
 }
 
 void SDL_Sprite::draw(SDL_Surface* surface) {
+	if(bitmap == NULL) return;
+	
+	if(src_rect != Qnil) {
+		src_rect_sdl = argss_rect_getsdl(src_rect);
+	}
+	else {
+		src_rect_sdl.w = 0;
+		src_rect_sdl.h = 0;
+	}
+	
 	if(needs_refresh) {
 		refresh();
 	}
+	
 	SDL_Rect offset;
 
 	offset.x = x;
@@ -86,13 +87,15 @@ void SDL_Sprite::draw(SDL_Surface* surface) {
 }
 
 void SDL_Sprite::refresh() {
+	tone_sdl = argss_tone_getsdl(tone);
+	
 	needs_refresh = false;
 	
-	SDL_FreeSurface(sprite);
+	if(sprite != NULL) SDL_FreeSurface(sprite);
 	
 	SDL_Rect rect;
 	
-	if(src_rect.w == 0 && src_rect.h == 0) {
+	if(src_rect_sdl.w == 0 && src_rect_sdl.h == 0) {
 		//sprite = surface_creatergba(bitmap->w, bitmap->h);
 		sprite = SDL_CreateRGBSurface(SDL_SWSURFACE | SDL_SRCALPHA, bitmap->w, bitmap->h, 32, rmask, gmask, bmask, amask);
 		if(sprite == NULL) {
@@ -102,17 +105,17 @@ void SDL_Sprite::refresh() {
 		SDL_BlitSurface(bitmap, NULL, sprite, NULL);
 	}
 	else {
-		//sprite = surface_creatergba(src_rect.w, src_rect.h);
-		sprite = SDL_CreateRGBSurface(SDL_SWSURFACE | SDL_SRCALPHA, src_rect.w, src_rect.h, 32, rmask, gmask, bmask, amask);
+		//sprite = surface_creatergba(src_rect_sdl.w, src_rect_sdl.h);
+		sprite = SDL_CreateRGBSurface(SDL_SWSURFACE | SDL_SRCALPHA, src_rect_sdl.w, src_rect_sdl.h, 32, rmask, gmask, bmask, amask);
 		if(sprite == NULL) {
 			rb_raise(ARGSS_Error, "SDL could not create sprite surface.\n%s\n", SDL_GetError());
 		}
 		surface_disablealpha(bitmap);
-		SDL_BlitSurface(bitmap, &src_rect, sprite, NULL);
+		SDL_BlitSurface(bitmap, &src_rect_sdl, sprite, NULL);
 	}
 	surface_enablealpha(bitmap);
 		
-	if(tone.r != 0 || tone.b != 0 || tone.g != 0 || tone.gray != 0) {
+	if(tone_sdl.r != 0 || tone_sdl.b != 0 || tone_sdl.g != 0 || tone_sdl.gray != 0) {
 		apply_tone();
 	}
 	if(opacity < 255 || bush_depth > 0) {
@@ -160,28 +163,28 @@ void SDL_Sprite::apply_tone() {
 
 	Uint8 *pixels = (Uint8 *)sprite->pixels;
 	
-	if(tone.gray == 0) {
+	if(tone_sdl.gray == 0) {
 		for (int yy = 0; yy < sprite->h; yy++) {
 			for (int xx = 0; xx < sprite->w; xx++) {
 				Uint8 *pixel = pixels;
-				pixel[0] = max(min(pixel[0] + tone.r, 255), 0);
-				pixel[1] = max(min(pixel[1] + tone.g, 255), 0);
-				pixel[2] = max(min(pixel[2] + tone.b, 255), 0);
+				pixel[0] = max(min(pixel[0] + tone_sdl.r, 255), 0);
+				pixel[1] = max(min(pixel[1] + tone_sdl.g, 255), 0);
+				pixel[2] = max(min(pixel[2] + tone_sdl.b, 255), 0);
 				pixels += 4;
 			}
 		}
 	}
 	else {
-		double factor = (255 - tone.gray) / 255.0;
+		double factor = (255 - tone_sdl.gray) / 255.0;
 		double gray;
 		for (int yy = 0; yy < sprite->h; yy++) {
 			for (int xx = 0; xx < sprite->w; xx++) {
 				Uint8 *pixel = pixels;
 				
 				gray = pixel[0] * 0.299 + pixel[1] * 0.587 + pixel[2] * 0.114;
-				pixel[0] = (Uint8)max(min((pixel[0] - gray) * factor + gray + tone.r + 0.5, 255), 0);
-				pixel[1] = (Uint8)max(min((pixel[1] - gray) * factor + gray + tone.g + 0.5, 255), 0);
-				pixel[2] = (Uint8)max(min((pixel[2] - gray) * factor + gray + tone.b + 0.5, 255), 0);
+				pixel[0] = (Uint8)max(min((pixel[0] - gray) * factor + gray + tone_sdl.r + 0.5, 255), 0);
+				pixel[1] = (Uint8)max(min((pixel[1] - gray) * factor + gray + tone_sdl.g + 0.5, 255), 0);
+				pixel[2] = (Uint8)max(min((pixel[2] - gray) * factor + gray + tone_sdl.b + 0.5, 255), 0);
 				pixels += 4;
 			}
 		}
@@ -355,19 +358,19 @@ void SDL_Sprite::apply_angle() {
 }
 
 int SDL_Sprite::get_width() {
-	if(src_rect.w == 0) {
+	if(src_rect_sdl.w == 0) {
 		return bitmap->w;
 	}
 	else {
-		return src_rect.w;
+		return src_rect_sdl.w;
 	}
 }
 int SDL_Sprite::get_height() {
-	if(src_rect.h == 0) {
+	if(src_rect_sdl.h == 0) {
 		return bitmap->h;
 	}
 	else {
-		return src_rect.h;
+		return src_rect_sdl.h;
 	}
 }
 
@@ -400,10 +403,10 @@ void SDL_Sprite::set_bitmap(SDL_Surface* nbitmap) {
 	bitmap = nbitmap;
 	needs_refresh = true;
 }
-SDL_Rect SDL_Sprite::get_src_rect() {
+VALUE SDL_Sprite::get_src_rect() {
 	return src_rect;
 }
-void SDL_Sprite::set_src_rect(SDL_Rect nsrc_rect) {
+void SDL_Sprite::set_src_rect(VALUE nsrc_rect) {
 	src_rect = nsrc_rect;
 	needs_refresh = true;
 }
@@ -499,16 +502,16 @@ int SDL_Sprite::get_blend_type() {
 void SDL_Sprite::set_blend_type(int nblend_type) {
 	blend_type = nblend_type;
 }
-SDL_Color SDL_Sprite::get_color() {
+VALUE SDL_Sprite::get_color() {
 	return color;
 }
-void SDL_Sprite::set_color(SDL_Color ncolor) {
+void SDL_Sprite::set_color(VALUE ncolor) {
 	color = ncolor;
 }
-SDL_Tone SDL_Sprite::get_tone() {
+VALUE SDL_Sprite::get_tone() {
 	return tone;
 }
-void SDL_Sprite::set_tone(SDL_Tone ntone) {
+void SDL_Sprite::set_tone(VALUE ntone) {
 	tone = ntone;
 	needs_refresh = true;
 }

@@ -33,6 +33,7 @@ extern "C" {
 #include "rect.h"
 #include "sprite.h"
 #include "font.h"
+#include "window.h"
 #include "console.h"
 #include "graphics.h"
 #include "input.h"
@@ -52,6 +53,7 @@ void Init_ARGSS()
     Init_Bitmap();
     Init_Sprite();
 	Init_Font();
+	Init_Window();
     Init_Graphics();
     Init_Console();
     Init_Input();

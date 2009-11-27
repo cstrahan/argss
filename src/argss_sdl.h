@@ -71,5 +71,7 @@ SDL_Surface* surface_creatergba(int w, int h);
 SDL_Surface* surface_resample(SDL_Surface* surface, int new_w, int new_h, SDL_Rect src_rect);
 
 void sdl_rect_adjust(SDL_Rect* rect, SDL_Surface* surface);
+void sdl_rect_adjust2(SDL_Rect* rect, SDL_Surface* surface);
+bool is_out_of_bounds(SDL_Rect* rect, SDL_Surface* surface);
 
 #endif

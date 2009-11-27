@@ -45,7 +45,9 @@ void argss_graphics_draw_frame() {
 			
 		}
 		else if(type == ARGSS_Window) {
-			
+			if (ARGSS_mapWindows.count(ARGSS_itZOrder->get_id()) == 1) {
+                    ARGSS_mapWindows[ARGSS_itZOrder->get_id()].draw(screen);
+                }
 		}
 		else if(type == ARGSS_Tilemap) {
 			

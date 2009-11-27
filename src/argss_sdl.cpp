@@ -82,11 +82,10 @@ void surface_blit(SDL_Surface *src, SDL_Rect src_rect, SDL_Surface *dst, int dst
 	if(dstx >= dst->w || dsty >= dst->h) return;
 	
 	sdl_rect_adjust(&src_rect, src);
+	if(is_out_of_bounds(&src_rect, src)) return;
 	
 	if(src_rect.w > dst->w - dstx) src_rect.w = dst->w - dstx;
 	if(src_rect.h > dst->h - dsty) src_rect.h = dst->h - dsty;
-	
-	if(src_rect.w <= 0 || src_rect.h <= 0) return;
 	
 	SDL_LockSurface(src);
 	SDL_LockSurface(dst);
@@ -157,22 +156,23 @@ SDL_Surface* surface_resample(SDL_Surface* surface, int new_w, int new_h, SDL_Re
 	Uint8* dstpixels = (Uint8*)nsurface->pixels;
 
 	sdl_rect_adjust(&src_rect, surface);
-	if(src_rect.w <= 0 || src_rect.h <= 0) return nsurface;
 	
-    int row = surface->w * 4;
-	
-	double scaleWidth =  (double)new_w / (double)src_rect.w;
-    double scaleHeight = (double)new_h / (double)src_rect.h;
-	
-	for(int yy = 0; yy < new_h; yy++) {
-		int nearest_matchy = (src_rect.y + (int)(yy / scaleHeight)) * row;
-		for(int xx = 0; xx < new_w; xx++) {
-			int nearest_match = nearest_matchy + ((int)(xx / scaleWidth) + src_rect.x) * 4;
-			dstpixels[0] = srcpixels[nearest_match];
-			dstpixels[1] = srcpixels[nearest_match + 1];
-			dstpixels[2] = srcpixels[nearest_match + 2];
-			dstpixels[3] = srcpixels[nearest_match + 3];
-			dstpixels += 4;
+	if(!is_out_of_bounds(&src_rect, surface)) {
+		int row = surface->w * 4;
+		
+		double scaleWidth =  (double)new_w / (double)src_rect.w;
+		double scaleHeight = (double)new_h / (double)src_rect.h;
+		
+		for(int yy = 0; yy < new_h; yy++) {
+			int nearest_matchy = (src_rect.y + (int)(yy / scaleHeight)) * row;
+			for(int xx = 0; xx < new_w; xx++) {
+				int nearest_match = nearest_matchy + ((int)(xx / scaleWidth) + src_rect.x) * 4;
+				dstpixels[0] = srcpixels[nearest_match];
+				dstpixels[1] = srcpixels[nearest_match + 1];
+				dstpixels[2] = srcpixels[nearest_match + 2];
+				dstpixels[3] = srcpixels[nearest_match + 3];
+				dstpixels += 4;
+			}
 		}
 	}
 	
@@ -183,16 +183,27 @@ SDL_Surface* surface_resample(SDL_Surface* surface, int new_w, int new_h, SDL_Re
 }
 
 void sdl_rect_adjust(SDL_Rect* rect, SDL_Surface* surface) {
+	if(rect->x < 0) rect->x = 0;
+	if(rect->y < 0) rect->y = 0;
+	if(rect->x < surface->w && rect->y < surface->h) {
+		if(surface->w < (rect->w + rect->x)) rect->w = surface->w - rect->x;
+		if(surface->h < (rect->h + rect->y)) rect->h = surface->h - rect->y;
+	}
+}
+
+void sdl_rect_adjust2(SDL_Rect* rect, SDL_Surface* surface) {
 	if(rect->w == 0 || rect->h == 0) {
-        rect->x = 0;
-        rect->y = 0;
-        rect->w = surface->w;
-        rect->h = surface->h;
-    }
-    else {
-        if(rect->x < 0) rect->x = 0;
-        if(rect->y < 0) rect->y = 0;
-        if(rect->w > surface->w - rect->x) rect->w = surface->w - rect->x;
-        if(rect->h > surface->h - rect->y) rect->h = surface->h - rect->y;
-    }
+		rect->x = 0;
+		rect->y = 0;
+		rect->w = surface->w;
+		rect->h = surface->h;
+	}
+	sdl_rect_adjust(rect, surface);
+}
+
+bool is_out_of_bounds(SDL_Rect* rect, SDL_Surface* surface) {
+	if(rect->w <= 0 || rect->h <= 0) return true;
+	if(rect->x >= surface->w || rect->y >= surface->h) return true;
+	if(rect->x + rect->w <= 0 || rect->y + rect->h <= 0) return true;
+	return false;
 }

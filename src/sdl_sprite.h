@@ -25,6 +25,9 @@
 #include "SDL.h"
 #include "sdl_viewport.h"
 #include "sdl_tone.h"
+extern "C" {
+    #include "ruby.h"
+}
 
 class SDL_Sprite {
 
@@ -47,8 +50,8 @@ public:
 	SDL_Surface* get_sprite();
 	SDL_Surface* get_bitmap();
 	void set_bitmap(SDL_Surface* nbitmap);
-	SDL_Rect get_src_rect();
-	void set_src_rect(SDL_Rect nsrc_rect);
+	VALUE get_src_rect();
+	void set_src_rect(VALUE nsrc_rect);
 	bool get_visible();
 	void set_visible(bool nvisible);
 	int get_x();
@@ -77,17 +80,18 @@ public:
 	void set_opacity(int nopacity);
 	int get_blend_type();
 	void set_blend_type(int nblend_type);
-	SDL_Color get_color();
-	void set_color(SDL_Color ncolor);
-	SDL_Tone get_tone();
-	void set_tone(SDL_Tone ntone);
+	VALUE get_color();
+	void set_color(VALUE ncolor);
+	VALUE get_tone();
+	void set_tone(VALUE ntone);
 	
 private:
 	unsigned long id;
 	SDL_Viewport* viewport;
 	SDL_Surface* sprite;
 	SDL_Surface* bitmap;
-	SDL_Rect src_rect;
+	VALUE src_rect;
+	SDL_Rect src_rect_sdl;
 	bool visible;
 	int x;
 	int y;
@@ -102,8 +106,10 @@ private:
 	int bush_depth;
 	int opacity;
 	int blend_type;
-	SDL_Color color;
-	SDL_Tone tone;
+	VALUE color;
+	SDL_Color color_sdl;
+	VALUE tone;
+	SDL_Tone tone_sdl;
 	
 	SDL_Color flash_color;
 	int flash_duration;

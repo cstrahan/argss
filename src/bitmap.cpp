@@ -126,7 +126,7 @@ static VALUE argss_bitmap_stretch_blt(int argc, VALUE *argv, VALUE self) {
     }
     else {
 		sdl_rect_adjust(&src_rect, ARGSS_mapBitmaps[argv[1]]);
-		if(src_rect.w <= 0 || src_rect.h <= 0) return self;
+		if(is_out_of_bounds(&src_rect, ARGSS_mapBitmaps[argv[1]])) return self;
 		
 		SDL_Surface* resampled = surface_resample(ARGSS_mapBitmaps[argv[1]], dst_rect.w, dst_rect.h, src_rect);
 		SDL_Rect rect = {0, 0, dst_rect.w, dst_rect.h};
@@ -159,7 +159,7 @@ static VALUE argss_bitmap_fill_rect(int argc, VALUE *argv, VALUE self) {
     }
     else {raise_argn(argc, 5);}
 	sdl_rect_adjust(&rect, ARGSS_mapBitmaps[self]);
-	if(rect.w <= 0 || rect.h <= 0) return self;
+	if(is_out_of_bounds(&rect, ARGSS_mapBitmaps[self])) return self;
 	
 	SDL_FillRect(ARGSS_mapBitmaps[self], &rect, color);
     return self;
@@ -175,20 +175,28 @@ static VALUE argss_bitmap_clear(int argc, VALUE *argv, VALUE self) {
 	SDL_FillRect(ARGSS_mapBitmaps[self], NULL, color);
     return self;
 }
-static VALUE argss_bitmap_get_pixel(VALUE self, VALUE x, VALUE y) {
+static VALUE argss_bitmap_get_pixel(VALUE self, VALUE vx, VALUE vy) {
     argss_bitmap_check(self);
-    Check_Kind(x, rb_cNumeric);
-    Check_Kind(y, rb_cNumeric);
-	Uint32 color = surface_getpixel(ARGSS_mapBitmaps[self], NUM2INT(x), NUM2INT(y));
+    Check_Kind(vx, rb_cNumeric);
+    Check_Kind(vy, rb_cNumeric);
+	int x = NUM2INT(vx);
+	int y = NUM2INT(vy);
+	if(x < 0 || y < 0) return argss_color_new2(0, 0, 0, 0);
+	if(x >= ARGSS_mapBitmaps[self]->w || y > ARGSS_mapBitmaps[self]->h) return argss_color_new2(0, 0, 0, 0);
+	Uint32 color = surface_getpixel(ARGSS_mapBitmaps[self], x , y);
     return argss_color_new3(color, ARGSS_mapBitmaps[self]->format);
 }
-static VALUE argss_bitmap_set_pixel(VALUE self, VALUE x, VALUE y, VALUE color) {
+static VALUE argss_bitmap_set_pixel(VALUE self, VALUE vx, VALUE vy, VALUE color) {
     argss_bitmap_check(self);
-    Check_Kind(x, rb_cNumeric);
-    Check_Kind(y, rb_cNumeric);
+    Check_Kind(vx, rb_cNumeric);
+    Check_Kind(vy, rb_cNumeric);
     Check_Class(color, ARGSS_Color);
+	int x = NUM2INT(vx);
+	int y = NUM2INT(vy);
+	if(x < 0 || y < 0) return self;
+	if(x >= ARGSS_mapBitmaps[self]->w || y > ARGSS_mapBitmaps[self]->h) return self;
     Uint32 pixel = argss_color_getuint32(color, ARGSS_mapBitmaps[self]->format);
-	surface_putpixel(ARGSS_mapBitmaps[self], NUM2INT(x), NUM2INT(y), pixel);
+	surface_putpixel(ARGSS_mapBitmaps[self], x, y, pixel);
     return self;
 }
 static VALUE argss_bitmap_hue_change(VALUE self, VALUE hue) {
@@ -249,7 +257,7 @@ static VALUE argss_bitmap_hsl_change(int argc, VALUE *argv, VALUE self) {
     }
 
 	sdl_rect_adjust(&rect, ARGSS_mapBitmaps[self]);
-	if(rect.w <= 0 || rect.h <= 0) return self;
+	if(is_out_of_bounds(&rect, ARGSS_mapBitmaps[self])) return self;
 
     SDL_Color color;
 
@@ -295,6 +303,8 @@ static VALUE argss_bitmap_draw_text(int argc, VALUE *argv, VALUE self) {
 		}
 	}
 	else raise_argn(argc, 6);
+	
+	if(is_out_of_bounds(&rect, ARGSS_mapBitmaps[self])) return self;
 	
 	VALUE font = rb_iv_get(self, "@font");
 	TTF_Font* ttf_font = argss_font_getttf(font);

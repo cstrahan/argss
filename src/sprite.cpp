@@ -49,17 +49,19 @@ static VALUE argss_sprite_initialize(int argc, VALUE *argv, VALUE self) {
     if (argc == 1) {
         Check_Classes_N(argv[0], ARGSS_Viewport);
 		rb_iv_set(self, "@viewport", argv[0]);
+		// TODO
     }
     else if (argc == 0) {
         rb_iv_set(self, "@viewport", Qnil);
         ARGSS_CreationTime += 1;
         Z_Obj obj(0, ARGSS_CreationTime, ARGSS_Sprite, self);
         ARGSS_ZOrder.push_back(obj);
-		ARGSS_mapSprites[self];
+		ARGSS_mapSprites[self].set_id(self);
     }
-    else {raise_argn(argc, 1);}
+    else raise_argn(argc, 1);
     rb_iv_set(self, "@bitmap", Qnil);
-    rb_iv_set(self, "@src_rect", argss_rect_new2(0, 0, 0, 0));
+	ARGSS_mapSprites[self].set_src_rect(argss_rect_new2(0, 0, 0, 0));
+    rb_iv_set(self, "@src_rect", ARGSS_mapSprites[self].get_src_rect());
     rb_iv_set(self, "@visible", Qtrue);
     rb_iv_set(self, "@x", INT2NUM(0));
     rb_iv_set(self, "@y", INT2NUM(0));
@@ -74,8 +76,10 @@ static VALUE argss_sprite_initialize(int argc, VALUE *argv, VALUE self) {
     rb_iv_set(self, "@bush_depth", INT2NUM(0));
     rb_iv_set(self, "@opacity", INT2NUM(255));
     rb_iv_set(self, "@blend_type", INT2NUM(0));
-    rb_iv_set(self, "@color", argss_color_new2(0.0f, 0.0f, 0.0f, 0.0f));
-    rb_iv_set(self, "@tone", argss_tone_new2(0.0f, 0.0f, 0.0f, 0.0f));
+	ARGSS_mapSprites[self].set_color(argss_color_new2(0.0f, 0.0f, 0.0f, 0.0f));
+    rb_iv_set(self, "@color", ARGSS_mapSprites[self].get_color());
+	ARGSS_mapSprites[self].set_tone(argss_tone_new2(0.0f, 0.0f, 0.0f, 0.0f));
+    rb_iv_set(self, "@tone", ARGSS_mapSprites[self].get_tone());
     return self;
 }
 static VALUE argss_sprite_dispose(VALUE self) {
@@ -102,21 +106,23 @@ static VALUE argss_sprite_update(VALUE self) {
 static VALUE argss_sprite_width(VALUE self) {
     argss_sprite_check(self);
 	argss_sprite_checkbitmap(self);
-	if(ARGSS_mapSprites[self].get_src_rect().w == 0) {
+	VALUE src_rect = rb_iv_get(self, "@src_rect");
+	if(src_rect == Qnil) {
 		return INT2NUM(ARGSS_mapBitmaps[rb_iv_get(self, "@bitmap")]->w);
 	}
 	else {
-		return rb_iv_get(rb_iv_get(self, "@src_rect"), "@width");
+		return rb_iv_get(src_rect, "@width");
 	}
 }
 static VALUE argss_sprite_height(VALUE self) {
     argss_sprite_check(self);
 	argss_sprite_checkbitmap(self);
-	if(ARGSS_mapSprites[self].get_src_rect().h == 0) {
+	VALUE src_rect = rb_iv_get(self, "@src_rect");
+	if(src_rect == Qnil) {
 		return INT2NUM(ARGSS_mapBitmaps[rb_iv_get(self, "@bitmap")]->h);
 	}
 	else {
-		return rb_iv_get(rb_iv_get(self, "@src_rect"), "@height");
+		return rb_iv_get(src_rect, "@height");
 	}
 }
 static VALUE argss_sprite_viewport(VALUE self) {
@@ -149,7 +155,7 @@ static VALUE argss_sprite_src_rect(VALUE self) {
 static VALUE argss_sprite_src_rectE(VALUE self, VALUE src_rect) {
     argss_sprite_check(self);
     Check_Class(src_rect, ARGSS_Rect);
-    ARGSS_mapSprites[self].set_src_rect(argss_rect_getsdl(src_rect));
+    ARGSS_mapSprites[self].set_src_rect(src_rect);
     return rb_iv_set(self, "@src_rect", src_rect);
 }
 static VALUE argss_sprite_visible(VALUE self) {
@@ -321,7 +327,7 @@ static VALUE argss_sprite_color(VALUE self) {
 static VALUE argss_sprite_colorE(VALUE self, VALUE color) {
     argss_sprite_check(self);
     Check_Class(color, ARGSS_Color);
-    ARGSS_mapSprites[self].set_color(argss_color_getsdl(color));
+    ARGSS_mapSprites[self].set_color(color);
     return rb_iv_set(self, "@color", color);
 }
 static VALUE argss_sprite_tone(VALUE self) {
@@ -331,7 +337,7 @@ static VALUE argss_sprite_tone(VALUE self) {
 static VALUE argss_sprite_toneE(VALUE self, VALUE tone) {
     argss_sprite_check(self);
     Check_Class(tone, ARGSS_Tone);
-	ARGSS_mapSprites[self].set_tone(argss_tone_getsdl(tone));
+	ARGSS_mapSprites[self].set_tone(tone);
     return rb_iv_set(self, "@tone", tone);
 }
 
