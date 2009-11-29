@@ -82,7 +82,6 @@ private:
 	SDL_Surface* background;
 	SDL_Surface* frame;
 	SDL_Surface* cursor;
-	SDL_Surface* arrows[4];
 	SDL_Surface* windowskin;
 	SDL_Surface* contents;
 	bool stretch;
@@ -106,6 +105,7 @@ private:
 	void update_cursor();
 	bool background_needs_refresh;
 	bool frame_needs_refresh;
-	int pause_y;
+	int pause_frame;
+	int pause_id;
 };
 #endif // __sdl_window__

@@ -27,6 +27,7 @@
 #include "rect.h"
 #include "color.h"
 #include "tone.h"
+#include "sys.h"
 
 #define max(a, b)  (((a) > (b)) ? (a) : (b))
 #define min(a, b)  (((a) < (b)) ? (a) : (b))
@@ -64,14 +65,17 @@ SDL_Sprite::~SDL_Sprite()
 }
 
 void SDL_Sprite::draw(SDL_Surface* surface) {
+	if(!visible) return;
+	if(x < -get_width() || x > Sys_Res[0] || y < -get_height() || y > Sys_Res[1]) return;
 	if(bitmap == NULL) return;
 	
-	if(src_rect != Qnil) {
-		src_rect_sdl = argss_rect_getsdl(src_rect);
-	}
-	else {
-		src_rect_sdl.w = 0;
-		src_rect_sdl.h = 0;
+	src_rect_sdl = argss_rect_getsdl(src_rect);
+	if(src_rect_sdl.x != src_rect_sdl_last.x ||
+	   src_rect_sdl.y != src_rect_sdl_last.y ||
+	   src_rect_sdl.w != src_rect_sdl_last.w ||
+	   src_rect_sdl.h != src_rect_sdl_last.h) {
+		src_rect_sdl_last = src_rect_sdl;
+		needs_refresh = true;
 	}
 	
 	if(needs_refresh) {
@@ -95,7 +99,7 @@ void SDL_Sprite::refresh() {
 	
 	SDL_Rect rect;
 	
-	if(src_rect_sdl.w == 0 && src_rect_sdl.h == 0) {
+	if(src_rect_sdl.w <= 0 || src_rect_sdl.h <= 0) {
 		//sprite = surface_creatergba(bitmap->w, bitmap->h);
 		sprite = SDL_CreateRGBSurface(SDL_SWSURFACE | SDL_SRCALPHA, bitmap->w, bitmap->h, 32, rmask, gmask, bmask, amask);
 		if(sprite == NULL) {
@@ -358,7 +362,7 @@ void SDL_Sprite::apply_angle() {
 }
 
 int SDL_Sprite::get_width() {
-	if(src_rect_sdl.w == 0) {
+	if(src_rect == Qnil) {
 		return bitmap->w;
 	}
 	else {
@@ -366,7 +370,7 @@ int SDL_Sprite::get_width() {
 	}
 }
 int SDL_Sprite::get_height() {
-	if(src_rect_sdl.h == 0) {
+	if(src_rect == Qnil) {
 		return bitmap->h;
 	}
 	else {

@@ -22,6 +22,10 @@
 #include "sdl_window.h"
 #include "argss_sdl.h"
 #include "aerror.h"
+#include "sys.h"
+
+#define max(a, b)  (((a) > (b)) ? (a) : (b))
+#define min(a, b)  (((a) < (b)) ? (a) : (b))
 
 SDL_Window::SDL_Window() {
 	viewport = NULL;
@@ -30,10 +34,6 @@ SDL_Window::SDL_Window() {
 	frame = NULL;
 	windowskin = NULL;
 	cursor = NULL;
-	arrows[0] = NULL;
-	arrows[1] = NULL;
-	arrows[2] = NULL;
-	arrows[3] = NULL;
 	contents = NULL;
 	stretch = true;
 	cursor_rect.x = 0;
@@ -53,7 +53,8 @@ SDL_Window::SDL_Window() {
 	opacity = 255;
 	back_opacity = 255;
 	contents_opacity = 255;
-	pause_y = 0;
+	pause_frame = 0;
+	pause_id = 0;
 }
 
 SDL_Window::~SDL_Window()
@@ -63,30 +64,97 @@ SDL_Window::~SDL_Window()
 }
 
 void SDL_Window::draw(SDL_Surface* surface) {
+	if(!visible) return;
+	if(x < -width || x > Sys_Res[0] || y < -height || y > Sys_Res[1]) return;
+	if(width <= 0 || height <= 0) return;
+	
 	if(windowskin != NULL) {
-		if(background_needs_refresh) {
-			refresh_background();
-		}
-		if(frame_needs_refresh) {
-			refresh_frame();
+		if(width > 4 && height > 4) {
+			if(background_needs_refresh) {
+				refresh_background();
+			}
+		
+			SDL_Rect offset = {x + 2, y + 2, 0, 0};
+			
+			SDL_BlitSurface(background, NULL, surface, &offset);
 		}
 		
-		SDL_Rect offset;
-
-		offset.x = x;
-		offset.y = y;
-		SDL_BlitSurface(background, NULL, surface, &offset);
-	
-		SDL_BlitSurface(frame, NULL, surface, &offset);
+		if(width > 0 && height > 0) {
+			if(frame_needs_refresh) {
+				refresh_frame();
+			}
+			SDL_Rect offset = {x, y, 0, 0};
+		
+			SDL_BlitSurface(frame, NULL, surface, &offset);
+		}
 	}
 	
 	if(contents != NULL) {
-		SDL_Rect offset;
-
-		offset.x = x + 16;
-		offset.y = y + 16;
-		
-		SDL_BlitSurface(contents, NULL, surface, &offset);
+		if(width > 32 && height > 32 && -ox < width - 32 && -oy < height - 32) {
+			SDL_Rect offset = {max(x + 16, x + 16 - ox), max(y + 16, y + 16 - oy), 0, 0};
+			
+			SDL_Rect src_rect = {-min(-ox, 0), -min(-oy, 0), min(width - 32, width - 32 + ox), min(height - 32, height - 32 + oy)};
+			
+			SDL_BlitSurface(contents, &src_rect, surface, &offset);
+		}
+		if(ox > 0) {
+			SDL_Rect offset = {x + 4, y + height / 2 - 8, 0, 0};
+			
+			SDL_Rect src_rect = {128 + 16, 24, 8, 16};
+			
+			SDL_BlitSurface(windowskin, &src_rect, surface, &offset);
+		}
+		if(oy > 0) {
+			SDL_Rect offset = {x + width / 2 - 8, y + 4, 0, 0};
+			
+			SDL_Rect src_rect = {128 + 24, 16, 16, 8};
+			
+			SDL_BlitSurface(windowskin, &src_rect, surface, &offset);
+		}
+		if(contents->w - ox > width - 32) {
+			SDL_Rect offset = {x + width - 12, y + height / 2 - 8, 0, 0};
+			SDL_Rect src_rect = {128 + 40, 24, 8, 16};
+			
+			SDL_BlitSurface(windowskin, &src_rect, surface, &offset);
+		}
+		if(contents->h - oy > height - 32) {
+			SDL_Rect offset = {x + width / 2 - 8, y + height - 12, 0, 0};
+			
+			SDL_Rect src_rect = {128 + 24, 40, 16, 8};
+			
+			SDL_BlitSurface(windowskin, &src_rect, surface, &offset);
+		}
+	}
+	
+	if(pause) {
+		int dstx = max(x + width / 2 - 8, x);
+		int dsty = max(y + height - 16, y);
+		int w = min(16, width);
+		int h = min(16, height);
+		if(pause_id == 0) {
+			SDL_Rect src_rect = {160, 64, w, h};
+			surface_blit(windowskin, src_rect, surface, dstx, dsty, 255 / 8 * pause_frame, true);
+		}
+		else if(pause_id == 1) {
+			SDL_Rect src_rect = {176, 64, w, h};
+			SDL_Rect offset = {dstx, dsty, 0, 0};
+			SDL_BlitSurface(windowskin, &src_rect, surface, &offset);
+		}
+		else if(pause_id == 2) {
+			SDL_Rect src_rect = {160, 80, w, h};
+			SDL_Rect offset = {dstx, dsty, 0, 0};
+			SDL_BlitSurface(windowskin, &src_rect, surface, &offset);
+		}
+		else if(pause_id == 3) {
+			SDL_Rect src_rect = {176, 80, w, h};
+			SDL_Rect offset = {dstx, dsty, 0, 0};
+			SDL_BlitSurface(windowskin, &src_rect, surface, &offset);
+		}
+		else if(pause_id == 4) {
+			SDL_Rect src_rect = {160, 64, w, h};
+			SDL_Rect offset = {dstx, dsty, 0, 0};
+			SDL_BlitSurface(windowskin, &src_rect, surface, &offset);
+		}
 	}
 }
 
@@ -95,7 +163,7 @@ void SDL_Window::refresh_background() {
 
 	if(stretch) {
 		SDL_Rect srcrect = {0, 0, 128, 128};
-		background = surface_resample(windowskin, width, height, srcrect);
+		background = surface_resample(windowskin, width - 4, height - 4, srcrect);
 	}
 	else {
 		// TODO
@@ -103,9 +171,93 @@ void SDL_Window::refresh_background() {
 }
 
 void SDL_Window::refresh_frame() {
+	if(frame != NULL) SDL_FreeSurface(frame);
+
+	frame = SDL_CreateRGBSurface(SDL_SWSURFACE | SDL_SRCALPHA, width, height, 32, rmask, gmask, bmask, amask);
+	if(frame == NULL) {
+		rb_raise(ARGSS_Error, "SDL could not create sprite surface.\n%s\n", SDL_GetError());
+	}
+
+	surface_disablealpha(windowskin);
+	
+	SDL_Rect srcrect;
+	SDL_Rect dstrect;
+	
+	// Corners
+	srcrect.x = 128;
+	srcrect.y = 0;
+	srcrect.w = 16;
+	srcrect.h = 16;
+	dstrect.x = 0;
+	dstrect.y = 0;
+	SDL_BlitSurface(windowskin, &srcrect, frame, &dstrect);
+	
+	srcrect.x = 192 - 16;
+	dstrect.x = width - 16;
+	SDL_BlitSurface(windowskin, &srcrect, frame, &dstrect);
+	
+	srcrect.y = 64 - 16;
+	dstrect.y = height - 16;
+	SDL_BlitSurface(windowskin, &srcrect, frame, &dstrect);
+	
+	srcrect.x = 128;
+	dstrect.x = 0;
+	SDL_BlitSurface(windowskin, &srcrect, frame, &dstrect);
+
+	// Border Up
+	srcrect.x = 128 + 16;
+	srcrect.y = 0;
+	srcrect.w = 32;
+	srcrect.h = 16;
+	SDL_Surface* border = surface_resample(windowskin, max(width - 32, 1), 16, srcrect);
+	dstrect.x = 16;
+	dstrect.y = 0;
+	surface_disablealpha(border);
+	SDL_BlitSurface(border, NULL, frame, &dstrect);
+	SDL_FreeSurface(border);
+	
+	// Border Down
+	srcrect.y = 64 - 16;
+	border = surface_resample(windowskin, max(width - 32, 1), 16, srcrect);
+	dstrect.y = height - 16;
+	surface_disablealpha(border);
+	SDL_BlitSurface(border, NULL, frame, &dstrect);
+	SDL_FreeSurface(border);
+	
+	// Border Left
+	srcrect.x = 128;
+	srcrect.y = 16;
+	srcrect.w = 16;
+	srcrect.h = 32;
+	border = surface_resample(windowskin, 16, max(height - 32, 1), srcrect);
+	dstrect.x = 0;
+	dstrect.y = 16;
+	surface_disablealpha(border);
+	SDL_BlitSurface(border, NULL, frame, &dstrect);
+	SDL_FreeSurface(border);
+	
+	// Border Right
+	srcrect.x = 192 - 16;
+	border = surface_resample(windowskin, 16, max(height - 32, 1), srcrect);
+	dstrect.x = width - 16;
+	surface_disablealpha(border);
+	SDL_BlitSurface(border, NULL, frame, &dstrect);
+	SDL_FreeSurface(border);
+	
+	surface_enablealpha(windowskin);
 }
 
 void SDL_Window::update() {
+	if(pause) {
+		pause_frame += 1;
+		if(pause_frame == 8) {
+			pause_frame = 0;
+			pause_id += 1;
+			if(pause_id == 5) {
+				pause_id = 1;
+			}
+		}
+	}
 }
 
 unsigned long SDL_Window::get_id() {
@@ -194,6 +346,10 @@ void SDL_Window::set_visible(bool nvisible) {
 	visible = nvisible;
 }
 void SDL_Window::set_pause(bool npause) {
+	if(npause != pause) {
+		pause_frame = 0;
+		pause_id = 0;
+	}
 	pause = npause;
 }
 void SDL_Window::set_x(int nx) {

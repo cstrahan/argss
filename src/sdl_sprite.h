@@ -92,6 +92,7 @@ private:
 	SDL_Surface* bitmap;
 	VALUE src_rect;
 	SDL_Rect src_rect_sdl;
+	SDL_Rect src_rect_sdl_last;
 	bool visible;
 	int x;
 	int y;

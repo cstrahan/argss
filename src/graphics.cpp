@@ -71,12 +71,12 @@ static VALUE argss_graphics_update(VALUE self) {
 	static double cyclesleftover;
 
 	argss_update();
-	if(waitframes > 0) {
+	if(waitframes >= 1) {
 		waitframes -= 1;
 		return Qnil;
 	}
 	t = SDL_GetTicks();
-	if((t - tl) >= (long)framerate_interval) {
+	if((t - tl) >= (long)framerate_interval || (framerate_interval - t + tl) < 10) {
 		cyclesleftover = waitframes;
 		waitframes = (double)(t - tl) / framerate_interval - cyclesleftover;
 		//tl += (t - tl) - cyclesleftover;
