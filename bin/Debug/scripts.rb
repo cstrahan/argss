@@ -6,7 +6,7 @@ begin
   Console.initialize
 
   #Assigning a background
-  Graphics.backcolor = Color.new(0, 128, 0)
+  Graphics.backcolor = Color.new(0, 0, 0)
 
   Graphics.frame_rate = 60
 
@@ -40,6 +40,18 @@ begin
     end
     windows7.x = (Graphics.width - windows7.width) / 2
     windows7.y = (Graphics.height - windows7.height) / 2
+    
+    if Input.press?(Keys::LCTRL)
+      windows7.back_opacity = [windows7.back_opacity + 10, 255].min if Input.repeat?(Keys::KP_PLUS)
+      windows7.back_opacity = [windows7.back_opacity - 10, 0].max if Input.repeat?(Keys::KP_MINUS)
+    elsif Input.press?(Keys::LALT)
+      windows7.contents_opacity = [windows7.contents_opacity + 10, 255].min if Input.repeat?(Keys::KP_PLUS)
+      windows7.contents_opacity = [windows7.contents_opacity - 10, 0].max if Input.repeat?(Keys::KP_MINUS)
+    else
+      windows7.opacity = [windows7.opacity + 10, 255].min if Input.repeat?(Keys::KP_PLUS)
+      windows7.opacity = [windows7.opacity - 10, 0].max if Input.repeat?(Keys::KP_MINUS)
+    end
+    
   end
 rescue
   script, line = $!.backtrace.to_s.split(':')

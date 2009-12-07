@@ -69,33 +69,51 @@ void SDL_Window::draw(SDL_Surface* surface) {
 	if(width <= 0 || height <= 0) return;
 	
 	if(windowskin != NULL) {
-		if(width > 4 && height > 4) {
+		if(width > 4 && height > 4 && (back_opacity * opacity / 255 > 0)) {
 			if(background_needs_refresh) {
 				refresh_background();
 			}
-		
-			SDL_Rect offset = {x + 2, y + 2, 0, 0};
+			SDL_Rect src_rect = {0, 0, background->w, background->h};
 			
-			SDL_BlitSurface(background, NULL, surface, &offset);
+			if(back_opacity * opacity / 255 >= 255) {
+				SDL_Rect offset = {x + 2, y + 2, 0, 0};
+				
+				SDL_BlitSurface(background, &src_rect, surface, &offset);
+			}
+			else {
+				surface_blit(background, src_rect, surface, x + 2, y + 2, back_opacity * opacity / 255, true);
+			}
 		}
 		
-		if(width > 0 && height > 0) {
+		if(width > 0 && height > 0 && opacity > 0) {
 			if(frame_needs_refresh) {
 				refresh_frame();
 			}
-			SDL_Rect offset = {x, y, 0, 0};
-		
-			SDL_BlitSurface(frame, NULL, surface, &offset);
+			SDL_Rect src_rect = {0, 0, frame->w, frame->h};
+			
+			if(opacity >= 255) {
+				SDL_Rect offset = {x, y, 0, 0};
+				
+				SDL_BlitSurface(frame, &src_rect, surface, &offset);
+			}
+			else {
+				surface_blit(frame, src_rect, surface, x, y, opacity, true);
+			}
 		}
 	}
 	
 	if(contents != NULL) {
-		if(width > 32 && height > 32 && -ox < width - 32 && -oy < height - 32) {
+		if(width > 32 && height > 32 && -ox < width - 32 && -oy < height - 32 && contents_opacity > 0) {
 			SDL_Rect offset = {max(x + 16, x + 16 - ox), max(y + 16, y + 16 - oy), 0, 0};
 			
 			SDL_Rect src_rect = {-min(-ox, 0), -min(-oy, 0), min(width - 32, width - 32 + ox), min(height - 32, height - 32 + oy)};
 			
-			SDL_BlitSurface(contents, &src_rect, surface, &offset);
+			if(contents_opacity >= 255) {
+				SDL_BlitSurface(contents, &src_rect, surface, &offset);
+			}
+			else {
+				surface_blit(contents, src_rect, surface, offset.x, offset.y, contents_opacity, true);
+			}
 		}
 		if(ox > 0) {
 			SDL_Rect offset = {x + 4, y + height / 2 - 8, 0, 0};
@@ -168,15 +186,18 @@ void SDL_Window::refresh_background() {
 	else {
 		// TODO
 	}
+	
+	background_needs_refresh = false;
 }
 
 void SDL_Window::refresh_frame() {
 	if(frame != NULL) SDL_FreeSurface(frame);
 
-	frame = SDL_CreateRGBSurface(SDL_SWSURFACE | SDL_SRCALPHA, width, height, 32, rmask, gmask, bmask, amask);
+	/*frame = SDL_CreateRGBSurface(SDL_SWSURFACE | SDL_SRCALPHA, width, height, 32, rmask, gmask, bmask, amask);
 	if(frame == NULL) {
 		rb_raise(ARGSS_Error, "SDL could not create sprite surface.\n%s\n", SDL_GetError());
-	}
+	}*/
+	frame = surface_creatergba(width, height);
 
 	surface_disablealpha(windowskin);
 	
@@ -245,6 +266,8 @@ void SDL_Window::refresh_frame() {
 	SDL_FreeSurface(border);
 	
 	surface_enablealpha(windowskin);
+	
+	frame_needs_refresh = false;
 }
 
 void SDL_Window::update() {
