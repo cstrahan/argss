@@ -174,14 +174,6 @@
 			Name="Source Files"
 			>
 			<File
-				RelativePath="..\..\..\src\log.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\..\src\log.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\..\src\main.cpp"
 				>
 			</File>
@@ -191,6 +183,14 @@
 			</File>
 			<File
 				RelativePath="..\..\..\src\options.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\src\output.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\src\output.h"
 				>
 			</File>
 			<File
@@ -360,14 +360,6 @@
 						>
 					</File>
 					<File
-						RelativePath="..\..\..\src\argss_console.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\..\..\src\argss_console.h"
-						>
-					</File>
-					<File
 						RelativePath="..\..\..\src\argss_graphics.cpp"
 						>
 					</File>
@@ -389,6 +381,14 @@
 					</File>
 					<File
 						RelativePath="..\..\..\src\argss_keys.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\..\src\argss_output.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\..\src\argss_output.h"
 						>
 					</File>
 				</Filter>

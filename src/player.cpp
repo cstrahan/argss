@@ -1,5 +1,6 @@
 //////////////////////////////////////////////////////////////////////////////////
-/// ARGSS - Copyright (c) 2009, Alejandro Marzini (vgvgf) - All rights reserved.
+/// ARGSS - Copyright (c) 2009 - 2010, Alejandro Marzini (vgvgf)
+///         All rights reserved.
 ///
 /// Redistribution and use in source and binary forms, with or without
 /// modification, are permitted provided that the following conditions are met:
@@ -66,9 +67,7 @@ void Player::Update() {
     while (true) {
         int result = SDL_PollEvent(&evnt);
         if(evnt.type == SDL_QUIT) {
-			Console::Free();
-            SDL_Quit();
-			rb_exit(1);
+			Exit();
         }
         /*else if(evnt.type == SDL_ACTIVEEVENT) {
 			if(evnt.active.type == SDL_APPACTIVE) {
@@ -91,4 +90,15 @@ void Player::Update() {
             break;
         }
     }
+}
+
+////////////////////////////////////////////////////////////
+/// Exit
+////////////////////////////////////////////////////////////
+void Player::Exit() {
+	if (Console::Active()) SDL_Delay(5000);
+
+	Console::Free();
+    SDL_Quit();
+	rb_exit(1);
 }

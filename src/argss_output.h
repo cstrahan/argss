@@ -1,5 +1,6 @@
 //////////////////////////////////////////////////////////////////////////////////
-/// ARGSS - Copyright (c) 2009, Alejandro Marzini (vgvgf) - All rights reserved.
+/// ARGSS - Copyright (c) 2009 - 2010, Alejandro Marzini (vgvgf)
+///         All rights reserved.
 ///
 /// Redistribution and use in source and binary forms, with or without
 /// modification, are permitted provided that the following conditions are met:
@@ -21,72 +22,24 @@
 /// SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //////////////////////////////////////////////////////////////////////////////////
 
+#ifndef _ARGSS_OUTPUT_H_
+#define _ARGSS_OUTPUT_H_
+
 ////////////////////////////////////////////////////////////
 /// Headers
 ////////////////////////////////////////////////////////////
-#include "log.h"
-#include "options.h"
-#include <iostream>
-#include <fstream>
-#include <cstdlib>
-#include "msgbox.h"
-#include "system.h"
-#include "console.h"
+#include "argss_ruby.h"
 
 ////////////////////////////////////////////////////////////
-/// Log Fatal Error
+/// ARGSS Output namespace
 ////////////////////////////////////////////////////////////
-void Log::Fatal(std::string err){
-	Post(err);
-	exit(1);
-}
+namespace ARGSS {
+	namespace AOutput {
+		extern VALUE id;
+		extern VALUE stdout_id;
+		extern VALUE stderr_id;
+		void Init();
+	};
+};
 
-////////////////////////////////////////////////////////////
-/// Log Warning
-////////////////////////////////////////////////////////////
-void Log::Warning(std::string warn) {
-	Post(warn);
-}
-
-////////////////////////////////////////////////////////////
-/// Log Post message
-////////////////////////////////////////////////////////////
-void Log::Post(std::string msg) {
-	std::ofstream file;
-	switch(ERROR_REPORT) {
-	case 1:
-		std::cout << msg;
-		break;
-	case 2:
-		file.open(ERROR_FILE, std::ios::out | std::ios::app);
-		file << msg;
-		file.close();
-		break;
-	case 3:
-		MsgBox::OK(msg, System::Title);
-		break;
-	case 4:
-		if(Console::Active()) {
-			std::cout << msg;
-		}
-		else {
-			file.open(ERROR_FILE, std::ios::out | std::ios::app);
-			file << msg;
-			file.close();
-		}
-		break;
-	case 5:
-		if(Console::Active()) {
-			std::cout << msg;
-		}
-		else {
-			MsgBox::OK(msg, System::Title);
-		}
-		break;
-	case 6:
-		if(!Console::Active()) {
-			Console::Init();
-		}
-		std::cout << msg;
-	}
-}
+#endif

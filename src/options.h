@@ -1,5 +1,6 @@
 //////////////////////////////////////////////////////////////////////////////////
-/// ARGSS - Copyright (c) 2009, Alejandro Marzini (vgvgf) - All rights reserved.
+/// ARGSS - Copyright (c) 2009 - 2010, Alejandro Marzini (vgvgf)
+///         All rights reserved.
 ///
 /// Redistribution and use in source and binary forms, with or without
 /// modification, are permitted provided that the following conditions are met:
@@ -113,17 +114,17 @@
 #define DEBUG_ONLY_FPS false
 
 ////////////////////////////////////////////////////////////
-/// ERROR_REPORT
+/// OUTPUT_TYPE
 ///   0 - None
-///   1 - Console
-///   2 - File
+///   1 - Console, if closed none
+///   2 - Console, if closed open it
 ///   3 - Message Box
-///   4 - Try console, if closed file
-///   5 - Try console, if closed message box
-///   6 - Console, if closed open it
+///   4 - File
+///   5 - Try console, if closed file
+///   6 - Try console, if closed message box
 ///
-/// ERROR_FILE
-///   Name of the file for error output.
+/// OUTPUT_FILE
+///   Name of the file for output.
 ////////////////////////////////////////////////////////////
-#define ERROR_REPORT 5
-#define ERROR_FILE "error.txt"
+#define OUTPUT_TYPE 6
+#define OUTPUT_FILE "error.txt"

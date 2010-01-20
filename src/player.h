@@ -1,5 +1,6 @@
 //////////////////////////////////////////////////////////////////////////////////
-/// ARGSS - Copyright (c) 2009, Alejandro Marzini (vgvgf) - All rights reserved.
+/// ARGSS - Copyright (c) 2009 - 2010, Alejandro Marzini (vgvgf)
+///         All rights reserved.
 ///
 /// Redistribution and use in source and binary forms, with or without
 /// modification, are permitted provided that the following conditions are met:
@@ -25,16 +26,12 @@
 #define _PLAYER_H_
 
 ////////////////////////////////////////////////////////////
-/// Headers
-////////////////////////////////////////////////////////////
-
-
-////////////////////////////////////////////////////////////
 /// Player namespace
 ////////////////////////////////////////////////////////////
 namespace Player {
 	void Init();
 	void Update();
+	void Exit();
 };
 
 #endif

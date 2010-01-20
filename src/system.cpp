@@ -1,5 +1,6 @@
 //////////////////////////////////////////////////////////////////////////////////
-/// ARGSS - Copyright (c) 2009, Alejandro Marzini (vgvgf) - All rights reserved.
+/// ARGSS - Copyright (c) 2009 - 2010, Alejandro Marzini (vgvgf)
+///         All rights reserved.
 ///
 /// Redistribution and use in source and binary forms, with or without
 /// modification, are permitted provided that the following conditions are met:
@@ -25,7 +26,7 @@
 /// Headers
 ////////////////////////////////////////////////////////////
 #include "system.h"
-#include "log.h"
+#include "output.h"
 #include "options.h"
 #include "simpleini.h"
 
@@ -62,7 +63,7 @@ void System::Init() {
 			std::string str = "ARGSS could not open \"";
 			str += INI_NAME;
 			str += "\" file.";
-			Log::Warning(str);
+			Output::Warning(str);
 		}
 		if(READ_INI_SCRIPTS_PATH) {
 			ScriptsPath = ini.GetValue("Game", "Scripts", SCRIPTS_PATH);

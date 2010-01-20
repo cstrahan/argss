@@ -1,5 +1,6 @@
 //////////////////////////////////////////////////////////////////////////////////
-/// ARGSS - Copyright (c) 2009, Alejandro Marzini (vgvgf) - All rights reserved.
+/// ARGSS - Copyright (c) 2009 - 2010, Alejandro Marzini (vgvgf)
+///         All rights reserved.
 ///
 /// Redistribution and use in source and binary forms, with or without
 /// modification, are permitted provided that the following conditions are met:
@@ -28,7 +29,8 @@
 #include "argss_ruby.h"
 #include "options.h"
 #include "system.h"
-#include "log.h"
+#include "player.h"
+#include "output.h"
 
 ////////////////////////////////////////////////////////////
 /// ARGSS Ruby initialize
@@ -36,23 +38,43 @@
 void ARGSS::ARuby::Init() {
 	ruby_init();
 	ruby_init_loadpath();
-
-    /*typedef VALUE (*rubyfunc)(...);
-    rb_define_global_function("sleep", (rubyfunc)argss_ruby_sleep, 1);
-    rb_define_method(rb_mKernel, "p", argss_ruby_p, -1);*/
+	atexit(ruby_finalize);
 }
 
 ////////////////////////////////////////////////////////////
 /// ARGSS Ruby run
 ////////////////////////////////////////////////////////////
+VALUE require_wrap(VALUE arg) {
+    return rb_require(System::ScriptsPath.c_str());
+}
 void ARGSS::ARuby::Run() {
-	if(SCRIPTS_ZLIB) {
+	if (SCRIPTS_ZLIB) {
 		// TODO
 	}
 	else {
-		rb_load_file(System::ScriptsPath.c_str());
+		int error;
+		VALUE result = rb_protect(require_wrap, 0, &error);
+		if (error) {
+			VALUE lasterr = rb_gv_get("$!");
+			VALUE klass = rb_class_path(CLASS_OF(lasterr));
+			VALUE message = rb_obj_as_string(lasterr);
+			if (CLASS_OF(lasterr) != rb_eSystemExit) {
+				std::string report = "RUBY ERROR\n";
+				report += (std::string)RSTRING(klass)->ptr;
+				report += " - ";
+				report += (std::string)RSTRING(message)->ptr;
+				if (!NIL_P(ruby_errinfo)) {
+					VALUE ary = rb_funcall(ruby_errinfo, rb_intern("backtrace"), 0);
+					for (int i = 0; i < RARRAY(ary)->len; i++) {
+						report += "\n  from ";
+						report += RSTRING(RARRAY(ary)->ptr[i])->ptr;
+					}
+				}
+				Output::Post(report);
+			}
+		}
+		Player::Exit();
 	}
-	ruby_run();
 }
 
 ////////////////////////////////////////////////////////////

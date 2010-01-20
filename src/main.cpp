@@ -1,5 +1,6 @@
 //////////////////////////////////////////////////////////////////////////////////
-/// ARGSS - Copyright (c) 2009, Alejandro Marzini (vgvgf) - All rights reserved.
+/// ARGSS - Copyright (c) 2009 - 2010, Alejandro Marzini (vgvgf)
+///         All rights reserved.
 ///
 /// Redistribution and use in source and binary forms, with or without
 /// modification, are permitted provided that the following conditions are met:
@@ -29,6 +30,7 @@
 #include "audio.h"
 #include "input.h"
 #include "player.h"
+#include "output.h"
 #include "argss.h"
 
 ////////////////////////////////////////////////////////////
@@ -41,6 +43,7 @@ int main(int argc, char **argv)
 	Input::Init();
 	Audio::Init();
 	Player::Init();
+	Output::Init();
 	ARGSS::Init();
 	
 	return 0;

@@ -25,44 +25,70 @@
 ////////////////////////////////////////////////////////////
 /// Headers
 ////////////////////////////////////////////////////////////
-#include "argss_tilemapautotiles_xp.h"
-#include "argss_bitmap.h"
+#include <string>
+#include "argss_output.h"
+#include "output.h"
 
 ////////////////////////////////////////////////////////////
 /// Global Variables
 ////////////////////////////////////////////////////////////
-VALUE ARGSS::ATilemapAutotiles::id;
+VALUE ARGSS::AOutput::id;
+VALUE ARGSS::AOutput::stdout_id;
+VALUE ARGSS::AOutput::stderr_id;
 
 ////////////////////////////////////////////////////////////
-/// ARGSS TilemapAutotiles ruby functions
+/// ARGSS Output ruby functions
 ////////////////////////////////////////////////////////////
-static VALUE argss_tilemapautotiles_initialize(VALUE self) {
-	rb_iv_set(self, "@autotiles", rb_ary_new2(8));
-    return self;
+static VALUE argss_output_console(VALUE self) {
+	Output::Console();
+	return Qnil;
 }
-static VALUE argss_tilemapautotiles_aref(VALUE self, VALUE index) {
-	return rb_ary_entry(rb_iv_get(self, "@autotiles"), NUM2INT(index));
+static VALUE argss_output_msgbox(VALUE self) {
+	Output::MsgBox();
+	return Qnil;
 }
-static VALUE argss_tilemapautotiles_aset(VALUE self, VALUE index, VALUE bitmap) {
-	Check_Classes_N(bitmap, ARGSS::ABitmap::id);
-	rb_ary_store(rb_iv_get(self, "@autotiles"), NUM2INT(index), bitmap);
-	return bitmap;
+static VALUE argss_output_file(VALUE self, VALUE file) {
+	Output::File(StringValuePtr(file));
+	return Qnil;
+}
+static VALUE argss_output_none(VALUE self) {
+	Output::None();
+	return Qnil;
 }
 
 ////////////////////////////////////////////////////////////
-/// ARGSS TilemapAutotiles initialize
+/// ARGSS Stdout and Stderr
 ////////////////////////////////////////////////////////////
-void ARGSS::ATilemapAutotiles::Init() {
+static VALUE argss_output_stdout_write(VALUE self, VALUE str) {
+	if (TYPE(str) != T_STRING) str = rb_obj_as_string(str);
+	if (RSTRING(str)->len == 0) return INT2FIX(0);
+	Output::Post(StringValuePtr(str));
+	return INT2FIX(RSTRING(str)->len);
+}
+static VALUE argss_output_stderr_write(VALUE self, VALUE str) {
+	if (TYPE(str) != T_STRING) str = rb_obj_as_string(str);
+	if (RSTRING(str)->len == 0) return INT2FIX(0);
+	Output::Error(StringValuePtr(str));
+	return INT2FIX(RSTRING(str)->len);
+}
+
+////////////////////////////////////////////////////////////
+/// ARGSS Output initialize
+////////////////////////////////////////////////////////////
+void ARGSS::AOutput::Init() {
     typedef VALUE (*rubyfunc)(...);
-    id = rb_define_class("TilemapAutotiles", rb_cObject);
-    rb_define_method(id, "initialize", (rubyfunc)argss_tilemapautotiles_initialize, 0);
-    rb_define_method(id, "[]", (rubyfunc)argss_tilemapautotiles_aref, 1);
-    rb_define_method(id, "[]=", (rubyfunc)argss_tilemapautotiles_aset, 2);
-}
+    id = rb_define_module("Output");
+    rb_define_singleton_method(id, "console", (rubyfunc)argss_output_console, 0);
+	rb_define_singleton_method(id, "msgbox", (rubyfunc)argss_output_msgbox, 0);
+	rb_define_singleton_method(id, "file", (rubyfunc)argss_output_file, 1);
+	rb_define_singleton_method(id, "none", (rubyfunc)argss_output_none, 0);  
 
-////////////////////////////////////////////////////////////
-/// ARGSS TilemapAutotiles new ruby instance
-////////////////////////////////////////////////////////////
-VALUE ARGSS::ATilemapAutotiles::New() {
-	return rb_class_new_instance(0, 0, id);
+	stdout_id = rb_define_class_under(id, "Stdout", rb_cObject);
+    rb_define_method(stdout_id, "write", (rubyfunc)argss_output_stdout_write, 1);
+	stderr_id = rb_define_class_under(id, "Stderr", rb_cObject);
+	rb_define_method(stderr_id, "write", (rubyfunc)argss_output_stderr_write, 1);
+
+	rb_gv_set("$stdout", rb_class_new_instance(0, 0, stdout_id));
+	rb_gv_set("$defout", rb_class_new_instance(0, 0, stdout_id));
+	rb_gv_set("$stderr", rb_class_new_instance(0, 0, stderr_id));
 }

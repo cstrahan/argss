@@ -1,5 +1,6 @@
 //////////////////////////////////////////////////////////////////////////////////
-/// ARGSS - Copyright (c) 2009, Alejandro Marzini (vgvgf) - All rights reserved.
+/// ARGSS - Copyright (c) 2009 - 2010, Alejandro Marzini (vgvgf)
+///         All rights reserved.
 ///
 /// Redistribution and use in source and binary forms, with or without
 /// modification, are permitted provided that the following conditions are met:
@@ -28,43 +29,13 @@
 	#define _WIN32_WINNT 0x0500
 #endif
 #include <windows.h>
-#include <stdio.h>
-#include <fcntl.h>
-#include <io.h>
-#include <iostream>
-#include <fstream>
 #include "console_win32.h"
 
 ////////////////////////////////////////////////////////////
 /// Initialize Console
 ////////////////////////////////////////////////////////////
 void Console::Init() {
-	int hConHandle;
-    long lStdHandle;
-    FILE *fp;
-    // allocate a console for this app
     AllocConsole();
-    // redirect unbuffered STDOUT to the console
-    lStdHandle = (long)GetStdHandle(STD_OUTPUT_HANDLE);
-    hConHandle = _open_osfhandle(lStdHandle, _O_TEXT);
-    fp = _fdopen( hConHandle, "w" );
-    *stdout = *fp;
-    setvbuf( stdout, NULL, _IONBF, 0 );
-    // redirect unbuffered STDIN to the console
-    lStdHandle = (long)GetStdHandle(STD_INPUT_HANDLE);
-    hConHandle = _open_osfhandle(lStdHandle, _O_TEXT);
-    fp = _fdopen( hConHandle, "r" );
-    *stdin = *fp;
-    setvbuf( stdin, NULL, _IONBF, 0 );
-    // redirect unbuffered STDERR to the console
-    lStdHandle = (long)GetStdHandle(STD_ERROR_HANDLE);
-    hConHandle = _open_osfhandle(lStdHandle, _O_TEXT);
-    fp = _fdopen( hConHandle, "w" );
-    *stderr = *fp;
-    setvbuf( stderr, NULL, _IONBF, 0 );
-    // make cout, wcout, cin, wcin, wcerr, cerr, wclog and clog
-    // point to console as well
-    std::ios::sync_with_stdio();
 	Sleep(10);
 }
 
@@ -93,6 +64,19 @@ void Console::Free() {
 	FreeConsole();
 }
 
+////////////////////////////////////////////////////////////
+/// Get console active status
+////////////////////////////////////////////////////////////
 bool Console::Active() {
 	return GetConsoleWindow() != NULL;
+}
+
+////////////////////////////////////////////////////////////
+/// Write message to console
+////////////////////////////////////////////////////////////
+void Console::Write(std::string msg) {
+	unsigned long n;
+	HANDLE out;
+	out = GetStdHandle(STD_OUTPUT_HANDLE);
+	WriteConsoleA(out, msg.c_str(), msg.size(), &n, NULL);
 }

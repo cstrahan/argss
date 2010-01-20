@@ -1,5 +1,6 @@
 //////////////////////////////////////////////////////////////////////////////////
-/// ARGSS - Copyright (c) 2009, Alejandro Marzini (vgvgf) - All rights reserved.
+/// ARGSS - Copyright (c) 2009 - 2010, Alejandro Marzini (vgvgf)
+///         All rights reserved.
 ///
 /// Redistribution and use in source and binary forms, with or without
 /// modification, are permitted provided that the following conditions are met:
@@ -198,10 +199,10 @@ static VALUE argss_window_width(VALUE self) {
 }
 static VALUE argss_window_widthE(VALUE self, VALUE width) {
     ARGSS::AWindow::Check(self);
-	width = NUM2INT(width);
-	if (width < 0) width = 0;
-	Window::Get(self)->SetWidth(width);
-    return rb_iv_set(self, "@width", INT2NUM(width));
+	int w = NUM2INT(width);
+	if (w < 0) w = 0;
+	Window::Get(self)->SetWidth(w);
+    return rb_iv_set(self, "@width", INT2NUM(w));
 }
 static VALUE argss_window_height(VALUE self) {
     ARGSS::AWindow::Check(self);
@@ -209,10 +210,10 @@ static VALUE argss_window_height(VALUE self) {
 }
 static VALUE argss_window_heightE(VALUE self, VALUE height) {
     ARGSS::AWindow::Check(self);
-	height = NUM2INT(height);
-	if (height < 0) height = 0;
-	Window::Get(self)->SetHeight(height);
-    return rb_iv_set(self, "@height", INT2NUM(height));
+	int h = NUM2INT(height);
+	if (h < 0) h = 0;
+	Window::Get(self)->SetHeight(h);
+    return rb_iv_set(self, "@height", INT2NUM(h));
 }
 static VALUE argss_window_z(VALUE self) {
     ARGSS::AWindow::Check(self);

@@ -3,15 +3,14 @@ require('keys')
 
 begin
   #Creating the console for debug messages.
-  Console.initialize
-
-  print "Wait some secs"
+  Output.console
+  
+  print "Wait some secs\n"
 
   #Assigning a background
   Graphics.backcolor = Color.new(0, 0, 0)
 
   Graphics.frame_rate = 60
-
   # Draw Text
   sprite = Sprite.new
   sprite.bitmap = Bitmap.new(200, 125)
@@ -147,10 +146,10 @@ begin
     Graphics.update
     Input.update
   end
+  
 rescue
   script, line = $!.backtrace.to_s.split(':')
-  puts "#{$!.class} in #{script}, line #{line}"
-  puts $!.message, $!.backtrace
-ensure
-  gets
+  str = "#{$!.class} in #{script}, line #{line}\n#{$!.message}\n#{$!.backtrace}\n"
+  print str
 end
+

@@ -25,106 +25,113 @@
 ////////////////////////////////////////////////////////////
 /// Headers
 ////////////////////////////////////////////////////////////
-#include "color.h"
-#include "argss_color.h"
+#include "output.h"
+#include "options.h"
+#include <iostream>
+#include <fstream>
+#include <cstdlib>
+#include <conio.h>
+#include "system.h"
+#include "player.h"
+#include "console.h"
+#include "msgbox.h"
 
 ////////////////////////////////////////////////////////////
-/// Constructor
+/// Global Variables
 ////////////////////////////////////////////////////////////
-Color::Color() {
-	red = 0;
-    green = 0;
-    blue = 0;
-    alpha = 0;
-}
-Color::Color(VALUE color) {
-	red = NUM2DBL(rb_iv_get(color, "@red"));
-    green = NUM2DBL(rb_iv_get(color, "@green"));
-    blue = NUM2DBL(rb_iv_get(color, "@blue"));
-    alpha = NUM2DBL(rb_iv_get(color, "@alpha"));
-}
-Color::Color(int ired, int igreen, int iblue, int ialpha) {
-	red = ired;
-    green = igreen;
-    blue = iblue;
-    alpha = ialpha;
-}
-Color::Color(Uint32 color, SDL_PixelFormat* format) {
-	Uint8 r, g, b, a;
-	SDL_GetRGBA(color, format, &r, &g, &b, &a);
-	red = r;
-    green = g;
-    blue = b;
-    alpha = a;
+int Output::output_type;
+std::string Output::filename;
+
+////////////////////////////////////////////////////////////
+/// Output Initialize
+////////////////////////////////////////////////////////////
+void Output::Init(){
+	output_type = OUTPUT_TYPE;
+	filename = OUTPUT_FILE;
 }
 
 ////////////////////////////////////////////////////////////
-/// Destructor
+/// Output Error
 ////////////////////////////////////////////////////////////
-Color::~Color() { }
-
-////////////////////////////////////////////////////////////
-/// Set
-////////////////////////////////////////////////////////////
-void Color::Set(VALUE color) {
-	red = NUM2DBL(rb_iv_get(color, "@red"));
-    green = NUM2DBL(rb_iv_get(color, "@green"));
-    blue = NUM2DBL(rb_iv_get(color, "@blue"));
-    alpha = NUM2DBL(rb_iv_get(color, "@alpha"));
+void Output::Error(std::string err){
+	Post(err);
+	Player::Exit();
 }
 
 ////////////////////////////////////////////////////////////
-/// Get ARGSS
+/// Output Warning
 ////////////////////////////////////////////////////////////
-unsigned long Color::GetARGSS() {
-    VALUE args[4] = {rb_float_new(red), rb_float_new(green), rb_float_new(blue), rb_float_new(alpha)};
-	return rb_class_new_instance(4, args, ARGSS::AColor::id);
+void Output::Warning(std::string warn) {
+	Post(warn);
 }
 
 ////////////////////////////////////////////////////////////
-/// Get Uint32
+/// Output Post message
 ////////////////////////////////////////////////////////////
-Uint32 Color::GetUint32(SDL_PixelFormat* format) {
-	return SDL_MapRGBA(format, (Uint8)red, (Uint8)green, (Uint8)blue, (Uint8)alpha);
+void Output::Post(std::string msg) {	
+	switch(output_type) {
+	case 1:
+		if (Console::Active()) Console::Write(msg);
+		break;
+	case 2:
+		if (!Console::Active()) Console::Init();
+		Console::Write(msg);
+		break;
+	case 3:
+		MsgBox::OK(msg, System::Title);
+		break;
+	case 4:
+		PostFile(msg);
+		break;
+	case 5:
+		if (Console::Active()) Console::Write(msg);
+		else PostFile(msg);
+		break;
+	case 6:
+		if (Console::Active()) Console::Write(msg);
+		else MsgBox::OK(msg, System::Title);
+	}
 }
 
 ////////////////////////////////////////////////////////////
-/// Static Get color
+/// Output File
 ////////////////////////////////////////////////////////////
-SDL_Color Color::Get() {
-	SDL_Color c = {(int)red, (int)green, (int)blue, (int)alpha};
-	return c;
+void Output::PostFile(std::string msg) {
+	std::ofstream file;
+	file.open(filename.c_str(), std::ios::out | std::ios::app);
+	file << msg;
+	file.close();
 }
 
 ////////////////////////////////////////////////////////////
-/// Static Get color
+/// Output Console
 ////////////////////////////////////////////////////////////
-SDL_Color Color::Get(VALUE color) {
-	SDL_Color c = {NUM2INT(rb_iv_get(color, "@red")),
-					NUM2INT(rb_iv_get(color, "@green")),
-					NUM2INT(rb_iv_get(color, "@blue")),
-					NUM2INT(rb_iv_get(color, "@alpha"))};
-	return c;
+void Output::Console() {
+	if (!Console::Active()) Console::Init();
+	output_type = 2;
 }
 
 ////////////////////////////////////////////////////////////
-/// Static Get ARGSS color
+/// Output Console
 ////////////////////////////////////////////////////////////
-VALUE Color::GetARGSS(SDL_Color color) {
-    VALUE args[4] = {rb_float_new(color.r), rb_float_new(color.g), rb_float_new(color.b), rb_float_new(color.unused)};
-	return rb_class_new_instance(4, args, ARGSS::AColor::id);
+void Output::MsgBox() {
+	if (Console::Active()) Console::Free();
+	output_type = 3;
 }
 
 ////////////////////////////////////////////////////////////
-/// Static Get Uint32 color
+/// Output Console
 ////////////////////////////////////////////////////////////
-Uint32 Color::GetUint32(VALUE color, SDL_PixelFormat* format) {
-	return SDL_MapRGBA(format,
-						NUM2INT(rb_iv_get(color, "@red")),
-						NUM2INT(rb_iv_get(color, "@green")),
-						NUM2INT(rb_iv_get(color, "@blue")),
-						NUM2INT(rb_iv_get(color, "@alpha")));
+void Output::File(std::string name) {
+	if (Console::Active()) Console::Free();
+	output_type = 4;
+	filename = name;
 }
-Uint32 Color::GetUint32(SDL_Color color, SDL_PixelFormat* format) {
-	return SDL_MapRGBA(format, color.r, color.g, color.b, color.unused);
+
+////////////////////////////////////////////////////////////
+/// Output Console
+////////////////////////////////////////////////////////////
+void Output::None() {
+	if (Console::Active()) Console::Free();
+	output_type = 0;
 }

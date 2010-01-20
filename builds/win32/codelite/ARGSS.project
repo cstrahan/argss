@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<CodeLite_Project Name="ARGSS">
+<CodeLite_Project Name="ARGSS" InternalType="GUI">
   <Plugins>
     <Plugin Name="qmake">
       <![CDATA[00010001N0005Debug000000000000]]>
@@ -8,7 +8,7 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="Resource Files">
-    <File Name="../../../resources/Windows/icon.rc"/>
+    <File Name="../../../resources/Windows/mingwicon.rc"/>
   </VirtualDirectory>
   <VirtualDirectory Name="Source Files">
     <VirtualDirectory Name="argss">
@@ -45,14 +45,14 @@
       <VirtualDirectory Name="modules">
         <File Name="../../../src/argss_audio.cpp"/>
         <File Name="../../../src/argss_audio.h"/>
-        <File Name="../../../src/argss_console.cpp"/>
-        <File Name="../../../src/argss_console.h"/>
         <File Name="../../../src/argss_graphics.cpp"/>
         <File Name="../../../src/argss_graphics.h"/>
         <File Name="../../../src/argss_input.cpp"/>
         <File Name="../../../src/argss_input.h"/>
         <File Name="../../../src/argss_keys.cpp"/>
         <File Name="../../../src/argss_keys.h"/>
+        <File Name="../../../src/argss_output.cpp"/>
+        <File Name="../../../src/argss_output.h"/>
       </VirtualDirectory>
       <VirtualDirectory Name="rpg">
         <File Name="../../../src/argss_rpg.cpp"/>
@@ -104,20 +104,30 @@
       <File Name="../../../src/console.h"/>
     </VirtualDirectory>
     <File Name="../../../src/defines.h"/>
-    <File Name="../../../src/log.cpp"/>
-    <File Name="../../../src/log.h"/>
     <File Name="../../../src/main.cpp"/>
-    <File Name="../../../src/main.h"/>
     <File Name="../../../src/options.h"/>
     <File Name="../../../src/player.cpp"/>
     <File Name="../../../src/player.h"/>
     <File Name="../../../src/simpleini.h"/>
     <File Name="../../../src/system.cpp"/>
     <File Name="../../../src/system.h"/>
+    <File Name="../../../src/output.cpp"/>
+    <File Name="../../../src/output.h"/>
   </VirtualDirectory>
+  <Dependencies Name="Release"/>
+  <Dependencies Name="Debug"/>
   <Settings Type="Executable">
+    <GlobalSettings>
+      <Compiler Options="">
+        <IncludePath Value="."/>
+      </Compiler>
+      <Linker Options="">
+        <LibraryPath Value="."/>
+      </Linker>
+      <ResourceCompiler Options=""/>
+    </GlobalSettings>
     <Configuration Name="Debug" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-g" Required="yes" PreCompiledHeader="">
+      <Compiler Options="-g;-W" Required="yes" PreCompiledHeader="">
         <IncludePath Value="."/>
         <IncludePath Value="../../../dependencies/mingw/ruby1.8.6/include"/>
         <IncludePath Value="../../../dependencies/mingw/sdl/include"/>
@@ -126,12 +136,12 @@
         <Preprocessor Value="_WINDOWS"/>
         <Preprocessor Value="MINGW"/>
       </Compiler>
-      <Linker Options="-lmingw32 -lSDLmain -lSDL -lSDL_image -lSDL_mixer -lSDL_ttf -lmsvcrt-ruby18" Required="yes">
+      <Linker Options="-mwindows -lmingw32  -lSDLmain -lSDL -lSDL_image -lSDL_mixer -lSDL_ttf -lmsvcrt-ruby18" Required="yes">
         <LibraryPath Value="../../../dependencies/mingw/ruby1.8.6/lib"/>
         <LibraryPath Value="../../../dependencies/mingw/sdl/lib"/>
       </Linker>
       <ResourceCompiler Options="" Required="yes"/>
-      <General OutputFile="../../../bin/Debug" IntermediateDirectory="./Debug" Command="./$(ProjectName)" CommandArguments="" WorkingDirectory="../../../bin/Debug" PauseExecWhenProcTerminates="yes"/>
+      <General OutputFile="../../../bin/Debug/$(ProjectName)" IntermediateDirectory="./Debug" Command="./$(ProjectName)" CommandArguments="" WorkingDirectory="../../../bin/Debug" PauseExecWhenProcTerminates="yes"/>
       <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort="" DebuggerPath="">
         <PostConnectCommands/>
         <StartupCommands/>
@@ -181,15 +191,5 @@
         <CustomPreBuild/>
       </AdditionalRules>
     </Configuration>
-    <GlobalSettings>
-      <Compiler Options="">
-        <IncludePath Value="."/>
-      </Compiler>
-      <Linker Options="">
-        <LibraryPath Value="."/>
-      </Linker>
-      <ResourceCompiler Options=""/>
-    </GlobalSettings>
   </Settings>
-  <Dependencies Name="Debug"/>
 </CodeLite_Project>

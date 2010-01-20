@@ -1,5 +1,6 @@
 //////////////////////////////////////////////////////////////////////////////////
-/// ARGSS - Copyright (c) 2009, Alejandro Marzini (vgvgf) - All rights reserved.
+/// ARGSS - Copyright (c) 2009 - 2010, Alejandro Marzini (vgvgf)
+///         All rights reserved.
 ///
 /// Redistribution and use in source and binary forms, with or without
 /// modification, are permitted provided that the following conditions are met:
@@ -26,7 +27,7 @@
 ////////////////////////////////////////////////////////////
 #include "argss.h"
 #include "argss_ruby.h"
-#include "argss_console.h"
+#include "argss_output.h"
 #include "argss_audio.h"
 #include "argss_graphics.h"
 #include "argss_input.h"
@@ -52,7 +53,7 @@ void ARGSS::Init()
 {
 	ARGSS::ARuby::Init();
 	
-	ARGSS::AConsole::Init();
+	ARGSS::AOutput::Init();
 	ARGSS::AAudio::Init();
 	ARGSS::AGraphics::Init();
 	ARGSS::AInput::Init();
