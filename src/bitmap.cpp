@@ -32,6 +32,7 @@
 #include "hslrgb.h"
 #include "graphics.h"
 #include "argss_ruby.h"
+#include "argss_error.h"
 
 ////////////////////////////////////////////////////////////
 /// Static Variables
@@ -51,11 +52,11 @@ Bitmap::Bitmap(int width, int height) {
 	SDL_Surface* temp;
 	temp = SDL_CreateRGBSurface(SDL_SWSURFACE | SDL_SRCALPHA, width, height, 32, rmask, gmask, bmask, amask);
 	if (temp == NULL) {
-		// Error
+		rb_raise(ARGSS::AError::id, "couldn't create %dx%d image.\n%s\n", width, height, SDL_GetError());
 	}
 	bitmap = SDL_DisplayFormatAlpha(temp);
 	if (bitmap == NULL) {
-		// Error
+		rb_raise(ARGSS::AError::id, "couldn't optimize %dx%d image.\n%s\n", width, height, SDL_GetError());
 	}
 	SDL_FreeSurface(temp);
 }
@@ -65,11 +66,11 @@ Bitmap::Bitmap(unsigned long iid, std::string filename) {
 	SDL_Surface* temp;
 	temp = IMG_Load(filename.c_str());
 	if (temp == NULL) {
-		// Error
+		rb_raise(ARGSS::AError::id, "couldn't load %s image.\n%s\n", filename.c_str(), IMG_GetError());
 	}
 	bitmap = SDL_DisplayFormatAlpha(temp);
 	if(bitmap == NULL) {
-		// Error
+		rb_raise(ARGSS::AError::id, "couldn't optimize %s image.\n%s\n", filename.c_str(), SDL_GetError());
 	}
 	SDL_FreeSurface(temp);
 }
@@ -78,11 +79,11 @@ Bitmap::Bitmap(unsigned long iid, int width, int height) {
 	SDL_Surface* temp;
 	temp = SDL_CreateRGBSurface(SDL_SWSURFACE | SDL_SRCALPHA, width, height, 32, rmask, gmask, bmask, amask);
 	if (temp == NULL) {
-		// Error
+		rb_raise(ARGSS::AError::id, "couldn't create %dx%d image.\n%s\n", width, height, SDL_GetError());
 	}
 	bitmap = SDL_DisplayFormatAlpha(temp);
 	if (bitmap == NULL) {
-		// Error
+		rb_raise(ARGSS::AError::id, "couldn't optimize %dx%d image.\n%s\n", width, height, SDL_GetError());
 	}
 	SDL_FreeSurface(temp);
 }
@@ -90,11 +91,11 @@ Bitmap::Bitmap(Bitmap* source, Rect src_rect) {
 	SDL_Surface* temp;
 	temp = SDL_CreateRGBSurface(SDL_SWSURFACE | SDL_SRCALPHA, src_rect.width, src_rect.height, 32, rmask, gmask, bmask, amask);
 	if (temp == NULL) {
-		// Error
+		rb_raise(ARGSS::AError::id, "couldn't create %dx%d image.\n%s\n", src_rect.width, src_rect.height, SDL_GetError());
 	}
 	bitmap = SDL_DisplayFormatAlpha(temp);
 	if (bitmap == NULL) {
-		// Error
+		rb_raise(ARGSS::AError::id, "couldn't optimize %dx%d image.\n%s\n", src_rect.width, src_rect.height, SDL_GetError());
 	}
 	SDL_FreeSurface(temp);
 	Blit(0, 0, source, src_rect, 255);
@@ -401,7 +402,7 @@ void Bitmap::DrawText(Rect rect, std::string text, int align) {
 	char* name = StringValuePtr(name_id);
 	TTF_Font* ttf_font = TTF_OpenFont(name, NUM2INT(rb_iv_get(font_id, "@size")));
 	if (!ttf_font) {
-		//rb_raise(ARGSS::AError::id, "SDL could not load font %s size %d.\n%s\n", name, NUM2INT(rb_iv_get(self, "@size")), TTF_GetError());
+		rb_raise(ARGSS::AError::id, "couldn't open font %s size %d.\n%s\n", name, NUM2INT(rb_iv_get(font_id, "@size")), TTF_GetError());
 	}
 	int style = 0;
     if (NUM2BOOL(rb_iv_get(font_id, "@bold"))) style |= TTF_STYLE_BOLD;
@@ -412,7 +413,7 @@ void Bitmap::DrawText(Rect rect, std::string text, int align) {
 	
 	SDL_Surface *text_surface;
 	if (!(text_surface = TTF_RenderUTF8_Blended(ttf_font, text.c_str(), color.Get()))) {
-		//rb_raise(ARGSS_Error, "SDL could not draw text %s with Font(%x).\n%s\n", text.c_str(), font, TTF_GetError());
+		rb_raise(ARGSS::AError::id, "couldn't draw text %s with Font(%x).\n%s\n", text.c_str(), font_id, TTF_GetError());
 	}
 	
 	Bitmap* text_bmp = new Bitmap(1, 1);
@@ -453,7 +454,7 @@ Rect Bitmap::GetTextSize(std::string text) {
 	char* name = StringValuePtr(name_id);
 	TTF_Font* ttf_font = TTF_OpenFont(name, NUM2INT(rb_iv_get(font_id, "@size")));
 	if(!ttf_font) {
-		//rb_raise(ARGSS_Error, "SDL could not load font %s size %d.\n%s\n", name, NUM2INT(rb_iv_get(self, "@size")), TTF_GetError());
+		rb_raise(ARGSS::AError::id, "couldn't open font %s size %d.\n%s\n", name, NUM2INT(rb_iv_get(font_id, "@size")), TTF_GetError());
 	}
 	int style = 0;
     if (NUM2BOOL(rb_iv_get(font_id, "@bold"))) style |= TTF_STYLE_BOLD;
@@ -462,7 +463,7 @@ Rect Bitmap::GetTextSize(std::string text) {
 	
 	int w, h;
 	if (TTF_SizeUTF8(ttf_font, text.c_str(), &w, &h)) {
-		//rb_raise(ARGSS_Error, "SDL could not determine text size %s for Font(%x).\n%s\n", text.c_str(), font_id, TTF_GetError());
+		rb_raise(ARGSS::AError::id, "couldn't determine text size for Font(%x).\n%s\n", text.c_str(), font_id, TTF_GetError());
 	}
     return Rect(0, 0, w, h);
 }

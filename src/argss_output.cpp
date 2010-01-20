@@ -89,6 +89,6 @@ void ARGSS::AOutput::Init() {
 	rb_define_method(stderr_id, "write", (rubyfunc)argss_output_stderr_write, 1);
 
 	rb_gv_set("$stdout", rb_class_new_instance(0, 0, stdout_id));
-	rb_gv_set("$defout", rb_class_new_instance(0, 0, stdout_id));
+	//rb_gv_set("$defout", rb_class_new_instance(0, 0, stdout_id));
 	rb_gv_set("$stderr", rb_class_new_instance(0, 0, stderr_id));
 }

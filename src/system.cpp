@@ -60,10 +60,7 @@ void System::Init() {
 		CSimpleIniA ini(true, false, false);
 		SI_Error rc = ini.LoadFile(INI_NAME);
 		if (rc < 0) {
-			std::string str = "ARGSS could not open \"";
-			str += INI_NAME;
-			str += "\" file.";
-			Output::Warning(str);
+			Output::Warning("ARGSS could not open %s file.", INI_NAME);
 		}
 		if(READ_INI_SCRIPTS_PATH) {
 			ScriptsPath = ini.GetValue("Game", "Scripts", SCRIPTS_PATH);

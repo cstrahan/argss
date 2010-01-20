@@ -29,6 +29,11 @@
 	#define _WIN32_WINNT 0x0500
 #endif
 #include <windows.h>
+#include <stdio.h>
+#include <fcntl.h>
+#include <io.h>
+#include <iostream>
+#include <fstream>
 #include "console_win32.h"
 
 ////////////////////////////////////////////////////////////
@@ -36,6 +41,11 @@
 ////////////////////////////////////////////////////////////
 void Console::Init() {
     AllocConsole();
+	long lStdHandle = (long)GetStdHandle(STD_INPUT_HANDLE);
+	int hConHandle = _open_osfhandle(lStdHandle, _O_TEXT);
+	FILE* fp = _fdopen( hConHandle, "r");
+	*stdin = *fp;
+	setvbuf(stdin, NULL, _IONBF, 0);
 	Sleep(10);
 }
 

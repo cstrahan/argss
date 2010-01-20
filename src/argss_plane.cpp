@@ -62,11 +62,13 @@ static VALUE argss_plane_initialize(int argc, VALUE *argv, VALUE self) {
 	rb_iv_set(self, "@color", ARGSS::AColor::New());
     rb_iv_set(self, "@tone", ARGSS::ATone::New());
 	Plane::New(self);
+	ARGSS::ARuby::AddObject(self);
 	return self;
 }
 static VALUE argss_plane_dispose(VALUE self) {
 	ARGSS::APlane::Check(self);
 	Plane::Get(self)->Dispose();
+	ARGSS::ARuby::RemoveObject(self);
     return self;
 }
 static VALUE argss_plane_disposedQ(VALUE self) {

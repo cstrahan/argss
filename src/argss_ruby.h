@@ -41,14 +41,24 @@ namespace ARGSS {
 		void Init();
 		void Run();
 		VALUE IntVectorToRArr(std::vector<int> vector); // Remove?
+
+		void AddObject(VALUE id);
+		void RemoveObject(VALUE id);
+		extern VALUE protected_objects;
 	}
 }
 
+////////////////////////////////////////////////////////////
+/// Ruby macros
+////////////////////////////////////////////////////////////
 #define BOOL2NUM(x) (x ? Qtrue : Qfalse)
 #define INT2BOOL(x) (x == 0 ? (VALUE)0 : (VALUE)2)
 #define NUM2BOOL(x) (x == (VALUE)2)
 #define raise_argn(a, n) (rb_raise(rb_eArgError, "wrong number of arguments(%i for %i)", a, n))
 
+////////////////////////////////////////////////////////////
+/// Object type checking
+////////////////////////////////////////////////////////////
 void Check_Kind(VALUE o, VALUE c);
 void Check_Types2(VALUE x, VALUE t1, VALUE t2);
 void Check_Bool(VALUE x);

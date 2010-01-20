@@ -25,12 +25,13 @@
 ////////////////////////////////////////////////////////////
 /// Headers
 ////////////////////////////////////////////////////////////
-#include "output.h"
-#include "options.h"
 #include <iostream>
 #include <fstream>
 #include <cstdlib>
 #include <conio.h>
+#include <stdarg.h>
+#include "output.h"
+#include "options.h"
 #include "system.h"
 #include "player.h"
 #include "console.h"
@@ -53,22 +54,74 @@ void Output::Init(){
 ////////////////////////////////////////////////////////////
 /// Output Error
 ////////////////////////////////////////////////////////////
+void Output::Error(char* fmt, ...) {
+	va_list args;
+	va_start(args, fmt);
+
+	char str[256];
+#ifdef MSVC
+	vsprintf_s(str, 256, fmt, args);
+#else
+	vsprintf(str, fmt, args);
+#endif
+	Output::Error((std::string)str);
+
+	va_end(args);
+}
 void Output::Error(std::string err){
 	Post(err);
+	if (Console::Active()) {
+		Post("\nARGSS will close now. Press any key...");
+#ifdef MSVC
+		_getch();
+#else
+		getch();
+#endif
+	}
 	Player::Exit();
+	exit(-1);
 }
 
 ////////////////////////////////////////////////////////////
 /// Output Warning
 ////////////////////////////////////////////////////////////
+void Output::Warning(char* fmt, ...) {
+	va_list args;
+	va_start(args, fmt);
+
+	char str[256];
+#ifdef MSVC
+	vsprintf_s(str, 256, fmt, args);
+#else
+	vsprintf(str, fmt, args);
+#endif
+	Output::Warning((std::string)str);
+
+	va_end(args);
+}
 void Output::Warning(std::string warn) {
 	Post(warn);
 }
 
 ////////////////////////////////////////////////////////////
-/// Output Post message
+/// Output Post message 
 ////////////////////////////////////////////////////////////
-void Output::Post(std::string msg) {	
+void Output::Post(char* fmt, ...) {
+	va_list args;
+	va_start(args, fmt);
+
+	char str[256];
+#ifdef MSVC
+	vsprintf_s(str, 256, fmt, args);
+#else
+	vsprintf(str, fmt, args);
+#endif
+	Output::Post((std::string)str);
+
+	va_end(args);
+}
+void Output::Post(std::string msg) {
+	output_type = 2;
 	switch(output_type) {
 	case 1:
 		if (Console::Active()) Console::Write(msg);

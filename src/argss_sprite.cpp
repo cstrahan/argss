@@ -72,11 +72,13 @@ static VALUE argss_sprite_initialize(int argc, VALUE *argv, VALUE self) {
 	rb_iv_set(self, "@color", ARGSS::AColor::New());
     rb_iv_set(self, "@tone", ARGSS::ATone::New());
 	Sprite::New(self);
+	ARGSS::ARuby::AddObject(self);
     return self;
 }
 static VALUE argss_sprite_dispose(VALUE self) {
     ARGSS::ASprite::Check(self);
 	Sprite::Get(self)->Dispose();
+	ARGSS::ARuby::RemoveObject(self);
     return self;
 }
 static VALUE argss_sprite_disposedQ(VALUE self) {

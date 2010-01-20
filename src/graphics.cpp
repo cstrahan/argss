@@ -127,6 +127,7 @@ void Graphics::DrawFrame() {
     for(it_zlist = zlist.begin(); it_zlist != zlist.end(); it_zlist++) {
         VALUE type = it_zlist->GetType();
 		if (type == ARGSS::ASprite::id) {
+			unsigned long a = it_zlist->GetId();
 			Sprite::Get(it_zlist->GetId())->Draw();
 		}
 		else if (type == ARGSS::AWindow::id) {
@@ -139,15 +140,15 @@ void Graphics::DrawFrame() {
 			//Tilemap::Get(it_zlist->GetId())->Draw();
 		}
 		else if (type == ARGSS::AViewport::id) {
-				Viewport::Get(it_zlist->GetId())->Draw();
+			Viewport::Get(it_zlist->GetId())->Draw();
 		}
 		else {
-				// Error
+			rb_raise(ARGSS::AError::id, "can't draw object(%x) with unknown type.\n%s\n", it_zlist->GetId());
 		}
     }
 	
-	if(SDL_Flip(screen) == -1) {
-		rb_raise(ARGSS::AError::id, "SDL could not flip screen.\n%s\n", SDL_GetError());
+	if (SDL_Flip(screen) == -1) {
+		rb_raise(ARGSS::AError::id, "couldn't update screen.\n%s\n", SDL_GetError());
 	}
 }
 

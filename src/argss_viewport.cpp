@@ -41,11 +41,13 @@ VALUE ARGSS::AViewport::id;
 /// ARGSS Viewport ruby functions
 ////////////////////////////////////////////////////////////
 static VALUE argss_viewport_initialize(int argc, VALUE *argv, VALUE self) {
+	ARGSS::ARuby::AddObject(self);
 	return self;
 }
 static VALUE argss_viewport_dispose(VALUE self) {
 	ARGSS::AViewport::Check(self);
 	Viewport::Get(self)->Dispose();
+	ARGSS::ARuby::RemoveObject(self);
     return self;
 }
 static VALUE argss_viewport_disposedQ(VALUE self) {

@@ -37,9 +37,12 @@ namespace Output {
 	void Init();
 
 	void Post(std::string msg);
+	void Post(char* fmt, ...);
 	void PostFile(std::string msg);
 	void Warning(std::string warn);
+	void Warning(char* fmt, ...);
 	void Error(std::string err);
+	void Error(char* fmt, ...);
 
 	void Console();
 	void MsgBox();

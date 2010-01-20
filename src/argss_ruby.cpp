@@ -33,12 +33,19 @@
 #include "output.h"
 
 ////////////////////////////////////////////////////////////
+/// Global variables
+////////////////////////////////////////////////////////////
+VALUE ARGSS::ARuby::protected_objects;
+
+////////////////////////////////////////////////////////////
 /// ARGSS Ruby initialize
 ////////////////////////////////////////////////////////////
 void ARGSS::ARuby::Init() {
 	ruby_init();
 	ruby_init_loadpath();
 	atexit(ruby_finalize);
+	protected_objects = rb_hash_new();
+	rb_gc_register_address(&protected_objects);
 }
 
 ////////////////////////////////////////////////////////////
@@ -70,7 +77,7 @@ void ARGSS::ARuby::Run() {
 						report += RSTRING(RARRAY(ary)->ptr[i])->ptr;
 					}
 				}
-				Output::Post(report);
+				Output::Error(report);
 			}
 		}
 		Player::Exit();
@@ -88,6 +95,20 @@ VALUE ARGSS::ARuby::IntVectorToRArr(std::vector<int> vector) {
 	VALUE arr = rb_ary_new4(vector.size(), values);
 	delete values;
 	return arr;
+}
+
+////////////////////////////////////////////////////////////
+/// Int vetor to Ruby Array
+////////////////////////////////////////////////////////////
+void ARGSS::ARuby::AddObject(VALUE id) {
+	rb_hash_aset(protected_objects, id, id);
+}
+
+////////////////////////////////////////////////////////////
+/// Int vetor to Ruby Array
+////////////////////////////////////////////////////////////
+void ARGSS::ARuby::RemoveObject(VALUE id) {
+	rb_hash_delete(protected_objects, id);
 }
 
 ////////////////////////////////////////////////////////////

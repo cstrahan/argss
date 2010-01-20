@@ -38,12 +38,12 @@
 ////////////////////////////////////////////////////////////
 int main(int argc, char **argv)
 {
+	Output::Init();
     System::Init();
 	Graphics::Init();
 	Input::Init();
 	Audio::Init();
 	Player::Init();
-	Output::Init();
 	ARGSS::Init();
 	
 	return 0;

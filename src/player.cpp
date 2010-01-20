@@ -28,6 +28,7 @@
 #include "player.h"
 #include "graphics.h"
 #include "system.h"
+#include "output.h"
 #include "console.h"
 #include "argss_ruby.h"
 #include "SDL_ttf.h"
@@ -37,22 +38,18 @@
 ////////////////////////////////////////////////////////////
 void Player::Init() {
 	if((SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER |SDL_INIT_JOYSTICK | SDL_INIT_TIMER | SDL_INIT_AUDIO) < 0)) { 
-        fprintf(stderr, "SDL could not initialize SDL.\n%s\n", SDL_GetError());
-        exit(-1);
+		Output::Error("ARGSS couldn't initialize SDL.\n%s\n", SDL_GetError());
     }
-	
+
 	atexit(SDL_Quit);
 
 	Graphics::SetScreen(SDL_SetVideoMode(System::Width, System::Height, 32, SDL_HWSURFACE));
     if (Graphics::GetScreen() == NULL ) {
-        //fprintf(stderr, "SDL could not set %dx%dx%d video mode.\n%s\n", 
-		//	System::Width, System::Height, 32, SDL_GetError());
-        exit(-1);
+		Output::Error("ARGSS couldn't initialize %dx%dx%d video mode.\n%s\n", System::Width, System::Height, 32, SDL_GetError());
     }
 	
 	if(TTF_Init() == -1) {
-		//fprintf(stderr, "SDL could not initialize TTF library.\n%s\n", TTF_GetError());
-		exit(-1);
+		Output::Error("ARGSS couldn't initialize SDL_ttf library.\n%s\n", TTF_GetError());
 	}
 	
 	SDL_WM_SetCaption(System::Title.c_str(), NULL);
@@ -96,8 +93,6 @@ void Player::Update() {
 /// Exit
 ////////////////////////////////////////////////////////////
 void Player::Exit() {
-	if (Console::Active()) SDL_Delay(5000);
-
 	Console::Free();
     SDL_Quit();
 	rb_exit(1);

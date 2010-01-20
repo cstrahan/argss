@@ -127,4 +127,4 @@
 ///   Name of the file for output.
 ////////////////////////////////////////////////////////////
 #define OUTPUT_TYPE 6
-#define OUTPUT_FILE "error.txt"
+#define OUTPUT_FILE "out.txt"

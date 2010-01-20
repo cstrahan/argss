@@ -52,6 +52,7 @@ static VALUE argss_bitmap_initialize(int argc, VALUE *argv, VALUE self) {
     }
     else raise_argn(argc, 2);
 	rb_iv_set(self, "@font", ARGSS::AFont::New());
+	ARGSS::ARuby::AddObject(self);
     return self;
 }
 static VALUE argss_bitmap_dispose(VALUE self) {

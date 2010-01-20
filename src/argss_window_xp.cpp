@@ -76,11 +76,13 @@ static VALUE argss_window_initialize(int argc, VALUE *argv, VALUE self) {
 	rb_iv_set(self, "@back_opacity", INT2NUM(255));
 	rb_iv_set(self, "@contents_opacity", INT2NUM(255));
 	Window::New(self);
+	ARGSS::ARuby::AddObject(self);
 	return self;
 }
 static VALUE argss_window_dispose(VALUE self) {
     ARGSS::AWindow::Check(self);
     Window::Get(self)->Dispose();
+	ARGSS::ARuby::RemoveObject(self);
     return self;
 }
 static VALUE argss_window_disposedQ(VALUE self) {

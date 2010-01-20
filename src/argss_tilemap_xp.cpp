@@ -59,11 +59,13 @@ static VALUE argss_tilemap_initialize(int argc, VALUE *argv, VALUE self) {
     rb_iv_set(self, "@ox", INT2NUM(0));
 	rb_iv_set(self, "@oy", INT2NUM(0));
 	Tilemap::New(self);
+	ARGSS::ARuby::AddObject(self);
 	return self;
 }
 static VALUE argss_tilemap_dispose(VALUE self) {
 	ARGSS::ATilemap::Check(self);
 	Tilemap::Get(self)->Dispose();
+	ARGSS::ARuby::RemoveObject(self);
     return self;
 }
 static VALUE argss_tilemap_disposeQ(VALUE self) {
