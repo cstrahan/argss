@@ -35,6 +35,7 @@
 VALUE ARGSS::AOutput::id;
 VALUE ARGSS::AOutput::stdout_id;
 VALUE ARGSS::AOutput::stderr_id;
+VALUE ARGSS::AOutput::stdin_id;
 
 ////////////////////////////////////////////////////////////
 /// ARGSS Output ruby functions
@@ -57,7 +58,7 @@ static VALUE argss_output_none(VALUE self) {
 }
 
 ////////////////////////////////////////////////////////////
-/// ARGSS Stdout and Stderr
+/// ARGSS Stdout, Stderr and Stdin
 ////////////////////////////////////////////////////////////
 static VALUE argss_output_stdout_write(VALUE self, VALUE str) {
 	if (TYPE(str) != T_STRING) str = rb_obj_as_string(str);
@@ -70,6 +71,14 @@ static VALUE argss_output_stderr_write(VALUE self, VALUE str) {
 	if (RSTRING(str)->len == 0) return INT2FIX(0);
 	Output::Error(StringValuePtr(str));
 	return INT2FIX(RSTRING(str)->len);
+}
+static VALUE argss_stdin_gets(int argc, VALUE *argv, VALUE self) {
+	std::string str = Output::Gets();
+	return rb_str_new(str.c_str(), str.length());
+}
+static VALUE argss_stdin_getc(int argc, VALUE *argv, VALUE self) {
+	std::string str = Output::Getc();
+	return rb_str_new(str.c_str(), str.length());
 }
 
 ////////////////////////////////////////////////////////////
@@ -89,6 +98,12 @@ void ARGSS::AOutput::Init() {
 	rb_define_method(stderr_id, "write", (rubyfunc)argss_output_stderr_write, 1);
 
 	rb_gv_set("$stdout", rb_class_new_instance(0, 0, stdout_id));
-	//rb_gv_set("$defout", rb_class_new_instance(0, 0, stdout_id));
 	rb_gv_set("$stderr", rb_class_new_instance(0, 0, stderr_id));
+
+	stdin_id = rb_define_class_under(id, "Stdin", rb_cObject);
+	rb_define_method(stdin_id, "gets", (rubyfunc)argss_stdin_gets, -1);
+	rb_define_method(stdin_id, "getc", (rubyfunc)argss_stdin_getc, -1);
+	rb_define_global_function("getc", (rubyfunc)argss_stdin_getc, 0);
+
+	rb_gv_set("$stdin", rb_class_new_instance(0, 0, stdin_id));
 }

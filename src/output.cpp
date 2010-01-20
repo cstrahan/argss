@@ -121,7 +121,6 @@ void Output::Post(char* fmt, ...) {
 	va_end(args);
 }
 void Output::Post(std::string msg) {
-	output_type = 2;
 	switch(output_type) {
 	case 1:
 		if (Console::Active()) Console::Write(msg);
@@ -187,4 +186,34 @@ void Output::File(std::string name) {
 void Output::None() {
 	if (Console::Active()) Console::Free();
 	output_type = 0;
+}
+
+////////////////////////////////////////////////////////////
+/// Output Console
+////////////////////////////////////////////////////////////
+std::string Output::Gets() {
+	char string[256] = "\0";
+	if (Console::Active()) {
+#ifdef MSVC
+		gets_s(string, 256);
+#else
+		gets(string);
+#endif
+	}
+	return string;
+}
+
+////////////////////////////////////////////////////////////
+/// Output Console
+////////////////////////////////////////////////////////////
+std::string Output::Getc() {
+	std::string chr = "";
+	if (Console::Active()) {
+#ifdef MSVC
+		chr += _getch();
+#else
+		chr += getch();
+#endif
+	}
+	return chr;
 }

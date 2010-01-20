@@ -49,6 +49,9 @@ namespace Output {
 	void File(std::string name);
 	void None();
 
+	std::string Gets();
+	std::string Getc();
+
 	extern int output_type;
 	extern std::string filename;
 };

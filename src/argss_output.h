@@ -38,6 +38,7 @@ namespace ARGSS {
 		extern VALUE id;
 		extern VALUE stdout_id;
 		extern VALUE stderr_id;
+		extern VALUE stdin_id;
 		void Init();
 	};
 };
