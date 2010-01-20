@@ -241,6 +241,11 @@ void Bitmap::Blit(int x, int y, Bitmap* src_bitmap, Rect src_rect, int opacity) 
     const Uint8* src_pixels = ((Uint8*)source->pixels) + (src_rect.x + src_rect.y * source->w) * 4;
     Uint8* dst_pixels = ((Uint8*)bitmap->pixels) + (x + y * GetWidth()) * 4;
 
+	const int rbyte = MaskGetByte(bitmap->format->Rmask);
+	const int gbyte = MaskGetByte(bitmap->format->Gmask);
+	const int bbyte = MaskGetByte(bitmap->format->Bmask);
+	const int abyte = MaskGetByte(bitmap->format->Amask);
+
     if (opacity > 255) opacity = 255;
 	if (opacity > 0) {
 		for (int i = 0; i < height; ++i) {
@@ -248,11 +253,11 @@ void Bitmap::Blit(int x, int y, Bitmap* src_bitmap, Rect src_rect, int opacity) 
 				const Uint8* src   = src_pixels + j * 4;
 				Uint8*       dst   = dst_pixels + j * 4;
 
-				Uint8 srca = src[3] * opacity / 255;
-				dst[0] = (dst[0] * (255 - srca) + src[0] * srca) / 255;
-				dst[1] = (dst[1] * (255 - srca) + src[1] * srca) / 255;
-				dst[2] = (dst[2] * (255 - srca) + src[2] * srca) / 255;
-				dst[3] = dst[3] * (255 - srca) / 255 + srca;
+				Uint8 srca = src[abyte] * opacity / 255;
+				dst[rbyte] = (dst[rbyte] * (255 - srca) + src[rbyte] * srca) / 255;
+				dst[gbyte] = (dst[gbyte] * (255 - srca) + src[gbyte] * srca) / 255;
+				dst[bbyte] = (dst[bbyte] * (255 - srca) + src[bbyte] * srca) / 255;
+				dst[abyte] = dst[abyte] * (255 - srca) / 255 + srca;
 			}
 			src_pixels += src_stride;
 			dst_pixels += dst_stride;
@@ -506,13 +511,17 @@ void Bitmap::ToneChange(Tone tone) {
 
 	Uint8 *pixels = (Uint8 *)bitmap->pixels;
 	
+	const int rbyte = MaskGetByte(bitmap->format->Rmask);
+	const int gbyte = MaskGetByte(bitmap->format->Gmask);
+	const int bbyte = MaskGetByte(bitmap->format->Bmask);
+
 	if(tone.gray == 0) {
 		for (int i = 0; i < GetHeight(); i++) {
 			for (int j = 0; j < GetWidth(); j++) {
 				Uint8 *pixel = pixels;
-				pixel[0] = (Uint8)max(min(pixel[0] + tone.red, 255), 0);
-				pixel[1] = (Uint8)max(min(pixel[1] + tone.green, 255), 0);
-				pixel[2] = (Uint8)max(min(pixel[2] + tone.blue, 255), 0);
+				pixel[rbyte] = (Uint8)max(min(pixel[rbyte] + tone.red, 255), 0);
+				pixel[gbyte] = (Uint8)max(min(pixel[gbyte] + tone.green, 255), 0);
+				pixel[bbyte] = (Uint8)max(min(pixel[bbyte] + tone.blue, 255), 0);
 				pixels += 4;
 			}
 		}
@@ -524,10 +533,10 @@ void Bitmap::ToneChange(Tone tone) {
 			for (int j = 0; j < GetWidth(); j++) {
 				Uint8 *pixel = pixels;
 				
-				gray = pixel[0] * 0.299 + pixel[1] * 0.587 + pixel[2] * 0.114;
-				pixel[0] = (Uint8)max(min((pixel[0] - gray) * factor + gray + tone.red + 0.5, 255), 0);
-				pixel[1] = (Uint8)max(min((pixel[1] - gray) * factor + gray + tone.green + 0.5, 255), 0);
-				pixel[2] = (Uint8)max(min((pixel[2] - gray) * factor + gray + tone.blue + 0.5, 255), 0);
+				gray = pixel[rbyte] * 0.299 + pixel[gbyte] * 0.587 + pixel[bbyte] * 0.114;
+				pixel[rbyte] = (Uint8)max(min((pixel[rbyte] - gray) * factor + gray + tone.red + 0.5, 255), 0);
+				pixel[gbyte] = (Uint8)max(min((pixel[gbyte] - gray) * factor + gray + tone.green + 0.5, 255), 0);
+				pixel[bbyte] = (Uint8)max(min((pixel[bbyte] - gray) * factor + gray + tone.blue + 0.5, 255), 0);
 				pixels += 4;
 			}
 		}
@@ -546,19 +555,21 @@ void Bitmap::OpacityChange(int opacity, int bush_depth) {
 	Uint8 *pixels = (Uint8 *)bitmap->pixels;
 	
 	int start_bush = max(GetHeight() - bush_depth, 0);
+
+	const int abyte = MaskGetByte(bitmap->format->Amask);
 	
 	if (opacity < 255) {
 		for (int i = 0; i < start_bush; i++) {
 			for (int j = 0; j < GetWidth(); j++) {
 				Uint8 *pixel = pixels;
-				pixel[3] = pixel[3] * opacity / 255;
+				pixel[abyte] = pixel[abyte] * opacity / 255;
 				pixels += 4;
 			}
 		}
 		for (int i = start_bush; i< GetHeight(); i++) {
 			for (int j = 0; j < GetWidth(); j++) {
 				Uint8 *pixel = pixels;
-				pixel[3] = (pixel[3] / 2) * opacity / 255;
+				pixel[abyte] = (pixel[abyte] / 2) * opacity / 255;
 				pixels += 4;
 			}
 		}
@@ -568,7 +579,7 @@ void Bitmap::OpacityChange(int opacity, int bush_depth) {
 		for (int i = start_bush; i < GetHeight(); i++) {
 			for (int j = 0; j < GetWidth(); j++) {
 				Uint8 *pixel = pixels;
-				pixel[3] = pixel[3] / 2;
+				pixel[abyte] = pixel[abyte] / 2;
 				pixels += 4;
 			}
 		}
@@ -783,4 +794,21 @@ void Bitmap::Flash(Color color, int frame, int duration) {
 Rect Bitmap::GetRect() {
 	Rect rect(0, 0, GetWidth(), GetHeight());
 	return rect;
+}
+
+////////////////////////////////////////////////////////////
+/// Get Rect
+////////////////////////////////////////////////////////////
+int Bitmap::MaskGetByte(Uint32 mask) {
+	switch (mask)
+	{
+		case 0xFF000000:
+			return 3;
+		case 0x00FF0000:
+			return 2;
+		case 0x0000FF00:
+			return 1;
+		default:
+			return 0;
+	}
 }

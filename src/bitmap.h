@@ -98,6 +98,8 @@ public:
 private:
 	static std::map<unsigned long, Bitmap*> bitmaps;
 
+	int MaskGetByte(Uint32 mask);
+
 	unsigned long id;
 };
 

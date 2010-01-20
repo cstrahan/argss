@@ -48,7 +48,7 @@
 int Graphics::fps;
 int Graphics::framerate;
 int Graphics::framecount;
-unsigned long Graphics::backcolor;
+Uint32 Graphics::backcolor;
 int Graphics::brightness;
 double Graphics::framerate_interval;
 SDL_Surface* Graphics::screen;
@@ -119,9 +119,7 @@ void Graphics::Update() {
 /// Draw Frame
 ////////////////////////////////////////////////////////////
 void Graphics::DrawFrame() {
-	// Color::GetUint32(backcolor, screen->format)
-
-	SDL_FillRect(screen, &screen->clip_rect, 0);
+	SDL_FillRect(screen, &screen->clip_rect, backcolor);
 
 	zlist.sort(SortZObj);
     for(it_zlist = zlist.begin(); it_zlist != zlist.end(); it_zlist++) {
@@ -226,10 +224,10 @@ void Graphics::SetFrameCount(int nframecount) {
 	framecount = nframecount;
 }
 VALUE Graphics::GetBackColor() {
-	return backcolor;
+	return Color(backcolor, screen->format).GetARGSS();
 }
 void Graphics::SetBackColor(VALUE nbackcolor) {
-	backcolor = nbackcolor;
+	backcolor = Color::GetUint32(nbackcolor, screen->format);
 }
 int Graphics::GetBrightness() {
 	return brightness;

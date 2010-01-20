@@ -67,7 +67,7 @@ namespace Graphics {
 	extern int fps;
 	extern int framerate;
 	extern int framecount;
-	extern unsigned long backcolor;
+	extern Uint32 backcolor;
 	extern int brightness;
 	extern double framerate_interval;
 	extern long creation;

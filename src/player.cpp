@@ -40,7 +40,6 @@ void Player::Init() {
 	if((SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER |SDL_INIT_JOYSTICK | SDL_INIT_TIMER | SDL_INIT_AUDIO) < 0)) { 
 		Output::Error("ARGSS couldn't initialize SDL.\n%s\n", SDL_GetError());
     }
-
 	atexit(SDL_Quit);
 
 	Graphics::SetScreen(SDL_SetVideoMode(System::Width, System::Height, 32, SDL_HWSURFACE));
