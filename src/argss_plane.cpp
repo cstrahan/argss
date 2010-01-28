@@ -67,7 +67,7 @@ static VALUE argss_plane_initialize(int argc, VALUE *argv, VALUE self) {
 }
 static VALUE argss_plane_dispose(VALUE self) {
 	ARGSS::APlane::Check(self);
-	Plane::Get(self)->Dispose();
+	Plane::Dispose(self);
 	ARGSS::ARuby::RemoveObject(self);
     return self;
 }
@@ -202,8 +202,8 @@ void ARGSS::APlane::Init() {
 	rb_define_method(id, "bitmap=", (rubyfunc)argss_plane_bitmapE, 1);
 	rb_define_method(id, "visible", (rubyfunc)argss_plane_visible, 0);
 	rb_define_method(id, "visible=", (rubyfunc)argss_plane_visibleE, 1);
-	rb_define_method(id, "z=", (rubyfunc)argss_plane_z, 0);
-	rb_define_method(id, "z", (rubyfunc)argss_plane_zE, 1);
+	rb_define_method(id, "z", (rubyfunc)argss_plane_z, 0);
+	rb_define_method(id, "z=", (rubyfunc)argss_plane_zE, 1);
 	rb_define_method(id, "ox", (rubyfunc)argss_plane_ox, 0);
 	rb_define_method(id, "ox=", (rubyfunc)argss_plane_oxE, 1);
 	rb_define_method(id, "oy", (rubyfunc)argss_plane_oy, 0);

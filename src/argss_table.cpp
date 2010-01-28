@@ -25,7 +25,9 @@
 ////////////////////////////////////////////////////////////
 /// Headers
 ////////////////////////////////////////////////////////////
+#include <string>
 #include "argss_table.h"
+#include "output.h"
 
 ////////////////////////////////////////////////////////////
 /// Global Variables
@@ -73,8 +75,8 @@ static VALUE argss_table_resize(int argc, VALUE *argv, VALUE self) {
 	int osize;
 	osize = NUM2INT(rb_iv_get(self, "@xsize")) * NUM2INT(rb_iv_get(self, "@xsize")) *
 			NUM2INT(rb_iv_get(self, "@xsize"));
-	if(nsize != osize) {
-		if(nsize > osize) {
+	if (nsize != osize) {
+		if (nsize > osize) {
 			VALUE arr = rb_ary_new3(nsize - osize, INT2NUM(0));
 			rb_ary_concat(rb_iv_get(self, "@data"), arr);
 		}
@@ -100,9 +102,9 @@ static VALUE argss_table_zsize(VALUE self) {
 static VALUE argss_table_aref(int argc, VALUE *argv, VALUE self) {
 	int dim = NUM2INT(rb_iv_get(self, "@dim"));
 	if (argc != dim) raise_argn(argc, dim);
-	int x = 1;
-	int y = 1;
-	int z = 1;
+	int x = 0;
+	int y = 0;
+	int z = 0;
 	switch(argc) {
 		case 3:
 			z = NUM2INT(argv[2]);
@@ -115,7 +117,7 @@ static VALUE argss_table_aref(int argc, VALUE *argv, VALUE self) {
 	int xsize = NUM2INT(rb_iv_get(self, "@xsize"));
 	int ysize = NUM2INT(rb_iv_get(self, "@ysize"));
 	int zsize = NUM2INT(rb_iv_get(self, "@zsize"));
-	if(x > xsize || y > ysize || z > zsize) {
+	if (x >= xsize || y >= ysize || z >= zsize) {
 		return Qnil;
 	}
 	else {
@@ -125,9 +127,9 @@ static VALUE argss_table_aref(int argc, VALUE *argv, VALUE self) {
 static VALUE argss_table_aset(int argc, VALUE *argv, VALUE self) {
 	int dim = NUM2INT(rb_iv_get(self, "@dim"));
 	if (argc != (dim + 1)) raise_argn(argc, dim + 1);
-	int x = 1;
-	int y = 1;
-	int z = 1;
+	int x = 0;
+	int y = 0;
+	int z = 0;
 	switch(argc) {
 		case 3:
 			z = NUM2INT(argv[2]);
@@ -137,24 +139,38 @@ static VALUE argss_table_aset(int argc, VALUE *argv, VALUE self) {
 			x = NUM2INT(argv[0]);
 	}
 	int val = NUM2INT(argv[argc - 1]);
-	if(val > 65535) val = 65535;
+	if (val > 65535) val = 65535;
 	else if(val < 0) val = 0;
 	VALUE data = rb_iv_get(self, "@data");
 	int xsize = NUM2INT(rb_iv_get(self, "@xsize"));
 	int ysize = NUM2INT(rb_iv_get(self, "@ysize"));
 	int zsize = NUM2INT(rb_iv_get(self, "@zsize"));
-	if(x < xsize && y < ysize && z < zsize) {
+	if (x < xsize && y < ysize && z < zsize) {
 		rb_ary_store(data, x + y * xsize + z * xsize * ysize, INT2NUM(val));
 	}
 	return argv[argc - 1];
 }
-static VALUE argss_table_dump(VALUE self) {
-    //ToDo
-    return self;
-}
-static VALUE argss_table_load(VALUE str) {
-    //ToDo
+static VALUE argss_table_dump(int argc, VALUE* argv, VALUE self) {
+	if (argc > 1) raise_argn(argc, 1);
+	VALUE str = rb_str_new2("");
+	VALUE xsize = rb_iv_get(self, "@xsize");
+	VALUE ysize = rb_iv_get(self, "@ysize");
+	VALUE zsize = rb_iv_get(self, "@zsize");
+	unsigned long items = NUM2INT(xsize) * NUM2INT(ysize) *NUM2INT(zsize);
+	VALUE arr = rb_ary_new3(5, rb_iv_get(self, "@dim"), xsize, ysize, zsize, INT2NUM(items));
+	rb_str_concat(str, rb_funcall(arr, rb_intern("pack"), 1, rb_str_new2("L5")));
+	rb_str_concat(str, rb_funcall(rb_iv_get(self, "@data"), rb_intern("pack"), 1, rb_str_times(rb_str_new2("S"), INT2NUM(items))));
     return str;
+}
+static VALUE argss_table_load(VALUE self, VALUE str) {
+	VALUE arr = rb_funcall(str, rb_intern("unpack"), 1, rb_str_new2("L5"));
+	int dim = NUM2INT(rb_ary_entry(arr, 0));
+	unsigned long items = NUM2INT(rb_ary_entry(arr, 4));
+	VALUE args[3] = {rb_ary_entry(arr, 1), rb_ary_entry(arr, 2), rb_ary_entry(arr, 3)};
+	VALUE table = rb_class_new_instance(dim, args, ARGSS::ATable::id);
+	VALUE data = rb_funcall(rb_str_substr(str, 20, items * 2), rb_intern("unpack"), 1, rb_str_times(rb_str_new2("S"), INT2NUM(items)));
+	rb_iv_set(table, "@data", data);
+    return table;
 }
 
 ////////////////////////////////////////////////////////////

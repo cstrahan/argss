@@ -102,10 +102,12 @@ Sprite* Sprite::Get(VALUE id) {
 }
 
 ////////////////////////////////////////////////////////////
-/// Dispose
+/// Class Dispose Sprite
 ////////////////////////////////////////////////////////////
-void Sprite::Dispose() {
-	sprites.erase(id);
+void Sprite::Dispose(unsigned long id) {
+	delete sprites[id];
+	std::map<unsigned long, Sprite*>::iterator it = sprites.find(id);
+	sprites.erase(it);
 	Graphics::RemoveZObj(id);
 }
 

@@ -29,6 +29,8 @@
 /// Headers
 ////////////////////////////////////////////////////////////
 #include <string>
+#include <map>
+#include "SDL_mixer.h"
 
 ////////////////////////////////////////////////////////////
 /// Audio namespace
@@ -46,6 +48,16 @@ namespace Audio {
 	void ME_Fade(int fade);
 	void SE_Play(std::string file, int volume, int pitch);
 	void SE_Stop();
+	
+	extern Mix_Music* bgm;
+	extern int bgm_volume;
+	extern Mix_Chunk* bgs;
+	extern int bgs_channel;
+	extern Mix_Chunk* me;
+	extern int me_channel;
+	extern bool me_stopped_bgm;
+	extern std::map<int, Mix_Chunk*> sounds;
+	extern std::map<int, Mix_Chunk*>::iterator it_sounds;
 };
 
 #endif

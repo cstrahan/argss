@@ -47,11 +47,10 @@ public:
 	~Bitmap();
 	
 	static bool IsDisposed(unsigned long id);
-	static void New(unsigned long self, std::string filename);
-	static void New(unsigned long self, int width, int height);
+	static void New(unsigned long id, std::string filename);
+	static void New(unsigned long id, int width, int height);
 	static Bitmap* Get(unsigned long id);
-
-	void Dispose();
+	static void Dispose(unsigned long id);
 
 	void BlitScreen(int x, int y);
 	void BlitScreen(int x, int y, int opacity);

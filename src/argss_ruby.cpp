@@ -38,6 +38,24 @@
 VALUE ARGSS::ARuby::protected_objects;
 
 ////////////////////////////////////////////////////////////
+/// ARGSS Ruby functions
+////////////////////////////////////////////////////////////
+static VALUE argss_load_data(VALUE self, VALUE filename) {
+	VALUE mMarshal = rb_const_get(rb_cObject, rb_intern("Marshal"));
+	VALUE file = rb_funcall(rb_cFile, rb_intern("open"), 2, filename, rb_str_new2("rb"));
+	VALUE obj = rb_funcall(mMarshal, rb_intern("load"), 1, file);
+	rb_funcall(file, rb_intern("close"), 0);
+	return obj;
+}
+static VALUE argss_save_data(VALUE self, VALUE obj, VALUE filename) {
+	VALUE mMarshal = rb_const_get(rb_cObject, rb_intern("Marshal"));
+	VALUE file = rb_funcall(rb_cFile, rb_intern("open"), 2, filename, rb_str_new2("wb"));
+	rb_funcall(mMarshal, rb_intern("dump"), 2, obj, file);
+	rb_funcall(file, rb_intern("close"), 0);
+	return Qnil;
+}
+
+////////////////////////////////////////////////////////////
 /// ARGSS Ruby initialize
 ////////////////////////////////////////////////////////////
 void ARGSS::ARuby::Init() {
@@ -46,6 +64,10 @@ void ARGSS::ARuby::Init() {
 	atexit(ruby_finalize);
 	protected_objects = rb_hash_new();
 	rb_gc_register_address(&protected_objects);
+
+	typedef VALUE (*rubyfunc)(...);
+	rb_define_global_function("load_data", (rubyfunc)argss_load_data, 1);
+	rb_define_global_function("save_data", (rubyfunc)argss_save_data, 2);
 }
 
 ////////////////////////////////////////////////////////////
@@ -55,33 +77,50 @@ VALUE require_wrap(VALUE arg) {
     return rb_require(System::ScriptsPath.c_str());
 }
 void ARGSS::ARuby::Run() {
-	if (SCRIPTS_ZLIB) {
-		// TODO
-	}
-	else {
-		int error;
-		VALUE result = rb_protect(require_wrap, 0, &error);
-		if (error) {
-			VALUE lasterr = rb_gv_get("$!");
-			VALUE klass = rb_class_path(CLASS_OF(lasterr));
-			VALUE message = rb_obj_as_string(lasterr);
-			if (CLASS_OF(lasterr) != rb_eSystemExit) {
-				std::string report = "RUBY ERROR\n";
-				report += (std::string)RSTRING(klass)->ptr;
-				report += " - ";
-				report += (std::string)RSTRING(message)->ptr;
-				if (!NIL_P(ruby_errinfo)) {
-					VALUE ary = rb_funcall(ruby_errinfo, rb_intern("backtrace"), 0);
-					for (int i = 0; i < RARRAY(ary)->len; i++) {
-						report += "\n  from ";
-						report += RSTRING(RARRAY(ary)->ptr[i])->ptr;
-					}
-				}
-				Output::Error(report);
-			}
+	int error;
+	VALUE result;
+	/*if (SCRIPTS_ZLIB) {
+		VALUE mMarshal = rb_const_get(rb_cObject, rb_intern("Marshal"));
+		VALUE cZlib = rb_const_get(rb_cObject, rb_intern("Zlib"));
+		VALUE cInflate = rb_const_get(cZlib, rb_intern("Inflate"));
+		VALUE args[2] = {rb_str_new(System::ScriptsPath.c_str(), System::ScriptsPath.size()), rb_str_new("rb", 2)};
+		VALUE file = rb_class_new_instance(2, args, rb_cFile);
+		VALUE scripts = rb_funcall3(mMarshal, rb_intern("load"), 1, &file);
+		RArray* arr = RARRAY(scripts);
+		VALUE section_arr;
+		VALUE section;
+		for (int i = 0; i < arr->len; i++) {
+			section_arr = rb_ary_entry(scripts, i);
+			section = rb_ary_entry(section_arr, 2);
+			Output::PostStr(StringValuePtr(section));
+			section = rb_funcall3(cInflate, rb_intern("inflate"), 1, &section);
+			Output::PostStr(StringValuePtr(section));
+			result = rb_eval_string_protect(StringValuePtr(section), &error);
 		}
-		Player::Exit();
 	}
+	else {*/
+		result = rb_protect(require_wrap, 0, &error);
+	//}
+	if (error) {
+		VALUE lasterr = rb_gv_get("$!");
+		VALUE klass = rb_class_path(CLASS_OF(lasterr));
+		VALUE message = rb_obj_as_string(lasterr);
+		if (CLASS_OF(lasterr) != rb_eSystemExit) {
+			std::string report = "RUBY ERROR\n";
+			report += (std::string)RSTRING(klass)->ptr;
+			report += " - ";
+			report += (std::string)RSTRING(message)->ptr;
+			if (!NIL_P(ruby_errinfo)) {
+				VALUE ary = rb_funcall(ruby_errinfo, rb_intern("backtrace"), 0);
+				for (int i = 0; i < RARRAY(ary)->len; i++) {
+					report += "\n  from ";
+					report += RSTRING(RARRAY(ary)->ptr[i])->ptr;
+				}
+			}
+			Output::ErrorStr(report);
+		}
+	}
+	Player::Exit();
 }
 
 ////////////////////////////////////////////////////////////
@@ -208,35 +247,8 @@ void Check_Class(VALUE x, VALUE t)
     }
 }
 
-void Check_Classes(VALUE x, int argc, VALUE *types)
-{
-    if (x == Qundef) {rb_bug("undef leaked to the Ruby space");}
-    int i;
-    VALUE clss = rb_class_real(CLASS_OF(x));
-    for (i=0; i < argc; i++) {
-        if (clss == types[i]) {
-            return;
-        }
-    }
-    struct types *type = builtin_types;
-    while (type->type >= 0) {
-        if (type->type == TYPE(types[0])) {
-            char *etype;
-            if (NIL_P(x)) {etype = (char *)"nil";}
-            else if (FIXNUM_P(x)) {etype = (char *)"Fixnum";}
-            else if (SYMBOL_P(x)) {etype = (char *)"Symbol";}
-            else if (rb_special_const_p(x)) {etype = RSTRING(rb_obj_as_string(x))->ptr;}
-            else {etype = rb_obj_classname(x);}
-            rb_raise(rb_eTypeError, "wrong argument type %s (expected %s)",
-                 etype, type->name);
-        }
-        type++;
-    }
-    rb_bug("unknown type 0x%x", types[0]);
-}
-
 void Check_Classes_N(VALUE x, VALUE type)
 {
-    VALUE argv[2] = {type, Qnil};
-    Check_Classes(x, 2, argv);
+    if (x == Qnil) return;
+	Check_Class(x, type);
 }

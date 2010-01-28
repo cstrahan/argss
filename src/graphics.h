@@ -38,6 +38,8 @@
 ////////////////////////////////////////////////////////////
 namespace Graphics {
 	void Init();
+	void Wait();
+	void Continue();
 	void Update();
 	void DrawFrame();
 	void Freeze();
@@ -71,6 +73,8 @@ namespace Graphics {
 	extern int brightness;
 	extern double framerate_interval;
 	extern long creation;
+	extern long last_tics;
+	extern long last_tics_wait;
 
 	extern SDL_Surface* screen;
 

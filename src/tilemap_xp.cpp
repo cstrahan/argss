@@ -84,10 +84,12 @@ Tilemap* Tilemap::Get(VALUE id) {
 }
 
 ////////////////////////////////////////////////////////////
-/// Dispose
+/// Class Dispose Tilemap
 ////////////////////////////////////////////////////////////
-void Tilemap::Dispose() {
-	tilemaps.erase(id);
+void Tilemap::Dispose(unsigned long id) {
+	delete tilemaps[id];
+	std::map<unsigned long, Tilemap*>::iterator it = tilemaps.find(id);
+	tilemaps.erase(it);
 	Graphics::RemoveZObj(id);
 }
 

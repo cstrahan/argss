@@ -33,6 +33,7 @@
 #include "graphics.h"
 #include "argss_ruby.h"
 #include "argss_error.h"
+#include "filefinder.h"
 
 ////////////////////////////////////////////////////////////
 /// Static Variables
@@ -61,10 +62,14 @@ Bitmap::Bitmap(int width, int height) {
 	SDL_FreeSurface(temp);
 }
 Bitmap::Bitmap(unsigned long iid, std::string filename) {
+	std::string path = FileFinder::FindImage(filename);
+	if (path == "") {
+		VALUE enoent = rb_const_get(rb_mErrno, rb_intern("ENOENT"));
+		rb_raise(enoent, "No such file or directory - %s", filename.c_str());
+	}
 	id = iid;
-	// TODO support RTP and filenames without extension
 	SDL_Surface* temp;
-	temp = IMG_Load(filename.c_str());
+	temp = IMG_Load(path.c_str());
 	if (temp == NULL) {
 		rb_raise(ARGSS::AError::id, "couldn't load %s image.\n%s\n", filename.c_str(), IMG_GetError());
 	}
@@ -112,6 +117,7 @@ Bitmap::~Bitmap() {
 /// Class Is Bitmap Disposed?
 ////////////////////////////////////////////////////////////
 bool Bitmap::IsDisposed(unsigned long id) {
+	int a = bitmaps.count(id);
 	return bitmaps.count(id) == 0;
 }
 
@@ -133,10 +139,12 @@ Bitmap* Bitmap::Get(unsigned long id) {
 }
 
 ////////////////////////////////////////////////////////////
-/// Dispose
+/// Class Dispose Bitmap
 ////////////////////////////////////////////////////////////
-void Bitmap::Dispose() {
-	bitmaps.erase(id);
+void Bitmap::Dispose(unsigned long id) {
+	delete bitmaps[id];
+	std::map<unsigned long, Bitmap*>::iterator it = bitmaps.find(id);
+	bitmaps.erase(it);
 }
 
 ////////////////////////////////////////////////////////////
@@ -400,12 +408,13 @@ void Bitmap::HSLChange(double h, double s, double l, Rect rect) {
 /// Draw text
 ////////////////////////////////////////////////////////////
 void Bitmap::DrawText(Rect rect, std::string text, int align) {
+	if (text.length() == 0) return;
 	if (rect.IsOutOfBounds(GetWidth(), GetHeight())) return;
 	
 	VALUE font_id = rb_iv_get(id, "@font");
 	VALUE name_id = rb_iv_get(font_id, "@name");
-	char* name = StringValuePtr(name_id);
-	TTF_Font* ttf_font = TTF_OpenFont(name, NUM2INT(rb_iv_get(font_id, "@size")));
+	std::string name = FileFinder::FindFont(StringValuePtr(name_id));
+	TTF_Font* ttf_font = TTF_OpenFont(name.c_str(), NUM2INT(rb_iv_get(font_id, "@size")));
 	if (!ttf_font) {
 		rb_raise(ARGSS::AError::id, "couldn't open font %s size %d.\n%s\n", name, NUM2INT(rb_iv_get(font_id, "@size")), TTF_GetError());
 	}
@@ -456,8 +465,8 @@ void Bitmap::DrawText(Rect rect, std::string text, int align) {
 Rect Bitmap::GetTextSize(std::string text) {
 	unsigned long font_id = rb_iv_get(id, "@font");
 	unsigned long name_id = rb_iv_get(font_id, "@name");
-	char* name = StringValuePtr(name_id);
-	TTF_Font* ttf_font = TTF_OpenFont(name, NUM2INT(rb_iv_get(font_id, "@size")));
+	std::string name = FileFinder::FindFont(StringValuePtr(name_id));
+	TTF_Font* ttf_font = TTF_OpenFont(name.c_str(), NUM2INT(rb_iv_get(font_id, "@size")));
 	if(!ttf_font) {
 		rb_raise(ARGSS::AError::id, "couldn't open font %s size %d.\n%s\n", name, NUM2INT(rb_iv_get(font_id, "@size")), TTF_GetError());
 	}
@@ -470,6 +479,7 @@ Rect Bitmap::GetTextSize(std::string text) {
 	if (TTF_SizeUTF8(ttf_font, text.c_str(), &w, &h)) {
 		rb_raise(ARGSS::AError::id, "couldn't determine text size for Font(%x).\n%s\n", text.c_str(), font_id, TTF_GetError());
 	}
+	TTF_CloseFont(ttf_font);
     return Rect(0, 0, w, h);
 }
 

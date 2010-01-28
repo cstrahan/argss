@@ -32,6 +32,9 @@ namespace Player {
 	void Init();
 	void Update();
 	void Exit();
+
+	void Wait();
+	void Continue();
 };
 
 #endif

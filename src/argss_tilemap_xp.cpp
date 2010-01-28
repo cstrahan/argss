@@ -64,7 +64,7 @@ static VALUE argss_tilemap_initialize(int argc, VALUE *argv, VALUE self) {
 }
 static VALUE argss_tilemap_dispose(VALUE self) {
 	ARGSS::ATilemap::Check(self);
-	Tilemap::Get(self)->Dispose();
+	Tilemap::Dispose(self);
 	ARGSS::ARuby::RemoveObject(self);
     return self;
 }

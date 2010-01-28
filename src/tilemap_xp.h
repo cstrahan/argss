@@ -41,10 +41,10 @@ public:
 	static bool IsDisposed(unsigned long id);
 	static void New(unsigned long id);
 	static Tilemap* Get(unsigned long id);
+	static void Dispose(unsigned long id);
 
 	void Draw(int z);
 
-	void Dispose();
     void Update();
 	unsigned long GetViewport();
 	void SetViewport(unsigned long nviewport);

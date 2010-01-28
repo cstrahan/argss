@@ -44,6 +44,8 @@ std::wstring s2ws(const std::string& s)
 /// Default Message Box with OK button
 ////////////////////////////////////////////////////////////
 void MsgBox::OK(std::string msg, std::string title) {
+	if (msg.length() == 0) return;
+	if (msg.length() == 1 && (msg[0] == '\n' || msg[0] == '\r')) return;
 #ifdef MSVC
 	MessageBox(0, s2ws(msg).c_str(), s2ws(title).c_str(), MB_OK);
 #else
@@ -55,6 +57,8 @@ void MsgBox::OK(std::string msg, std::string title) {
 /// Error Message Box
 ////////////////////////////////////////////////////////////
 void MsgBox::Error(std::string msg, std::string title) {
+	if (msg.length() == 0) return;
+	if (msg.length() == 1 && (msg[0] == '\n' || msg[0] == '\r')) return;
 #ifdef MSVC
 	MessageBox(0, s2ws(msg).c_str(), s2ws(title).c_str(), MB_OK | MB_ICONERROR);
 #else
@@ -66,6 +70,8 @@ void MsgBox::Error(std::string msg, std::string title) {
 /// Warning Message Box
 ////////////////////////////////////////////////////////////
 void MsgBox::Warning(std::string msg, std::string title) {
+	if (msg.length() == 0) return;
+	if (msg.length() == 1 && (msg[0] == '\n' || msg[0] == '\r')) return;
 #ifdef MSVC
 	MessageBox(0, s2ws(msg).c_str(), s2ws(title).c_str(), MB_OK | MB_ICONEXCLAMATION);
 #else

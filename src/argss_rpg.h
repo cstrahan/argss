@@ -36,6 +36,38 @@
 namespace ARGSS {
 	namespace ARPG {
 		extern VALUE id;
+		extern VALUE Map_id;
+		extern VALUE MapInfo_id;
+		extern VALUE Event_id;
+		extern VALUE EventPage_id;
+		extern VALUE EventPageCondition_id;
+		extern VALUE EventPageGraphic_id;
+		extern VALUE EventCommand_id;
+		extern VALUE MoveRoute_id;
+		extern VALUE MoveCommand_id;
+		extern VALUE Actor_id;
+		extern VALUE Class_id;
+		extern VALUE ClassLearning_id;
+		extern VALUE Skill_id;
+		extern VALUE Item_id;
+		extern VALUE Weapon_id;
+		extern VALUE Armor_id;
+		extern VALUE Enemy_id;
+		extern VALUE EnemyAction_id;
+		extern VALUE Troop_id;
+		extern VALUE TroopMember_id;
+		extern VALUE TroopPage_id;
+		extern VALUE TroopPageCondition_id;
+		extern VALUE State_id;
+		extern VALUE Animation_id;
+		extern VALUE AnimationFrame_id;
+		extern VALUE AnimationTiming_id;
+		extern VALUE Tileset_id;
+		extern VALUE CommonEvent_id;
+		extern VALUE System_id;
+		extern VALUE SystemWords_id;
+		extern VALUE SystemTestBattler_id;
+		extern VALUE AudioFile_id;
 		void Init();
 	};
 };

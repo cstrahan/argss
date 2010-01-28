@@ -63,7 +63,6 @@ void Check_Kind(VALUE o, VALUE c);
 void Check_Types2(VALUE x, VALUE t1, VALUE t2);
 void Check_Bool(VALUE x);
 void Check_Class(VALUE x, VALUE t);
-void Check_Classes(VALUE x, int argc, VALUE *types);
 void Check_Classes_N(VALUE x, VALUE type);
 
 #endif

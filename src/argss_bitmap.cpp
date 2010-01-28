@@ -57,7 +57,9 @@ static VALUE argss_bitmap_initialize(int argc, VALUE *argv, VALUE self) {
 }
 static VALUE argss_bitmap_dispose(VALUE self) {
     ARGSS::ABitmap::Check(self);
-	Bitmap::Get(self)->Dispose();
+	Bitmap::Dispose(self);
+	ARGSS::ARuby::RemoveObject(self);
+	rb_funcall(rb_const_get(rb_cObject, rb_intern("GC")), rb_intern("start"), 0);
     return self;
 }
 static VALUE argss_bitmap_disposedQ(VALUE self) {

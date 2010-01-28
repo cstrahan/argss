@@ -55,6 +55,8 @@ SDL_Surface* Graphics::screen;
 std::list<ZObj> Graphics::zlist;
 std::list<ZObj>::iterator Graphics::it_zlist;
 long Graphics::creation;
+long Graphics::last_tics;
+long Graphics::last_tics_wait;
 
 ////////////////////////////////////////////////////////////
 /// Initialize
@@ -67,6 +69,21 @@ void Graphics::Init() {
 	brightness = 0;
 	creation = 0;
 	framerate_interval = 1000.0 / framerate;
+	last_tics = SDL_GetTicks() + (long)framerate_interval;
+}
+
+////////////////////////////////////////////////////////////
+/// Wait
+////////////////////////////////////////////////////////////
+void Graphics::Wait(){
+	last_tics_wait = SDL_GetTicks();
+}
+
+////////////////////////////////////////////////////////////
+/// Continue
+////////////////////////////////////////////////////////////
+void Graphics::Continue() {
+	last_tics += SDL_GetTicks() - last_tics_wait;
 }
 
 ////////////////////////////////////////////////////////////
@@ -74,8 +91,7 @@ void Graphics::Init() {
 ////////////////////////////////////////////////////////////
 void Graphics::Update() {
 	static long t;
-	static long tl = SDL_GetTicks() + (long)framerate_interval;
-	static long t_fps = tl;
+	static long t_fps = last_tics;
 	static long frames = 0;
 	static double waitframes = 0;
 	static double cyclesleftover;
@@ -86,11 +102,11 @@ void Graphics::Update() {
 		return;
 	}
 	t = SDL_GetTicks();
-	if((t - tl) >= (long)framerate_interval || (framerate_interval - t + tl) < 10) {
+	if((t - last_tics) >= (long)framerate_interval || (framerate_interval - t + last_tics) < 10) {
 		cyclesleftover = waitframes;
-		waitframes = (double)(t - tl) / framerate_interval - cyclesleftover;
+		waitframes = (double)(t - last_tics) / framerate_interval - cyclesleftover;
 		//tl += (t - tl) - cyclesleftover;
-		tl = t;
+		last_tics = t;
 		DrawFrame();
 		
 		framecount++;
@@ -111,7 +127,7 @@ void Graphics::Update() {
 		}
 	}
 	else {
-		SDL_Delay((long)(framerate_interval) - (t - tl));
+		SDL_Delay((long)(framerate_interval) - (t - last_tics));
 	}
 }
 
@@ -168,7 +184,7 @@ void Graphics::Transition(int duration, std::string filename, int vague) {
 /// 
 ////////////////////////////////////////////////////////////
 void Graphics::FrameReset() {
-	// TODO
+	last_tics = SDL_GetTicks();
 }
 
 ////////////////////////////////////////////////////////////

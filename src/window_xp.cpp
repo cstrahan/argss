@@ -71,6 +71,8 @@ Window::Window(VALUE iid) {
 	background = NULL;
 	frame = NULL;
 	cursor = NULL;
+	last_cursor_rect = Rect(cursor_rect);
+	cursor_frame = 0;
 	pause_frame = 0;
 	pause_id = 0;
 
@@ -108,10 +110,12 @@ Window* Window::Get(VALUE id) {
 }
 
 ////////////////////////////////////////////////////////////
-/// Dispose
+/// Class Dispose Window
 ////////////////////////////////////////////////////////////
-void Window::Dispose() {
-	windows.erase(id);
+void Window::Dispose(unsigned long id) {
+	delete windows[id];
+	std::map<unsigned long, Window*>::iterator it = windows.find(id);
+	windows.erase(it);
 	Graphics::RemoveZObj(id);
 }
 
@@ -134,8 +138,25 @@ void Window::Draw() {
 
 			frame->BlitScreen(x, y, opacity);
 		}
+
+		if (width > 32 && height > 32) {
+			RefreshCursor();
+
+			if (last_cursor_rect.width > 0 && last_cursor_rect.height > 0) {
+				int cursor_opacity = 255;
+				if (cursor_frame <= 16) {
+					cursor_opacity -= (int)((128.0f / 16.0f) * cursor_frame);
+				}
+				else {
+					cursor_opacity -= (int)((128.0f / 16.0f) * (32 - cursor_frame));
+				}
+				Rect rect(cursor_rect);
+				Rect src_rect(-min(rect.x + 16, 0), -min(rect.y + 16, 0), min(rect.width, width - 16 - rect.x), min(rect.height, height - 16 - rect.y));
+				cursor->BlitScreen(x + 16 + rect.x, y + 16 + rect.y, src_rect, cursor_opacity);
+			}
+		}
 	}
-	
+
 	if (contents != Qnil) {
 		if (width > 32 && height > 32 && -ox < width - 32 && -oy < height - 32 && contents_opacity > 0) {
 			Rect src_rect(-min(-ox, 0), -min(-oy, 0), min(width - 32, width - 32 + ox), min(height - 32, height - 32 + oy));
@@ -271,16 +292,98 @@ void Window::RefreshFrame() {
 }
 
 ////////////////////////////////////////////////////////////
+/// Refresh Cursor
+////////////////////////////////////////////////////////////
+void Window::RefreshCursor() {
+	Rect rect(cursor_rect);
+
+	if (rect.width != last_cursor_rect.width || rect.height != last_cursor_rect.height) {
+		last_cursor_rect = rect;
+		cursor_needs_refresh = true;
+	}
+
+	if (cursor_needs_refresh) {
+		cursor_needs_refresh = false;
+	}
+	else {
+		return;
+	}
+
+	if (rect.width > 0 && rect.height > 0) {
+		delete cursor;
+
+		cursor = new Bitmap(rect.width, rect.height);
+
+		Rect src_rect(130, 66, 28, 28);
+		Rect dst_rect(2, 2, rect.width - 4, rect.height - 4);
+		cursor->StretchBlit(dst_rect, Bitmap::Get(windowskin), src_rect, 255);
+
+		src_rect.x = 128;
+		src_rect.y = 64;
+		src_rect.width = 2;
+		src_rect.height = 2;
+		cursor->Blit(0, 0, Bitmap::Get(windowskin), src_rect, 255);
+
+		src_rect.x = 158;
+		cursor->Blit(rect.width - 2, 0, Bitmap::Get(windowskin), src_rect, 255);
+
+		src_rect.y = 94;
+		cursor->Blit(rect.width - 2, rect.height - 2, Bitmap::Get(windowskin), src_rect, 255);
+
+		src_rect.x = 128;
+		cursor->Blit(0, rect.height - 2, Bitmap::Get(windowskin), src_rect, 255);
+
+		// Border Up
+		src_rect.x = 130;
+		src_rect.y = 64;
+		src_rect.width = 28;
+		src_rect.height = 2;
+		dst_rect.x = 2;
+		dst_rect.y = 0;
+		dst_rect.width = max(rect.width - 4, 1);
+		dst_rect.height = 2;
+		cursor->StretchBlit(dst_rect, Bitmap::Get(windowskin), src_rect, 255);
+
+		// Border Down
+		src_rect.y = 94;
+		dst_rect.y = rect.height - 2;
+		cursor->StretchBlit(dst_rect, Bitmap::Get(windowskin), src_rect, 255);
+
+		// Border Left
+		src_rect.x = 128;
+		src_rect.y = 66;
+		src_rect.width = 2;
+		src_rect.height = 28;
+		dst_rect.x = 0;
+		dst_rect.y = 2;
+		dst_rect.width = 2;
+		dst_rect.height = max(rect.height - 4, 1);
+		cursor->StretchBlit(dst_rect, Bitmap::Get(windowskin), src_rect, 255);
+		
+		// Border Right
+		src_rect.x = 158;
+		dst_rect.x = rect.width - 2;
+		cursor->StretchBlit(dst_rect, Bitmap::Get(windowskin), src_rect, 255);
+	}
+}
+
+////////////////////////////////////////////////////////////
 /// Update
 ////////////////////////////////////////////////////////////
 void Window::Update() {
-	if (pause && active) {
-		pause_frame += 1;
-		if (pause_frame == 8) {
-			pause_frame = 0;
-			pause_id += 1;
-			if (pause_id == 5) {
-				pause_id = 1;
+	if (active) {
+		cursor_frame += 1;
+		if (cursor_frame == 32) {
+			cursor_frame = 0;
+		}
+		if (pause) {
+			pause_frame += 1;
+			if (pause_frame == 8) {
+				pause_frame = 0;
+				pause_id += 1;
+				if (pause_id == 5) {
+					pause_id = 1;
+				}
 			}
 		}
 	}
@@ -302,6 +405,7 @@ void Window::SetWindowskin(VALUE nwindowskin) {
 	if (windowskin != nwindowskin) {
 		background_needs_refresh = true;
 		frame_needs_refresh = true;
+		cursor_needs_refresh = true;
 	}
 	windowskin = nwindowskin;
 }

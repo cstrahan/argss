@@ -82,10 +82,12 @@ Viewport* Viewport::Get(VALUE id) {
 }
 
 ////////////////////////////////////////////////////////////
-/// Dispose
+/// Class Dispose Viewport
 ////////////////////////////////////////////////////////////
-void Viewport::Dispose() {
-	viewports.erase(id);
+void Viewport::Dispose(unsigned long id) {
+	delete viewports[id];
+	std::map<unsigned long, Viewport*>::iterator it = viewports.find(id);
+	viewports.erase(it);
 	Graphics::RemoveZObj(id);
 }
 

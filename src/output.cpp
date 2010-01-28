@@ -64,12 +64,12 @@ void Output::Error(char* fmt, ...) {
 #else
 	vsprintf(str, fmt, args);
 #endif
-	Output::Error((std::string)str);
+	Output::ErrorStr((std::string)str);
 
 	va_end(args);
 }
-void Output::Error(std::string err){
-	Post(err);
+void Output::ErrorStr(std::string err){
+	PostStr(err);
 	if (Console::Active()) {
 		Post("\nARGSS will close now. Press any key...");
 #ifdef MSVC
@@ -95,12 +95,12 @@ void Output::Warning(char* fmt, ...) {
 #else
 	vsprintf(str, fmt, args);
 #endif
-	Output::Warning((std::string)str);
+	Output::WarningStr((std::string)str);
 
 	va_end(args);
 }
-void Output::Warning(std::string warn) {
-	Post(warn);
+void Output::WarningStr(std::string warn) {
+	PostStr(warn);
 }
 
 ////////////////////////////////////////////////////////////
@@ -116,11 +116,12 @@ void Output::Post(char* fmt, ...) {
 #else
 	vsprintf(str, fmt, args);
 #endif
-	Output::Post((std::string)str);
+	Output::PostStr((std::string)str);
 
 	va_end(args);
 }
-void Output::Post(std::string msg) {
+void Output::PostStr(std::string msg) {
+	Player::Wait();
 	switch(output_type) {
 	case 1:
 		if (Console::Active()) Console::Write(msg);
@@ -143,6 +144,7 @@ void Output::Post(std::string msg) {
 		if (Console::Active()) Console::Write(msg);
 		else MsgBox::OK(msg, System::Title);
 	}
+	Player::Continue();
 }
 
 ////////////////////////////////////////////////////////////

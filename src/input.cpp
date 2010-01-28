@@ -25,11 +25,13 @@
 ////////////////////////////////////////////////////////////
 /// Headers
 ////////////////////////////////////////////////////////////
+#include <string>
 #include "input.h"
+#include "inputbuttons.h"
 #include "argss_ruby.h"
 #include "argss_input.h"
 #include "player.h"
-#include "SDL.h"
+#include "system.h"
 
 ////////////////////////////////////////////////////////////
 /// Global Variables
@@ -52,8 +54,10 @@ void Input::Init() {
 	repeated.resize(SDLK_LAST, false);
 	released.resize(SDLK_LAST, false);
 
-	start_repeat_time = 10;
-	repeat_time = 2;
+	start_repeat_time = 20;
+	repeat_time = 10;
+
+	InitButtons();
 }
 
 ////////////////////////////////////////////////////////////
@@ -170,29 +174,63 @@ void Input::ClearKeys() {
 ////////////////////////////////////////////////////////////
 /// Is pressed?
 ////////////////////////////////////////////////////////////
-bool Input::IsPressed(int button) {
-	return press_time[button] > 0;
+bool Input::IsPressed(VALUE button) {
+	if (NUM2INT(button) < 300) {
+		int key = NUM2INT(button);
+		if (buttons.count(key) == 0) return false;
+		for (unsigned int i = 0; i < buttons[key].size(); i++) {
+			if (press_time[buttons[key][i]] > 0) return true;
+		}
+		return false;
+	}
+	return press_time[NUM2KEY(button)] > 0;
 }
 
 ////////////////////////////////////////////////////////////
 /// Is triggered?
 ////////////////////////////////////////////////////////////
-bool Input::IsTriggered(int button) {
-	return triggered[button];
+bool Input::IsTriggered(VALUE button) {
+	if (NUM2INT(button) < 300) {
+		int key = NUM2INT(button);
+		if (buttons.count(key) == 0) return false;
+		for (unsigned int i = 0; i < buttons[key].size(); i++) {
+			if (triggered[buttons[key][i]]) return true;
+		}
+		return false;
+	}
+	return triggered[NUM2KEY(button)];
 }
 
 ////////////////////////////////////////////////////////////
 /// Is repeated?
 ////////////////////////////////////////////////////////////
-bool Input::IsRepeated(int button) {
-	return repeated[button];
+bool Input::IsRepeated(VALUE button) {
+	if (NUM2INT(button) < 300) {
+		int key = NUM2INT(button);
+		if (buttons.count(key) == 0) return false;
+		std::vector<int> a = buttons[key];
+		int b = SDLK_DOWN;
+		for (unsigned int i = 0; i < buttons[key].size(); i++) {
+			if (repeated[buttons[key][i]]) return true;
+		}
+		return false;
+	}
+	return repeated[NUM2KEY(button)];
 }
 
 ////////////////////////////////////////////////////////////
 /// Is released?
 ////////////////////////////////////////////////////////////
-bool Input::IsReleased(int button) {
-	return released[button];
+bool Input::IsReleased(VALUE button) {
+	if (NUM2INT(button) < 300) {
+		int key = NUM2INT(button);
+		if (buttons.count(key) == 0) return false;
+		for (unsigned int i = 0; i < buttons[key].size(); i++) {
+			if (released[buttons[key][i]]) return true;
+		}
+		return false;
+	}
+	return released[NUM2KEY(button)];
 }
 
 ////////////////////////////////////////////////////////////

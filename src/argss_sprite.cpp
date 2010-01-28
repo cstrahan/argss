@@ -77,8 +77,9 @@ static VALUE argss_sprite_initialize(int argc, VALUE *argv, VALUE self) {
 }
 static VALUE argss_sprite_dispose(VALUE self) {
     ARGSS::ASprite::Check(self);
-	Sprite::Get(self)->Dispose();
+	Sprite::Dispose(self);
 	ARGSS::ARuby::RemoveObject(self);
+	rb_funcall(rb_const_get(rb_cObject, rb_intern("GC")), rb_intern("start"), 0);
     return self;
 }
 static VALUE argss_sprite_disposedQ(VALUE self) {
@@ -162,11 +163,11 @@ static VALUE argss_sprite_visibleE(VALUE self, VALUE visible) {
 }
 static VALUE argss_sprite_x(VALUE self) {
     ARGSS::ASprite::Check(self);
-    return rb_funcall(rb_iv_get(self, "@x"), rb_intern("to_i"), 0, 0);
+    return rb_funcall(rb_iv_get(self, "@x"), rb_intern("to_i"), 0);
 }
 static VALUE argss_sprite_fx(VALUE self) {
     ARGSS::ASprite::Check(self);
-    return rb_funcall(rb_iv_get(self, "@x"), rb_intern("to_f"), 0, 0);
+    return rb_funcall(rb_iv_get(self, "@x"), rb_intern("to_f"), 0);
 }
 static VALUE argss_sprite_xE(VALUE self, VALUE x) {
     ARGSS::ASprite::Check(self);
@@ -175,11 +176,11 @@ static VALUE argss_sprite_xE(VALUE self, VALUE x) {
 }
 static VALUE argss_sprite_y(VALUE self) {
     ARGSS::ASprite::Check(self);
-    return rb_funcall(rb_iv_get(self, "@y"), rb_intern("to_i"), 0, 0);
+    return rb_funcall(rb_iv_get(self, "@y"), rb_intern("to_i"), 0);
 }
 static VALUE argss_sprite_fy(VALUE self) {
     ARGSS::ASprite::Check(self);
-    return rb_funcall(rb_iv_get(self, "@y"), rb_intern("to_f"), 0, 0);
+    return rb_funcall(rb_iv_get(self, "@y"), rb_intern("to_f"), 0);
 }
 static VALUE argss_sprite_yE(VALUE self, VALUE y) {
     ARGSS::ASprite::Check(self);
@@ -193,7 +194,7 @@ static VALUE argss_sprite_z(VALUE self) {
 static VALUE argss_sprite_zE(VALUE self, VALUE z) {
     ARGSS::ASprite::Check(self);
 	Sprite::Get(self)->SetZ(NUM2INT(z));
-    return rb_iv_set(self, "@z", rb_funcall(z, rb_intern("to_i"), 0, 0));
+    return rb_iv_set(self, "@z", rb_funcall(z, rb_intern("to_i"), 0));
 }
 static VALUE argss_sprite_ox(VALUE self) {
     ARGSS::ASprite::Check(self);

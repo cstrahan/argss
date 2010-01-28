@@ -190,7 +190,7 @@ void ARGSS::AFont::Init() {
 	rb_define_singleton_method(id, "default_color=", (rubyfunc)argss_font_default_colorE, 1);
 	rb_define_singleton_method(id, "default_shadow", (rubyfunc)argss_font_default_shadow, 0);
 	rb_define_singleton_method(id, "default_shadow=", (rubyfunc)argss_font_default_shadowE, 1);
-	rb_cv_set(id, "@@default_name", rb_str_new2("Arial.ttf\0")); // TODO: Remove extension dependency
+	rb_cv_set(id, "@@default_name", rb_str_new2("Arial"));
 	rb_cv_set(id, "@@default_size", INT2NUM(22));
 	rb_cv_set(id, "@@default_bold", Qfalse);
 	rb_cv_set(id, "@@default_italic", Qfalse);

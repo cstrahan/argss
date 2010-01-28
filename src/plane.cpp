@@ -86,10 +86,12 @@ Plane* Plane::Get(VALUE id) {
 }
 
 ////////////////////////////////////////////////////////////
-/// Dispose
+/// Class Dispose Plane
 ////////////////////////////////////////////////////////////
-void Plane::Dispose() {
-	planes.erase(id);
+void Plane::Dispose(unsigned long id) {
+	delete planes[id];
+	std::map<unsigned long, Plane*>::iterator it = planes.find(id);
+	planes.erase(it);
 	Graphics::RemoveZObj(id);
 }
 

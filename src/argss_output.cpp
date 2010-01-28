@@ -63,13 +63,13 @@ static VALUE argss_output_none(VALUE self) {
 static VALUE argss_output_stdout_write(VALUE self, VALUE str) {
 	if (TYPE(str) != T_STRING) str = rb_obj_as_string(str);
 	if (RSTRING(str)->len == 0) return INT2FIX(0);
-	Output::Post(StringValuePtr(str));
+	Output::PostStr(StringValuePtr(str));
 	return INT2FIX(RSTRING(str)->len);
 }
 static VALUE argss_output_stderr_write(VALUE self, VALUE str) {
 	if (TYPE(str) != T_STRING) str = rb_obj_as_string(str);
 	if (RSTRING(str)->len == 0) return INT2FIX(0);
-	Output::Error(StringValuePtr(str));
+	Output::ErrorStr(StringValuePtr(str));
 	return INT2FIX(RSTRING(str)->len);
 }
 static VALUE argss_stdin_gets(int argc, VALUE *argv, VALUE self) {

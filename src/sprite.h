@@ -46,10 +46,10 @@ public:
 	static bool IsDisposed(unsigned long id);
 	static void New(unsigned long id);
 	static Sprite* Get(unsigned long id);
+	static void Dispose(unsigned long id);
 
 	void Draw();
 
-	void Dispose();
 	void Flash(int duration);
 	void Flash(Color color, int duration);
     void Update();

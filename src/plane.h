@@ -42,10 +42,10 @@ public:
 	static bool IsDisposed(unsigned long id);
 	static void New(unsigned long id);
 	static Plane* Get(unsigned long id);
+	static void Dispose(unsigned long id);
 
 	void Draw();
 
-	void Dispose();
 	unsigned long GetViewport();
 	void SetViewport(unsigned long nviewport);
 	unsigned long GetBitmap();

@@ -119,7 +119,8 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS"
+				AdditionalIncludeDirectories="..\..\..\dependencies\msvc\ruby1.8.6\include;..\..\..\dependencies\msvc\sdl\include;..\..\..\dependencies\msvc\zlib\include"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;MSVC"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
@@ -137,7 +138,9 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalDependencies="SDL.lib SDLmain.lib SDL_image.lib SDL_mixer.lib SDL_ttf.lib msvcrt-ruby18.lib rubyzlib.lib"
 				LinkIncremental="1"
+				AdditionalLibraryDirectories="..\..\..\dependencies\msvc\ruby1.8.6\lib;..\..\..\dependencies\msvc\sdl\lib;..\..\..\dependencies\msvc\zlib\lib"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				OptimizeReferences="2"
@@ -407,137 +410,197 @@
 						RelativePath="..\..\..\src\argss_rpg.h"
 						>
 					</File>
+					<File
+						RelativePath="..\..\..\src\argss_rpg_cache.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\..\src\argss_rpg_cache.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\..\src\argss_rpg_sprite.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\..\src\argss_rpg_sprite.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\..\src\argss_rpg_weather.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\..\src\argss_rpg_weather.h"
+						>
+					</File>
 				</Filter>
 			</Filter>
 			<Filter
 				Name="multimedia"
 				>
-				<File
-					RelativePath="..\..\..\src\audio.cpp"
+				<Filter
+					Name="input"
 					>
-				</File>
-				<File
-					RelativePath="..\..\..\src\audio.h"
+					<File
+						RelativePath="..\..\..\src\input.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\..\src\input.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\..\src\inputbuttons.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\..\src\inputkeys.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\..\src\inputkeys.h"
+						>
+					</File>
+					<Filter
+						Name="win32"
+						>
+						<File
+							RelativePath="..\..\..\src\inputbuttons_win32.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\..\..\src\inputbuttons_win32.h"
+							>
+						</File>
+					</Filter>
+				</Filter>
+				<Filter
+					Name="graphics"
 					>
-				</File>
-				<File
-					RelativePath="..\..\..\src\bitmap.cpp"
+					<File
+						RelativePath="..\..\..\src\bitmap.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\..\src\bitmap.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\..\src\color.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\..\src\color.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\..\src\graphics.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\..\src\graphics.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\..\src\hslrgb.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\..\src\hslrgb.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\..\src\plane.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\..\src\plane.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\..\src\rect.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\..\src\rect.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\..\src\sprite.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\..\src\sprite.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\..\src\tilemap_xp.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\..\src\tilemap_xp.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\..\src\tone.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\..\src\tone.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\..\src\viewport.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\..\src\viewport.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\..\src\window_xp.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\..\src\window_xp.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\..\src\zobj.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\..\src\zobj.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="audio"
 					>
-				</File>
-				<File
-					RelativePath="..\..\..\src\bitmap.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\..\src\color.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\..\src\color.h"
-					>
-				</File>
+					<File
+						RelativePath="..\..\..\src\audio.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\..\src\audio.h"
+						>
+					</File>
+				</Filter>
+			</Filter>
+			<Filter
+				Name="tools"
+				>
 				<File
 					RelativePath="..\..\..\src\console.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\src\graphics.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\..\src\graphics.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\..\src\hslrgb.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\..\src\hslrgb.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\..\src\input.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\..\src\input.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\..\src\inputkeys.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\..\src\inputkeys.h"
+					RelativePath="..\..\..\src\filefinder.h"
 					>
 				</File>
 				<File
 					RelativePath="..\..\..\src\msgbox.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\..\src\plane.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\..\src\plane.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\..\src\rect.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\..\src\rect.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\..\src\sprite.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\..\src\sprite.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\..\src\tilemap_xp.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\..\src\tilemap_xp.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\..\src\tone.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\..\src\tone.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\..\src\viewport.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\..\src\viewport.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\..\src\window_xp.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\..\src\window_xp.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\..\src\zobj.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\..\src\zobj.h"
 					>
 				</File>
 				<Filter
@@ -552,11 +615,27 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\..\src\filefinder_win32.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\..\src\filefinder_win32.h"
+						>
+					</File>
+					<File
 						RelativePath="..\..\..\src\msgbox_win32.cpp"
 						>
 					</File>
 					<File
 						RelativePath="..\..\..\src\msgbox_win32.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\..\src\registry.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\..\src\registry.h"
 						>
 					</File>
 				</Filter>

@@ -32,7 +32,6 @@
 #include "argss_graphics.h"
 #include "argss_input.h"
 #include "argss_keys.h"
-#include "argss_rpg.h"
 #include "argss_bitmap.h"
 #include "argss_color.h"
 #include "argss_font.h"
@@ -45,6 +44,10 @@
 #include "argss_viewport.h"
 #include "argss_window.h"
 #include "argss_error.h"
+#include "argss_rpg.h"
+#include "argss_rpg_cache.h"
+#include "argss_rpg_weather.h"
+#include "argss_rpg_sprite.h"
 
 ////////////////////////////////////////////////////////////
 /// ARGSS initialize
@@ -58,7 +61,6 @@ void ARGSS::Init()
 	ARGSS::AGraphics::Init();
 	ARGSS::AInput::Init();
 	ARGSS::AKeys::Init();
-	ARGSS::ARPG::Init();
 
 	ARGSS::ABitmap::Init();
 	ARGSS::AColor::Init();
@@ -72,6 +74,11 @@ void ARGSS::Init()
 	ARGSS::AViewport::Init();
 	ARGSS::AWindow::Init();
 	ARGSS::AError::Init();
+
+	ARGSS::ARPG::Init();
+	ARGSS::ARPG::ACache::Init();
+	ARGSS::ARPG::AWeather::Init();
+	ARGSS::ARPG::ASprite::Init();
 
  	ARGSS::ARuby::Run();
 }

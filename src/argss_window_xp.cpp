@@ -81,8 +81,9 @@ static VALUE argss_window_initialize(int argc, VALUE *argv, VALUE self) {
 }
 static VALUE argss_window_dispose(VALUE self) {
     ARGSS::AWindow::Check(self);
-    Window::Get(self)->Dispose();
+    Window::Dispose(self);
 	ARGSS::ARuby::RemoveObject(self);
+	rb_funcall(rb_const_get(rb_cObject, rb_intern("GC")), rb_intern("start"), 0);
     return self;
 }
 static VALUE argss_window_disposedQ(VALUE self) {
@@ -171,11 +172,11 @@ static VALUE argss_window_pauseE(VALUE self, VALUE pause) {
 }
 static VALUE argss_window_x(VALUE self) {
     ARGSS::AWindow::Check(self);
-	return rb_funcall(rb_iv_get(self, "@x"), rb_intern("to_i"), 0, 0);
+	return rb_funcall(rb_iv_get(self, "@x"), rb_intern("to_i"), 0);
 }
 static VALUE argss_window_fx(VALUE self) {
     ARGSS::AWindow::Check(self);
-    return rb_funcall(rb_iv_get(self, "@x"), rb_intern("to_f"), 0, 0);
+    return rb_funcall(rb_iv_get(self, "@x"), rb_intern("to_f"), 0);
 }
 static VALUE argss_window_xE(VALUE self, VALUE x) {
     ARGSS::AWindow::Check(self);
@@ -184,11 +185,11 @@ static VALUE argss_window_xE(VALUE self, VALUE x) {
 }
 static VALUE argss_window_y(VALUE self) {
     ARGSS::AWindow::Check(self);
-	return rb_funcall(rb_iv_get(self, "@y"), rb_intern("to_i"), 0, 0);
+	return rb_funcall(rb_iv_get(self, "@y"), rb_intern("to_i"), 0);
 }
 static VALUE argss_window_fy(VALUE self) {
     ARGSS::AWindow::Check(self);
-    return rb_funcall(rb_iv_get(self, "@y"), rb_intern("to_f"), 0, 0);
+    return rb_funcall(rb_iv_get(self, "@y"), rb_intern("to_f"), 0);
 }
 static VALUE argss_window_yE(VALUE self, VALUE y) {
     ARGSS::AWindow::Check(self);

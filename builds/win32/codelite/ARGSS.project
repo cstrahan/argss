@@ -57,6 +57,12 @@
       <VirtualDirectory Name="rpg">
         <File Name="../../../src/argss_rpg.cpp"/>
         <File Name="../../../src/argss_rpg.h"/>
+        <File Name="../../../src/argss_rpg_cache.cpp"/>
+        <File Name="../../../src/argss_rpg_cache.h"/>
+        <File Name="../../../src/argss_rpg_sprite.cpp"/>
+        <File Name="../../../src/argss_rpg_sprite.h"/>
+        <File Name="../../../src/argss_rpg_weather.cpp"/>
+        <File Name="../../../src/argss_rpg_weather.h"/>
       </VirtualDirectory>
       <File Name="../../../src/argss.cpp"/>
       <File Name="../../../src/argss.h"/>
@@ -64,44 +70,47 @@
       <File Name="../../../src/argss_ruby.h"/>
     </VirtualDirectory>
     <VirtualDirectory Name="multimedia">
-      <VirtualDirectory Name="win32">
-        <File Name="../../../src/console_win32.cpp"/>
-        <File Name="../../../src/console_win32.h"/>
-        <File Name="../../../src/msgbox_win32.cpp"/>
-        <File Name="../../../src/msgbox_win32.h"/>
+      <VirtualDirectory Name="audio">
+        <File Name="../../../src/audio.h"/>
+        <File Name="../../../src/audio.cpp"/>
       </VirtualDirectory>
-      <File Name="../../../src/audio.cpp"/>
-      <File Name="../../../src/audio.h"/>
-      <File Name="../../../src/bitmap.cpp"/>
-      <File Name="../../../src/bitmap.h"/>
-      <File Name="../../../src/color.cpp"/>
-      <File Name="../../../src/color.h"/>
-      <File Name="../../../src/hslrgb.cpp"/>
-      <File Name="../../../src/hslrgb.h"/>
-      <File Name="../../../src/input.cpp"/>
-      <File Name="../../../src/input.h"/>
-      <File Name="../../../src/inputkeys.cpp"/>
-      <File Name="../../../src/inputkeys.h"/>
-      <File Name="../../../src/msgbox.h"/>
-      <File Name="../../../src/plane.cpp"/>
-      <File Name="../../../src/plane.h"/>
-      <File Name="../../../src/rect.cpp"/>
-      <File Name="../../../src/rect.h"/>
-      <File Name="../../../src/sprite.cpp"/>
-      <File Name="../../../src/sprite.h"/>
-      <File Name="../../../src/tilemap_xp.cpp"/>
-      <File Name="../../../src/tilemap_xp.h"/>
-      <File Name="../../../src/tone.cpp"/>
-      <File Name="../../../src/tone.h"/>
-      <File Name="../../../src/viewport.cpp"/>
-      <File Name="../../../src/viewport.h"/>
-      <File Name="../../../src/window_xp.cpp"/>
-      <File Name="../../../src/window_xp.h"/>
-      <File Name="../../../src/zobj.cpp"/>
-      <File Name="../../../src/zobj.h"/>
-      <File Name="../../../src/graphics.cpp"/>
-      <File Name="../../../src/graphics.h"/>
-      <File Name="../../../src/console.h"/>
+      <VirtualDirectory Name="graphics">
+        <File Name="../../../src/bitmap.h"/>
+        <File Name="../../../src/color.cpp"/>
+        <File Name="../../../src/color.h"/>
+        <File Name="../../../src/graphics.cpp"/>
+        <File Name="../../../src/graphics.h"/>
+        <File Name="../../../src/hslrgb.cpp"/>
+        <File Name="../../../src/hslrgb.h"/>
+        <File Name="../../../src/rect.cpp"/>
+        <File Name="../../../src/rect.h"/>
+        <File Name="../../../src/sprite.cpp"/>
+        <File Name="../../../src/sprite.h"/>
+        <File Name="../../../src/tilemap_xp.cpp"/>
+        <File Name="../../../src/tilemap_xp.h"/>
+        <File Name="../../../src/tone.cpp"/>
+        <File Name="../../../src/tone.h"/>
+        <File Name="../../../src/viewport.cpp"/>
+        <File Name="../../../src/viewport.h"/>
+        <File Name="../../../src/window_xp.cpp"/>
+        <File Name="../../../src/window_xp.h"/>
+        <File Name="../../../src/zobj.cpp"/>
+        <File Name="../../../src/zobj.h"/>
+        <File Name="../../../src/bitmap.cpp"/>
+        <File Name="../../../src/plane.cpp"/>
+        <File Name="../../../src/plane.h"/>
+      </VirtualDirectory>
+      <VirtualDirectory Name="input">
+        <File Name="../../../src/inputkeys.cpp"/>
+        <File Name="../../../src/inputkeys.h"/>
+        <File Name="../../../src/input.h"/>
+        <File Name="../../../src/inputbuttons.h"/>
+        <File Name="../../../src/input.cpp"/>
+        <VirtualDirectory Name="win32">
+          <File Name="../../../src/inputbuttons_win32.cpp"/>
+          <File Name="../../../src/inputbuttons_win32.h"/>
+        </VirtualDirectory>
+      </VirtualDirectory>
     </VirtualDirectory>
     <File Name="../../../src/defines.h"/>
     <File Name="../../../src/main.cpp"/>
@@ -113,6 +122,21 @@
     <File Name="../../../src/system.h"/>
     <File Name="../../../src/output.cpp"/>
     <File Name="../../../src/output.h"/>
+    <VirtualDirectory Name="tools">
+      <File Name="../../../src/msgbox.h"/>
+      <VirtualDirectory Name="win32">
+        <File Name="../../../src/console_win32.cpp"/>
+        <File Name="../../../src/console_win32.h"/>
+        <File Name="../../../src/filefinder_win32.cpp"/>
+        <File Name="../../../src/filefinder_win32.h"/>
+        <File Name="../../../src/msgbox_win32.cpp"/>
+        <File Name="../../../src/msgbox_win32.h"/>
+        <File Name="../../../src/registry.cpp"/>
+        <File Name="../../../src/registry.h"/>
+      </VirtualDirectory>
+      <File Name="../../../src/console.h"/>
+      <File Name="../../../src/filefinder.h"/>
+    </VirtualDirectory>
   </VirtualDirectory>
   <Dependencies Name="Release"/>
   <Settings Type="Executable">

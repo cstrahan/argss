@@ -41,21 +41,21 @@ static VALUE argss_input_update(VALUE self) {
 	Input::Update();
     return Qnil;
 }
-static VALUE argss_input_press(VALUE self, VALUE button) {
+static VALUE argss_input_pressQ(VALUE self, VALUE button) {
     Check_Type(button, T_FIXNUM);
-	return INT2BOOL(Input::IsPressed(Input::NUM2KEY(button)));
+	return INT2BOOL(Input::IsPressed(button));
 }
-static VALUE argss_input_trigger(VALUE self, VALUE button) {
+static VALUE argss_input_triggerQ(VALUE self, VALUE button) {
     Check_Type(button, T_FIXNUM);
-    return INT2BOOL(Input::IsTriggered(Input::NUM2KEY(button)));
+    return INT2BOOL(Input::IsTriggered(button));
 }
-static VALUE argss_input_repeat(VALUE self, VALUE button) {
+static VALUE argss_input_repeatQ(VALUE self, VALUE button) {
     Check_Type(button, T_FIXNUM);
-    return INT2BOOL(Input::IsRepeated(Input::NUM2KEY(button)));
+    return INT2BOOL(Input::IsRepeated(button));
 }
-static VALUE argss_input_release(VALUE self, VALUE button) {
+static VALUE argss_input_releaseQ(VALUE self, VALUE button) {
     Check_Type(button, T_FIXNUM);
-    return INT2BOOL(Input::IsReleased(Input::NUM2KEY(button)));
+    return INT2BOOL(Input::IsReleased(button));
 }
 static VALUE argss_input_dir4(VALUE self) {
     return INT2NUM(Input::dir4);
@@ -83,10 +83,10 @@ void ARGSS::AInput::Init() {
     typedef VALUE (*rubyfunc)(...);
     id = rb_define_module("Input");
     rb_define_singleton_method(id, "update", (rubyfunc)argss_input_update, 0);
-    rb_define_singleton_method(id, "press?", (rubyfunc)argss_input_press, 1);
-    rb_define_singleton_method(id, "trigger?", (rubyfunc)argss_input_trigger, 1);
-    rb_define_singleton_method(id, "repeat?", (rubyfunc)argss_input_repeat, 1);
-    rb_define_singleton_method(id, "release?", (rubyfunc)argss_input_release, 1);
+    rb_define_singleton_method(id, "press?", (rubyfunc)argss_input_pressQ, 1);
+    rb_define_singleton_method(id, "trigger?", (rubyfunc)argss_input_triggerQ, 1);
+    rb_define_singleton_method(id, "repeat?", (rubyfunc)argss_input_repeatQ, 1);
+    rb_define_singleton_method(id, "release?", (rubyfunc)argss_input_releaseQ, 1);
     rb_define_singleton_method(id, "dir4", (rubyfunc)argss_input_dir4, 0);
     rb_define_singleton_method(id, "dir8", (rubyfunc)argss_input_dir8, 0);
     rb_define_singleton_method(id, "pressed", (rubyfunc)argss_input_pressed, 0);

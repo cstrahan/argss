@@ -85,6 +85,13 @@ static VALUE argss_rect_heightE(VALUE self, VALUE h) {
     Check_Kind(h, rb_cNumeric);
     return rb_iv_set(self, "@height", h);
 }
+static VALUE argss_rect_empty(VALUE self) {
+	rb_iv_set(self, "@x", INT2NUM(0));
+	rb_iv_set(self, "@y", INT2NUM(0));
+	rb_iv_set(self, "@width", INT2NUM(0));
+	rb_iv_set(self, "@height", INT2NUM(0));
+    return self;
+}
 static VALUE argss_rect_inspect(VALUE self) {
     char str[255];
     long n;
@@ -101,13 +108,16 @@ static VALUE argss_rect_inspect(VALUE self) {
 #endif
 	return rb_str_new(str, n);
 }
-static VALUE argss_rect_dump(VALUE self) {
-    //ToDo
-    return self;
+static VALUE argss_rect_dump(int argc, VALUE* argv, VALUE self) {
+	if (argc > 1) raise_argn(argc, 1);
+	VALUE arr = rb_ary_new3(4, rb_iv_get(self, "@x"), rb_iv_get(self, "@y"), rb_iv_get(self, "@width"), rb_iv_get(self, "@height"));
+    return rb_funcall(arr, rb_intern("pack"), 1, rb_str_new2("l4"));
 }
-static VALUE argss_rect_load(VALUE str) {
-    //ToDo
-    return str;
+static VALUE argss_rect_load(VALUE self, VALUE str) {
+	VALUE arr = rb_funcall(str, rb_intern("unpack"), 1, rb_str_new2("l4"));
+	VALUE args[4] = {rb_ary_entry(arr, 0), rb_ary_entry(arr, 1), rb_ary_entry(arr, 2), rb_ary_entry(arr, 3)};
+	VALUE rect = rb_class_new_instance(4, args, ARGSS::ARect::id);
+    return rect;
 }
 
 ////////////////////////////////////////////////////////////
@@ -126,6 +136,7 @@ void ARGSS::ARect::Init() {
     rb_define_method(id, "width=", (rubyfunc)argss_rect_widthE, 1);
     rb_define_method(id, "height", (rubyfunc)argss_rect_height, 0);
     rb_define_method(id, "height=", (rubyfunc)argss_rect_heightE, 1);
+	rb_define_method(id, "empty", (rubyfunc)argss_rect_empty, 0);
     rb_define_method(id, "inspect", (rubyfunc)argss_rect_inspect, 0);
     rb_define_method(id, "_dump", (rubyfunc)argss_rect_dump, -1);
     rb_define_singleton_method(id, "_load", (rubyfunc)argss_rect_load, 1);

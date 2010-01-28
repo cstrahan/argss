@@ -38,10 +38,10 @@ namespace Input {
 	void Init();
 	void Update();
 	void ClearKeys();
-	bool IsPressed(int button);
-	bool IsTriggered(int button);
-	bool IsRepeated(int button);
-	bool IsReleased(int button);
+	bool IsPressed(unsigned long button);
+	bool IsTriggered(unsigned long button);
+	bool IsRepeated(unsigned long button);
+	bool IsReleased(unsigned long button);
 	unsigned long GetPressed();
 	unsigned long GetTriggered();
 	unsigned long GetRepeated();

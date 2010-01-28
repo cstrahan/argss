@@ -42,10 +42,10 @@ public:
 	static bool IsDisposed(unsigned long id);
 	static void New(unsigned long id);
 	static Window* Get(unsigned long id);
+	static void Dispose(unsigned long id);
 
 	void Draw();
 
-	void Dispose();
 	void Update();
 	unsigned long GetViewport();
 	void SetViewport(unsigned long nviewport);
@@ -113,9 +113,12 @@ private:
 
 	void RefreshBackground();
 	void RefreshFrame();
-	void UpdateCursor();
+	void RefreshCursor();
 	bool background_needs_refresh;
 	bool frame_needs_refresh;
+	bool cursor_needs_refresh;
+	Rect last_cursor_rect;
+	int cursor_frame;
 	int pause_frame;
 	int pause_id;
 };

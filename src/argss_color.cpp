@@ -111,13 +111,16 @@ static VALUE argss_color_inspect(VALUE self) {
 #endif
     return rb_str_new(str, n);
 }
-static VALUE argss_color_dump(VALUE self) {
-    //ToDo
-    return self;
+static VALUE argss_color_dump(int argc, VALUE* argv, VALUE self) {
+	if (argc > 1) raise_argn(argc, 1);
+	VALUE arr = rb_ary_new3(4, rb_iv_get(self, "@red"), rb_iv_get(self, "@green"), rb_iv_get(self, "@blue"), rb_iv_get(self, "@alpha"));
+    return rb_funcall(arr, rb_intern("pack"), 1, rb_str_new2("d4"));
 }
-static VALUE argss_color_load(VALUE str) {
-    //ToDo
-    return str;
+static VALUE argss_color_load(VALUE self, VALUE str) {
+	VALUE arr = rb_funcall(str, rb_intern("unpack"), 1, rb_str_new2("d4"));
+	VALUE args[4] = {rb_ary_entry(arr, 0), rb_ary_entry(arr, 1), rb_ary_entry(arr, 2), rb_ary_entry(arr, 3)};
+	VALUE color = rb_class_new_instance(4, args, ARGSS::AColor::id);
+    return color;
 }
 
 ////////////////////////////////////////////////////////////

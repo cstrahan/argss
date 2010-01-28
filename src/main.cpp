@@ -25,12 +25,13 @@
 ////////////////////////////////////////////////////////////
 /// Headers
 ////////////////////////////////////////////////////////////
+#include "output.h"
 #include "system.h"
+#include "filefinder.h"
 #include "graphics.h"
 #include "audio.h"
 #include "input.h"
 #include "player.h"
-#include "output.h"
 #include "argss.h"
 
 ////////////////////////////////////////////////////////////
@@ -40,6 +41,7 @@ int main(int argc, char **argv)
 {
 	Output::Init();
     System::Init();
+	FileFinder::Init();
 	Graphics::Init();
 	Input::Init();
 	Audio::Init();
