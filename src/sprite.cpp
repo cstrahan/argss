@@ -29,13 +29,9 @@
 #include "sprite.h"
 #include "argss_ruby.h"
 #include "argss_sprite.h"
+#include "viewport.h"
 #include "graphics.h"
 #include "system.h"
-
-////////////////////////////////////////////////////////////
-/// Static Variables
-////////////////////////////////////////////////////////////
-std::map<unsigned long, Sprite*> Sprite::sprites;
 
 ////////////////////////////////////////////////////////////
 /// Defines
@@ -70,7 +66,12 @@ Sprite::Sprite(VALUE iid) {
 	sprite = NULL;
 	flash_duration = 0;
 
-	Graphics::RegisterZObj(0, ARGSS::ASprite::id, id);
+	if (viewport != Qnil) {
+		Viewport::Get(viewport)->RegisterZObj(0, id);
+	}
+	else {
+		Graphics::RegisterZObj(0, id);
+	}
 }
 
 ////////////////////////////////////////////////////////////
@@ -84,41 +85,46 @@ Sprite::~Sprite() {
 /// Class Is Sprite Disposed?
 ////////////////////////////////////////////////////////////
 bool Sprite::IsDisposed(VALUE id) {
-	return sprites.count(id) == 0;
+	return Graphics::drawable_map.count(id) == 0;
 }
 
 ////////////////////////////////////////////////////////////
 /// Class New Sprite
 ////////////////////////////////////////////////////////////
 void Sprite::New(VALUE id) {
-	sprites[id] = new Sprite(id);
+	Graphics::drawable_map[id] = new Sprite(id);
 }
 
 ////////////////////////////////////////////////////////////
 /// Class Get Sprite
 ////////////////////////////////////////////////////////////
 Sprite* Sprite::Get(VALUE id) {
-	return sprites[id];
+	return (Sprite*)Graphics::drawable_map[id];
 }
 
 ////////////////////////////////////////////////////////////
 /// Class Dispose Sprite
 ////////////////////////////////////////////////////////////
 void Sprite::Dispose(unsigned long id) {
-	delete sprites[id];
-	std::map<unsigned long, Sprite*>::iterator it = sprites.find(id);
-	sprites.erase(it);
-	Graphics::RemoveZObj(id);
+	if (Sprite::Get(id)->viewport != Qnil) {
+		Viewport::Get(Sprite::Get(id)->viewport)->RemoveZObj(id);
+	}
+	else {
+		Graphics::RemoveZObj(id);
+	}
+	delete Graphics::drawable_map[id];
+	std::map<unsigned long, Drawable*>::iterator it = Graphics::drawable_map.find(id);
+	Graphics::drawable_map.erase(it);
 }
 
 ////////////////////////////////////////////////////////////
 /// Draw
 ////////////////////////////////////////////////////////////
-void Sprite::Draw() {
+void Sprite::Draw(long z) {
 	if (!visible) return;
 	if (GetWidth() <= 0 || GetHeight() <= 0) return;
 	if (x < -GetWidth() || x > System::Width || y < -GetHeight() || y > System::Height) return;
-	if (!bitmap) return;
+	if (bitmap == Qnil) return;
 	
 	src_rect_sprite = Rect(src_rect);
 	if (src_rect_sprite != src_rect_last) {
@@ -129,6 +135,23 @@ void Sprite::Draw() {
 	if (needs_refresh) Refresh();
 	
 	sprite->BlitScreen(x - ox, y - oy);
+	//sprite->BlitScreen(x - ox, y - oy, Rect(0, 0, sprite->GetWidth(), sprite->GetHeight()), 255, 45, 0, 0);
+}
+void Sprite::Draw(long z, Bitmap* dst_bitmap) {
+	if (!visible) return;
+	if (GetWidth() <= 0 || GetHeight() <= 0) return;
+	if (x < -GetWidth() || x > dst_bitmap->GetWidth() || y < -GetHeight() || y > dst_bitmap->GetHeight()) return;
+	if (!bitmap) return;
+	
+	src_rect_sprite = Rect(src_rect);
+	if (src_rect_sprite != src_rect_last) {
+		src_rect_last = src_rect_sprite;
+		needs_refresh = true;
+	}
+	
+	if (needs_refresh) Refresh();
+	
+	dst_bitmap->Blit(x - ox, y - oy, sprite, sprite->GetRect(), 255);
 }
 
 ////////////////////////////////////////////////////////////
@@ -137,13 +160,11 @@ void Sprite::Draw() {
 void Sprite::Refresh() {
 	needs_refresh = false;
 
-	tone_sprite.Set(tone);
-
 	delete sprite;
 	
 	sprite = new Bitmap(Bitmap::Get(bitmap), src_rect_sprite);
-		
-	sprite->ToneChange(tone);
+
+	sprite->ToneChange(Tone(tone));
 	sprite->OpacityChange(opacity, bush_depth);
 	sprite->Flip(flipx, flipy);
 	sprite->Zoom(zoom_x, zoom_y);
@@ -202,6 +223,16 @@ VALUE Sprite::GetViewport() {
 	return viewport;
 }
 void Sprite::SetViewport(VALUE nviewport) {
+	if (viewport != nviewport) {
+		if (nviewport != Qnil) {
+			Graphics::RemoveZObj(id);
+			Viewport::Get(nviewport)->RegisterZObj(0, id);
+		}
+		else {
+			if (viewport != Qnil) Viewport::Get(viewport)->RemoveZObj(id);
+			Graphics::RegisterZObj(0, id);
+		}
+	}
 	viewport = nviewport;
 }
 VALUE Sprite::GetBitmap() {
@@ -240,9 +271,15 @@ int Sprite::GetZ() {
 	return z;
 }
 void Sprite::SetZ(int nz) {
-	if (z != nz) Graphics::UpdateZObj(id, nz);
+	if (z != nz) {
+		if (viewport != Qnil) {
+			Viewport::Get(viewport)->UpdateZObj(id, nz);
+		}
+		else {
+			Graphics::UpdateZObj(id, nz);
+		}
+	}
 	z = nz;
-	
 }
 int Sprite::GetOx() {
 	return ox;

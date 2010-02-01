@@ -92,8 +92,8 @@ static VALUE argss_bitmap_blt(int argc, VALUE *argv, VALUE self) {
 }
 static VALUE argss_bitmap_stretch_blt(int argc, VALUE *argv, VALUE self) {
     ARGSS::ABitmap::Check(self);
-    if (argc < 3) {raise_argn(argc, 3);}
-    else if (argc > 4) {raise_argn(argc, 4);}
+    if (argc < 3) raise_argn(argc, 3);
+    else if (argc > 4) raise_argn(argc, 4);
     ARGSS::ABitmap::Check(argv[1]);
     if (argc == 4) {
 		Bitmap::Get(self)->StretchBlit(Rect(argv[0]), Bitmap::Get(argv[1]), Rect(argv[2]), NUM2INT(argv[3]));

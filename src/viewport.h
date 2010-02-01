@@ -28,15 +28,19 @@
 ////////////////////////////////////////////////////////////
 /// Headers
 ////////////////////////////////////////////////////////////
-#include <map>
+#include <string>
+#include <list>
+#include "bitmap.h"
 #include "color.h"
 #include "rect.h"
 #include "tone.h"
+#include "drawable.h"
+#include "zobj.h"
 
 ////////////////////////////////////////////////////////////
 /// Viewport class
 ////////////////////////////////////////////////////////////
-class Viewport {
+class Viewport : public Drawable {
 public:
 	Viewport(unsigned long iid);
 	~Viewport();
@@ -46,7 +50,8 @@ public:
 	static Viewport* Get(unsigned long id);
 	static void Dispose(unsigned long id);
 
-	void Draw();
+	void Draw(long z);
+	void Draw(long z, Bitmap* dst_bitmap);
 
 	void Flash(int duration);
 	void Flash(Color color, int duration);
@@ -66,8 +71,14 @@ public:
 	unsigned long GetTone();
 	void SetTone(unsigned long ntone);
 
+	void RegisterZObj(long z, unsigned long id);
+	void RegisterZObj(long z, unsigned long id, bool multiz);
+	void RemoveZObj(unsigned long id);
+	void UpdateZObj(unsigned long id, long z);
+
 private:
-	static std::map<unsigned long, Viewport*> viewports;
+	std::list<ZObj> zlist;
+	std::list<ZObj>::iterator it_zlist;
 
 	unsigned long id;
 	unsigned long rect;
@@ -85,7 +96,11 @@ private:
 	Rect rect_last;
 	Color color_viewport;
 	Tone tone_viewport;
-	bool needs_refresh;
+	bool disposing;
+
+	Bitmap* viewport;
+
+	Rect last_dst_rect;
 };
 
 #endif

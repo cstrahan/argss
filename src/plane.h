@@ -28,13 +28,15 @@
 ////////////////////////////////////////////////////////////
 /// Headers
 ////////////////////////////////////////////////////////////
-#include <map>
+#include <string>
+#include "bitmap.h"
 #include "tone.h"
+#include "drawable.h"
 
 ////////////////////////////////////////////////////////////
 /// Plane class
 ////////////////////////////////////////////////////////////
-class Plane {
+class Plane : public Drawable {
 public:
 	Plane(unsigned long iid);
 	~Plane();
@@ -44,7 +46,8 @@ public:
 	static Plane* Get(unsigned long id);
 	static void Dispose(unsigned long id);
 
-	void Draw();
+	void Draw(long z);
+	void Draw(long z, Bitmap* dst_bitmap);
 
 	unsigned long GetViewport();
 	void SetViewport(unsigned long nviewport);
@@ -72,8 +75,6 @@ public:
 	void SetTone(unsigned long ntone);
 
 private:
-	static std::map<unsigned long, Plane*> planes;
-
 	void Refresh();
 	void ApplyTone();
 	void ApplyZoom();

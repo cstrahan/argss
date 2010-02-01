@@ -22,26 +22,17 @@
 /// SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //////////////////////////////////////////////////////////////////////////////////
 
-#ifndef _ZOBJ_H_
-#define _ZOBJ_H_
+#ifndef _DRAWABLE_H_
+#define _DRAWABLE_H_
 
 ////////////////////////////////////////////////////////////
-/// ZObj class
+/// Drawable virtual
 ////////////////////////////////////////////////////////////
-class ZObj {
+class Drawable {
 public:
-	ZObj(long iz, unsigned long icreation, unsigned long iid);
-	~ZObj();
-	
-	void SetZ(long n);
-	long GetZ();
-	unsigned long GetCreation();
-	unsigned long GetId();
+	virtual ~Drawable() {};
 
-private:
-	long z;
-	unsigned long creation;
-	unsigned long id;
+	virtual void Draw(long z) = 0;
 };
 
 #endif

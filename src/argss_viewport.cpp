@@ -25,6 +25,7 @@
 ////////////////////////////////////////////////////////////
 /// Headers
 ////////////////////////////////////////////////////////////
+#include <string>
 #include "argss_viewport.h"
 #include "argss_rect.h"
 #include "argss_color.h"
@@ -41,6 +42,16 @@ VALUE ARGSS::AViewport::id;
 /// ARGSS Viewport ruby functions
 ////////////////////////////////////////////////////////////
 static VALUE argss_viewport_initialize(int argc, VALUE *argv, VALUE self) {
+	if (argc == 0) raise_argn(argc, 1);
+	else if (argc > 1 && argc < 4) raise_argn(argc, 4);
+	if (argc == 1) rb_iv_set(self, "@rect", argv[0]);
+	else rb_iv_set(self, "@rect", ARGSS::ARect::New(argv[0], argv[1], argv[2], argv[3]));
+	rb_iv_set(self, "@visible", Qtrue);
+	rb_iv_set(self, "@z", INT2NUM(0));
+	rb_iv_set(self, "@ox", INT2NUM(0));
+	rb_iv_set(self, "@oy", INT2NUM(0));
+	rb_iv_set(self, "@color", ARGSS::AColor::New(0, 0, 0, 0));
+	rb_iv_set(self, "@tone", ARGSS::ATone::New());
 	Viewport::New(self);
 	ARGSS::ARuby::AddObject(self);
 	return self;

@@ -27,14 +27,17 @@
 ////////////////////////////////////////////////////////////
 #include <string>
 #include "viewport.h"
+#include "sprite.h"
+#include "plane.h"
+#include "tilemap_xp.h"
+#include "window_xp.h"
 #include "argss_ruby.h"
 #include "argss_viewport.h"
+#include "argss_sprite.h"
+#include "argss_plane.h"
+#include "argss_tilemap.h"
+#include "argss_window.h"
 #include "graphics.h"
-
-////////////////////////////////////////////////////////////
-/// Static Variables
-////////////////////////////////////////////////////////////
-std::map<unsigned long, Viewport*> Viewport::viewports;
 
 ////////////////////////////////////////////////////////////
 /// Constructor
@@ -42,60 +45,87 @@ std::map<unsigned long, Viewport*> Viewport::viewports;
 Viewport::Viewport(VALUE iid) {
 	id = iid;
 	rect = rb_iv_get(id, "@rect");
-	visible = false;
+	visible = true;
 	z = 0;
 	ox = 0;
 	oy = 0;
 	color = rb_iv_get(id, "@color");
 	tone = rb_iv_get(id, "@tone");
 	flash_duration = 0;
+	disposing = false;
 
-	Graphics::RegisterZObj(0, ARGSS::AViewport::id, id);
+	last_dst_rect = Rect(rect);
+	viewport = new Bitmap(last_dst_rect.width, last_dst_rect.height);
+
+	Graphics::RegisterZObj(0, id);
 }
 
 ////////////////////////////////////////////////////////////
 /// Destructor
 ////////////////////////////////////////////////////////////
 Viewport::~Viewport() {
-
+	delete viewport;
 }
 
 ////////////////////////////////////////////////////////////
 /// Class Is Viewport Disposed?
 ////////////////////////////////////////////////////////////
 bool Viewport::IsDisposed(VALUE id) {
-	return viewports.count(id) == 0;
+	return Graphics::drawable_map.count(id) == 0;
 }
 
 ////////////////////////////////////////////////////////////
 /// Class New Viewport
 ////////////////////////////////////////////////////////////
 void Viewport::New(VALUE id) {
-	viewports[id] = new Viewport(id);
+	Graphics::drawable_map[id] = new Viewport(id);
 }
 
 ////////////////////////////////////////////////////////////
 /// Class Get Viewport
 ////////////////////////////////////////////////////////////
 Viewport* Viewport::Get(VALUE id) {
-	return viewports[id];
+	return (Viewport*)Graphics::drawable_map[id];
 }
 
 ////////////////////////////////////////////////////////////
 /// Class Dispose Viewport
 ////////////////////////////////////////////////////////////
 void Viewport::Dispose(unsigned long id) {
-	delete viewports[id];
-	std::map<unsigned long, Viewport*>::iterator it = viewports.find(id);
-	viewports.erase(it);
+	delete Graphics::drawable_map[id];
+	std::map<unsigned long, Drawable*>::iterator it = Graphics::drawable_map.find(id);
+	Graphics::drawable_map.erase(it);
+
 	Graphics::RemoveZObj(id);
 }
 
 ////////////////////////////////////////////////////////////
 /// Draw
 ////////////////////////////////////////////////////////////
-void Viewport::Draw() {
+void Viewport::Draw(long z) {
+	if (!visible) return;
 
+	/*Rect dst_rect(rect);
+
+	if (dst_rect != last_dst_rect) {
+		delete viewport;
+		viewport = new Bitmap(dst_rect.width, dst_rect.height);
+		last_dst_rect = dst_rect;
+	}
+
+	viewport->Clear();*/
+
+	zlist.sort(Graphics::SortZObj);
+    for(it_zlist = zlist.begin(); it_zlist != zlist.end(); it_zlist++) {
+		Graphics::drawable_map[it_zlist->GetId()]->Draw(it_zlist->GetZ());
+	}
+
+	/*viewport->ToneChange(Tone(tone));
+	if (flash_duration > 0) {
+		viewport ->Flash(flash_color, flash_frame, flash_duration);
+	}
+
+	viewport->BlitScreen(dst_rect.x - ox, dst_rect.y - oy);*/
 }
 
 ////////////////////////////////////////////////////////////
@@ -107,7 +137,6 @@ void Viewport::Update() {
 		if (flash_duration == flash_frame) {
 			flash_duration = 0;
 		}
-		needs_refresh = true;
 	}
 }
 
@@ -170,4 +199,42 @@ VALUE Viewport::GetTone() {
 }
 void Viewport::SetTone(VALUE ntone) {
 	tone = ntone;
+}
+
+////////////////////////////////////////////////////////////
+/// Register ZObj
+////////////////////////////////////////////////////////////
+void Viewport::RegisterZObj(long z, unsigned long id) {
+	Graphics::creation += 1;
+	ZObj zobj(z, Graphics::creation, id);
+	zlist.push_back(zobj);
+}
+void Viewport::RegisterZObj(long z, unsigned long id, bool multiz) {
+	ZObj zobj(z, 999999, id);
+	zlist.push_back(zobj);
+}
+
+////////////////////////////////////////////////////////////
+/// Remove ZObj
+////////////////////////////////////////////////////////////
+struct remove_zobj_id : public std::binary_function<ZObj, ZObj, bool> {
+	remove_zobj_id(VALUE val) : id(val) {}
+	bool operator () (ZObj &obj) const {return obj.GetId() == id;}
+	unsigned long id;
+};
+void Viewport::RemoveZObj(unsigned long id) {
+	if (disposing) return;
+	zlist.remove_if(remove_zobj_id(id));
+}
+
+////////////////////////////////////////////////////////////
+/// Update ZObj Z
+////////////////////////////////////////////////////////////
+void Viewport::UpdateZObj(unsigned long id, long z) {
+	for(it_zlist = zlist.begin(); it_zlist != zlist.end(); it_zlist++) {
+		if (it_zlist->GetId() == id) {
+			it_zlist->SetZ(z);
+			break;
+		}
+	}
 }

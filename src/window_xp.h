@@ -28,13 +28,14 @@
 ////////////////////////////////////////////////////////////
 /// Headers
 ////////////////////////////////////////////////////////////
-#include <map>
+#include <string>
 #include "bitmap.h"
+#include "drawable.h"
 
 ////////////////////////////////////////////////////////////
 /// Window class
 ////////////////////////////////////////////////////////////
-class Window {
+class Window : public Drawable {
 public:
 	Window(unsigned long iid);
 	~Window();
@@ -44,7 +45,8 @@ public:
 	static Window* Get(unsigned long id);
 	static void Dispose(unsigned long id);
 
-	void Draw();
+	void Draw(long z);
+	void Draw(long z, Bitmap* dst_bitmap);
 
 	void Update();
 	unsigned long GetViewport();
@@ -85,8 +87,6 @@ public:
 	void SetContentsOpacity(int ncontents_opacity);
 
 private:
-	static std::map<unsigned long, Window*> windows;
-
 	unsigned long id;
 	unsigned long viewport;
 	unsigned long windowskin;

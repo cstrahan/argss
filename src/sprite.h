@@ -28,17 +28,17 @@
 ////////////////////////////////////////////////////////////
 /// Headers
 ////////////////////////////////////////////////////////////
-#include <map>
-
+#include <string>
 #include "bitmap.h"
 #include "color.h"
 #include "tone.h"
 #include "rect.h"
+#include "drawable.h"
 
 ////////////////////////////////////////////////////////////
 /// Sprite class
 ////////////////////////////////////////////////////////////
-class Sprite {
+class Sprite : public Drawable {
 public:
 	Sprite(unsigned long iid);
 	~Sprite();
@@ -48,7 +48,8 @@ public:
 	static Sprite* Get(unsigned long id);
 	static void Dispose(unsigned long id);
 
-	void Draw();
+	void Draw(long z);
+	void Draw(long z, Bitmap* dst_bitmap);
 
 	void Flash(int duration);
 	void Flash(Color color, int duration);
@@ -93,8 +94,6 @@ public:
 	void SetTone(unsigned long ntone);
 
 private:
-	static std::map<unsigned long, Sprite*> sprites;
-
 	unsigned long id;
 	unsigned long viewport;
 	unsigned long bitmap;
@@ -122,8 +121,6 @@ private:
 	Bitmap* sprite;
 	Rect src_rect_sprite;
 	Rect src_rect_last;
-	Color color_sprite;
-	Tone tone_sprite;
 	bool needs_refresh;
 
 	void Refresh();

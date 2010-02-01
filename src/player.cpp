@@ -32,6 +32,7 @@
 #include "console.h"
 #include "argss_ruby.h"
 #include "SDL_ttf.h"
+#include "SDL_opengl.h"
 
 ////////////////////////////////////////////////////////////
 /// Initialize
@@ -42,11 +43,29 @@ void Player::Init() {
     }
 	atexit(SDL_Quit);
 
-	Graphics::SetScreen(SDL_SetVideoMode(System::Width, System::Height, 32, SDL_HWSURFACE));
+	Graphics::SetScreen(SDL_SetVideoMode(System::Width, System::Height, 32, SDL_OPENGL | SDL_HWSURFACE));
     if (Graphics::GetScreen() == NULL ) {
 		Output::Error("ARGSS couldn't initialize %dx%dx%d video mode.\n%s\n", System::Width, System::Height, 32, SDL_GetError());
     }
 	
+	glEnable(GL_TEXTURE_2D);
+	glViewport(0, 0, System::Width, System::Height);
+	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+	glClearDepth(1.0);
+	glShadeModel(GL_FLAT);
+
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+
+	glOrtho(0, System::Width, System::Height, 0, -1000, 9999); 
+
+	glMatrixMode(GL_MODELVIEW);
+
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
 	if(TTF_Init() == -1) {
 		Output::Error("ARGSS couldn't initialize SDL_ttf library.\n%s\n", TTF_GetError());
 	}

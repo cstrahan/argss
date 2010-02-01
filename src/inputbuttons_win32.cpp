@@ -45,7 +45,10 @@ void Input::InitButtons() {
 			for (int j = 0; j < 15; j++) {
 				if (i == data[10 + j]) {
 					if (j == 0) buttons[i].push_back(SDLK_SPACE);
-					if (j == 1) buttons[i].push_back(SDLK_RETURN);
+					if (j == 1) {
+						buttons[i].push_back(SDLK_RETURN);
+						buttons[i].push_back(SDLK_KP_ENTER);
+					}
 					if (j == 2) buttons[i].push_back(SDLK_ESCAPE);
 					if (j == 3) buttons[i].push_back(SDLK_KP0);
 					if (j == 4) {

@@ -31,13 +31,9 @@
 #include "argss_ruby.h"
 #include "argss_window.h"
 #include "graphics.h"
+#include "viewport.h"
 #include "system.h"
 #include "rect.h"
-
-////////////////////////////////////////////////////////////
-/// Static Variables
-////////////////////////////////////////////////////////////
-std::map<unsigned long, Window*> Window::windows;
 
 ////////////////////////////////////////////////////////////
 /// Defines
@@ -76,7 +72,12 @@ Window::Window(VALUE iid) {
 	pause_frame = 0;
 	pause_id = 0;
 
-	Graphics::RegisterZObj(0, ARGSS::AWindow::id, id);
+	if (viewport != Qnil) {
+		Viewport::Get(viewport)->RegisterZObj(0, id);
+	}
+	else {
+		Graphics::RegisterZObj(0, id);
+	}
 }
 
 ////////////////////////////////////////////////////////////
@@ -92,37 +93,42 @@ Window::~Window() {
 /// Class Is Window Disposed?
 ////////////////////////////////////////////////////////////
 bool Window::IsDisposed(VALUE id) {
-	return windows.count(id) == 0;
+	return Graphics::drawable_map.count(id) == 0;
 }
 
 ////////////////////////////////////////////////////////////
 /// Class New Window
 ////////////////////////////////////////////////////////////
 void Window::New(VALUE id) {
-	windows[id] = new Window(id);
+	Graphics::drawable_map[id] = new Window(id);
 }
 
 ////////////////////////////////////////////////////////////
 /// Class Get Window
 ////////////////////////////////////////////////////////////
 Window* Window::Get(VALUE id) {
-	return windows[id];
+	return (Window*)Graphics::drawable_map[id];
 }
 
 ////////////////////////////////////////////////////////////
 /// Class Dispose Window
 ////////////////////////////////////////////////////////////
 void Window::Dispose(unsigned long id) {
-	delete windows[id];
-	std::map<unsigned long, Window*>::iterator it = windows.find(id);
-	windows.erase(it);
-	Graphics::RemoveZObj(id);
+	if (Window::Get(id)->viewport != Qnil) {
+		Viewport::Get(Window::Get(id)->viewport)->RemoveZObj(id);
+	}
+	else {
+		Graphics::RemoveZObj(id);
+	}
+	delete Graphics::drawable_map[id];
+	std::map<unsigned long, Drawable*>::iterator it = Graphics::drawable_map.find(id);
+	Graphics::drawable_map.erase(it);
 }
 
 ////////////////////////////////////////////////////////////
 /// Draw
 ////////////////////////////////////////////////////////////
-void Window::Draw() {
+void Window::Draw(long z) {
 	if (!visible) return;
 	if (width <= 0 || height <= 0) return;
 	if (x < -width || x > System::Width || y < -height || y > System::Height) return;
@@ -196,6 +202,83 @@ void Window::Draw() {
 			else if (pause_id == 3) src_rect.Set(176, 80, w, h);
 			else if (pause_id == 4) src_rect.Set(160, 64, w, h);
 			Bitmap::Get(windowskin)->BlitScreen(dstx, dsty, src_rect);
+		}
+	}
+}
+void Window::Draw(long z, Bitmap* dst_bitmap) {
+	if (!visible) return;
+	if (width <= 0 || height <= 0) return;
+	if (x < -width || x > dst_bitmap->GetWidth() || y < -height || y > dst_bitmap->GetHeight()) return;
+	
+	if (windowskin != Qnil) {
+		if (width > 4 && height > 4 && (back_opacity * opacity / 255 > 0)) {
+			if (background_needs_refresh) RefreshBackground();
+
+			dst_bitmap->Blit(x + 2, y + 2, background, background->GetRect(), back_opacity * opacity / 255);
+		}
+		if (width > 0 && height > 0 && opacity > 0) {
+			if (frame_needs_refresh) RefreshFrame();
+
+			dst_bitmap->Blit(x, y, frame, frame->GetRect(), opacity);
+		}
+
+		if (width > 32 && height > 32) {
+			RefreshCursor();
+
+			if (last_cursor_rect.width > 0 && last_cursor_rect.height > 0) {
+				int cursor_opacity = 255;
+				if (cursor_frame <= 16) {
+					cursor_opacity -= (int)((128.0f / 16.0f) * cursor_frame);
+				}
+				else {
+					cursor_opacity -= (int)((128.0f / 16.0f) * (32 - cursor_frame));
+				}
+				Rect rect(cursor_rect);
+				Rect src_rect(-min(rect.x + 16, 0), -min(rect.y + 16, 0), min(rect.width, width - 16 - rect.x), min(rect.height, height - 16 - rect.y));
+				dst_bitmap->Blit(x + 16 + rect.x, y + 16 + rect.y, cursor, src_rect, cursor_opacity);
+			}
+		}
+	}
+
+	if (contents != Qnil) {
+		if (width > 32 && height > 32 && -ox < width - 32 && -oy < height - 32 && contents_opacity > 0) {
+			Rect src_rect(-min(-ox, 0), -min(-oy, 0), min(width - 32, width - 32 + ox), min(height - 32, height - 32 + oy));
+			dst_bitmap->Blit(max(x + 16, x + 16 - ox), max(y + 16, y + 16 - oy), Bitmap::Get(contents), src_rect, contents_opacity);
+		}
+		if (ox > 0) {
+			Rect src_rect(128 + 16, 24, 8, 16);
+			dst_bitmap->Blit(x + 4, y + height / 2 - 8, Bitmap::Get(windowskin), src_rect, 255);
+		}
+		if (oy > 0) {
+			Rect src_rect(128 + 24, 16, 16, 8);
+			dst_bitmap->Blit(x + width / 2 - 8, y + 4, Bitmap::Get(windowskin), src_rect, 255);
+		}
+		if (Bitmap::Get(contents)->GetWidth() - ox > width - 32) {
+			Rect src_rect(128 + 40, 24, 8, 16);
+			dst_bitmap->Blit(x + width - 12, y + height / 2 - 8, Bitmap::Get(windowskin), src_rect, 255);
+		}
+		if (Bitmap::Get(contents)->GetHeight() - oy > height - 32) {
+			Rect src_rect(128 + 24, 40, 16, 8);
+			dst_bitmap->Blit(x + width / 2 - 8, y + height - 12, Bitmap::Get(windowskin), src_rect, 255);
+		}
+	}
+	
+	if (pause) {
+		int dstx = max(x + width / 2 - 8, x);
+		int dsty = max(y + height - 16, y);
+		int w = min(16, width);
+		int h = min(16, height);
+		if (pause_id == 0) {
+			Rect src_rect(160, 64, w, h);
+			dst_bitmap->Blit(dstx, dsty, Bitmap::Get(windowskin), src_rect, 255 / 8 * pause_frame);
+		}
+		else {
+			Rect src_rect;
+			if (pause_id == 1) src_rect.Set(176, 64, w, h);
+			else if (pause_id == 2) src_rect.Set(160, 80, w, h);
+			else if (pause_id == 3) src_rect.Set(176, 80, w, h);
+			else if (pause_id == 4) src_rect.Set(160, 64, w, h);
+			dst_bitmap->Blit(dstx, dsty, Bitmap::Get(windowskin), src_rect, 255);
 		}
 	}
 }
@@ -396,6 +479,16 @@ VALUE Window::GetViewport() {
 	return viewport;
 }
 void Window::SetViewport(VALUE nviewport) {
+	if (viewport != nviewport) {
+		if (nviewport != Qnil) {
+			Graphics::RemoveZObj(id);
+			Viewport::Get(nviewport)->RegisterZObj(0, id);
+		}
+		else {
+			if (viewport != Qnil) Viewport::Get(viewport)->RemoveZObj(id);
+			Graphics::RegisterZObj(0, id);
+		}
+	}
 	viewport = nviewport;
 }
 VALUE Window::GetWindowskin() {
@@ -482,7 +575,14 @@ int Window::GetZ() {
 	return z;
 }
 void Window::SetZ(int nz) {
-	if (z != nz) Graphics::UpdateZObj(id, nz);
+	if (z != nz) {
+		if (viewport != Qnil) {
+			Viewport::Get(viewport)->UpdateZObj(id, nz);
+		}
+		else {
+			Graphics::UpdateZObj(id, nz);
+		}
+	}
 	z = nz;
 }
 int Window::GetOx() {

@@ -30,11 +30,7 @@
 #include "argss_ruby.h"
 #include "argss_plane.h"
 #include "graphics.h"
-
-////////////////////////////////////////////////////////////
-/// Static Variables
-////////////////////////////////////////////////////////////
-std::map<unsigned long, Plane*> Plane::planes;
+#include "viewport.h"
 
 ////////////////////////////////////////////////////////////
 /// Constructor
@@ -53,8 +49,6 @@ Plane::Plane(VALUE iid) {
 	blend_type = 0;
 	color = rb_iv_get(id, "@color");
 	tone = rb_iv_get(id, "@tone");
-
-	Graphics::RegisterZObj(0, ARGSS::APlane::id, id);
 }
 
 ////////////////////////////////////////////////////////////
@@ -68,37 +62,39 @@ Plane::~Plane() {
 /// Class Is Plane Disposed?
 ////////////////////////////////////////////////////////////
 bool Plane::IsDisposed(VALUE id) {
-	return planes.count(id) == 0;
+	return Graphics::drawable_map.count(id) == 0;
 }
 
 ////////////////////////////////////////////////////////////
 /// Class New Plane
 ////////////////////////////////////////////////////////////
 void Plane::New(VALUE id) {
-	planes[id] = new Plane(id);
+	Graphics::drawable_map[id] = new Plane(id);
 }
 
 ////////////////////////////////////////////////////////////
 /// Class Get Plane
 ////////////////////////////////////////////////////////////
 Plane* Plane::Get(VALUE id) {
-	return planes[id];
+	return (Plane*)Graphics::drawable_map[id];
 }
 
 ////////////////////////////////////////////////////////////
 /// Class Dispose Plane
 ////////////////////////////////////////////////////////////
 void Plane::Dispose(unsigned long id) {
-	delete planes[id];
-	std::map<unsigned long, Plane*>::iterator it = planes.find(id);
-	planes.erase(it);
-	Graphics::RemoveZObj(id);
+	delete Graphics::drawable_map[id];
+	std::map<unsigned long, Drawable*>::iterator it = Graphics::drawable_map.find(id);
+	Graphics::drawable_map.erase(it);
 }
 
 ////////////////////////////////////////////////////////////
 /// Draw
 ////////////////////////////////////////////////////////////
-void Plane::Draw() {
+void Plane::Draw(long z) {
+
+}
+void Plane::Draw(long z, Bitmap* dst_bitmap) {
 
 }
 
@@ -128,7 +124,6 @@ int Plane::GetZ() {
 	return z;
 }
 void Plane::SetZ(int nz) {
-	if (z != nz) Graphics::UpdateZObj(id, nz);
 	z = nz;
 }
 int Plane::GetOx() {

@@ -99,6 +99,7 @@
         <File Name="../../../src/bitmap.cpp"/>
         <File Name="../../../src/plane.cpp"/>
         <File Name="../../../src/plane.h"/>
+        <File Name="../../../src/drawable.h"/>
       </VirtualDirectory>
       <VirtualDirectory Name="input">
         <File Name="../../../src/inputkeys.cpp"/>
@@ -140,15 +141,6 @@
   </VirtualDirectory>
   <Dependencies Name="Release"/>
   <Settings Type="Executable">
-    <GlobalSettings>
-      <Compiler Options="">
-        <IncludePath Value="."/>
-      </Compiler>
-      <Linker Options="">
-        <LibraryPath Value="."/>
-      </Linker>
-      <ResourceCompiler Options=""/>
-    </GlobalSettings>
     <Configuration Name="Debug" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
       <Compiler Options="-g;-W" Required="yes" PreCompiledHeader="">
         <IncludePath Value="."/>
@@ -159,7 +151,7 @@
         <Preprocessor Value="_WINDOWS"/>
         <Preprocessor Value="MINGW"/>
       </Compiler>
-      <Linker Options="-mwindows -lmingw32  -lSDLmain -lSDL -lSDL_image -lSDL_mixer -lSDL_ttf -lmsvcrt-ruby18" Required="yes">
+      <Linker Options="-lopengl32 -lglu32  -mwindows -lmingw32  -lSDLmain -lSDL -lSDL_image -lSDL_mixer -lSDL_ttf -lmsvcrt-ruby18" Required="yes">
         <LibraryPath Value="../../../dependencies/mingw/ruby1.8.6/lib"/>
         <LibraryPath Value="../../../dependencies/mingw/sdl/lib"/>
       </Linker>
@@ -214,6 +206,15 @@
         <CustomPreBuild/>
       </AdditionalRules>
     </Configuration>
+    <GlobalSettings>
+      <Compiler Options="">
+        <IncludePath Value="."/>
+      </Compiler>
+      <Linker Options="">
+        <LibraryPath Value="."/>
+      </Linker>
+      <ResourceCompiler Options=""/>
+    </GlobalSettings>
   </Settings>
   <Dependencies Name="Debug"/>
 </CodeLite_Project>

@@ -28,9 +28,11 @@
 ////////////////////////////////////////////////////////////
 /// Headers
 ////////////////////////////////////////////////////////////
-#include <list>
 #include <string>
+#include <map>
+#include <list>
 #include "SDL.h"
+#include "drawable.h"
 #include "zobj.h"
 
 ////////////////////////////////////////////////////////////
@@ -62,7 +64,8 @@ namespace Graphics {
 	void SetScreen(SDL_Surface* nscreen);
 
 	bool SortZObj(ZObj &first, ZObj &second);
-	void RegisterZObj(long z, unsigned long type, unsigned long id);
+	void RegisterZObj(long z, unsigned long id);
+	void RegisterZObj(long z, unsigned long id, bool multiz);
 	void RemoveZObj(unsigned long id);
 	void UpdateZObj(unsigned long id, long z);
 
@@ -77,6 +80,9 @@ namespace Graphics {
 	extern long last_tics_wait;
 
 	extern SDL_Surface* screen;
+
+	extern std::map<unsigned long, Drawable*> drawable_map;
+	extern std::map<unsigned long, Drawable*>::iterator it_drawable_map;
 
 	extern std::list<ZObj> zlist;
 	extern std::list<ZObj>::iterator it_zlist;

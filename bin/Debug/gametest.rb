@@ -12,6 +12,6 @@ def game_test
   
   scripts = load_data("Data/Scripts.rxdata")
   scripts.each do |s|
-    eval(Zlib::Inflate.inflate(s[2]))
+    eval(Zlib::Inflate.inflate(s[2]), nil, s[1])
   end
 end

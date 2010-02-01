@@ -28,22 +28,26 @@
 ////////////////////////////////////////////////////////////
 /// Headers
 ////////////////////////////////////////////////////////////
-#include <map>
+#include <string>
+#include "bitmap.h"
+#include "drawable.h"
 
 ////////////////////////////////////////////////////////////
 /// Tilemap class
 ////////////////////////////////////////////////////////////
-class Tilemap {
+class Tilemap : public Drawable {
 public:
 	Tilemap(unsigned long iid);
 	~Tilemap();
 	
+	static void Init();
 	static bool IsDisposed(unsigned long id);
 	static void New(unsigned long id);
 	static Tilemap* Get(unsigned long id);
 	static void Dispose(unsigned long id);
 
-	void Draw(int z);
+	void Draw(long z);
+	void Draw(long z, Bitmap* dst_bitmap);
 
     void Update();
 	unsigned long GetViewport();
@@ -64,8 +68,6 @@ public:
 	void SetOy(int noy);
 
 private:
-	static std::map<unsigned long, Tilemap*> tilemaps;
-
 	unsigned long id;
 	unsigned long viewport;
 	unsigned long tileset;
@@ -76,6 +78,12 @@ private:
 	bool visible;
 	int ox;
 	int oy;
+	int autotile_frame;
+	int autotile_time;
+
+	std::map<unsigned long, std::map<int, std::map<int, Bitmap*> > > autotiles_cache;
+
+	static int autotiles_id[6][8][4];
 };
 
 #endif

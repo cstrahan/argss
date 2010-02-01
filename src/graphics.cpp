@@ -41,6 +41,7 @@
 #include "viewport.h"
 #include "system.h"
 #include "player.h"
+#include "SDL_opengl.h"
 
 ////////////////////////////////////////////////////////////
 /// Global Variables
@@ -52,6 +53,8 @@ Uint32 Graphics::backcolor;
 int Graphics::brightness;
 double Graphics::framerate_interval;
 SDL_Surface* Graphics::screen;
+std::map<unsigned long, Drawable*> Graphics::drawable_map;
+std::map<unsigned long, Drawable*>::iterator Graphics::it_drawable_map;
 std::list<ZObj> Graphics::zlist;
 std::list<ZObj>::iterator Graphics::it_zlist;
 long Graphics::creation;
@@ -70,6 +73,8 @@ void Graphics::Init() {
 	creation = 0;
 	framerate_interval = 1000.0 / framerate;
 	last_tics = SDL_GetTicks() + (long)framerate_interval;
+
+	Tilemap::Init();
 }
 
 ////////////////////////////////////////////////////////////
@@ -97,12 +102,12 @@ void Graphics::Update() {
 	static double cyclesleftover;
 
 	Player::Update();
-	if (waitframes >= 1) {
+	/*if (waitframes >= 1) {
 		waitframes -= 1;
 		return;
-	}
+	}*/
 	t = SDL_GetTicks();
-	if((t - last_tics) >= (long)framerate_interval || (framerate_interval - t + last_tics) < 10) {
+	if((t - last_tics) >= framerate_interval || (framerate_interval - t + last_tics) < 10) {
 		cyclesleftover = waitframes;
 		waitframes = (double)(t - last_tics) / framerate_interval - cyclesleftover;
 		//tl += (t - tl) - cyclesleftover;
@@ -135,35 +140,14 @@ void Graphics::Update() {
 /// Draw Frame
 ////////////////////////////////////////////////////////////
 void Graphics::DrawFrame() {
-	SDL_FillRect(screen, &screen->clip_rect, backcolor);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	zlist.sort(SortZObj);
     for(it_zlist = zlist.begin(); it_zlist != zlist.end(); it_zlist++) {
-        VALUE type = it_zlist->GetType();
-		if (type == ARGSS::ASprite::id) {
-			unsigned long a = it_zlist->GetId();
-			Sprite::Get(it_zlist->GetId())->Draw();
-		}
-		else if (type == ARGSS::AWindow::id) {
-			Window::Get(it_zlist->GetId())->Draw();
-		}
-		else if (type == ARGSS::APlane::id) {
-			Plane::Get(it_zlist->GetId())->Draw();
-		}
-		else if (type == ARGSS::ATilemap::id) {
-			//Tilemap::Get(it_zlist->GetId())->Draw();
-		}
-		else if (type == ARGSS::AViewport::id) {
-			Viewport::Get(it_zlist->GetId())->Draw();
-		}
-		else {
-			rb_raise(ARGSS::AError::id, "can't draw object(%x) with unknown type.\n%s\n", it_zlist->GetId());
-		}
-    }
-	
-	if (SDL_Flip(screen) == -1) {
-		rb_raise(ARGSS::AError::id, "couldn't update screen.\n%s\n", SDL_GetError());
+		Graphics::drawable_map[it_zlist->GetId()]->Draw(it_zlist->GetZ());
 	}
+
+	SDL_GL_SwapBuffers();
 }
 
 ////////////////////////////////////////////////////////////
@@ -232,6 +216,7 @@ int Graphics::GetFrameRate() {
 }
 void Graphics::SetFrameRate(int nframerate) {
 	framerate = nframerate;
+	framerate_interval = 1000.0 / framerate;
 }
 int Graphics::GetFrameCount() {
 	return framecount;
@@ -264,22 +249,24 @@ void Graphics::SetScreen(SDL_Surface* nscreen) {
 bool Graphics::SortZObj(ZObj &first, ZObj &second) {
     if (first.GetZ() < second.GetZ()) return true;
     else if (first.GetZ() > second.GetZ()) return false;
-    else {
-        if (first.GetCreation() < second.GetCreation()) return true;
-        else return false;
-    }
+    else return first.GetCreation() < second.GetCreation();
 }
+
 ////////////////////////////////////////////////////////////
-/// Sort ZObj
+/// Register ZObj
 ////////////////////////////////////////////////////////////
-void Graphics::RegisterZObj(long z, unsigned long type, unsigned long id) {
+void Graphics::RegisterZObj(long z, unsigned long id) {
 	creation += 1;
-	ZObj zobj(z, creation, type, id);
+	ZObj zobj(z, creation, id);
+	zlist.push_back(zobj);
+}
+void Graphics::RegisterZObj(long z, unsigned long id, bool multiz) {
+	ZObj zobj(z, 999999, id);
 	zlist.push_back(zobj);
 }
 
 ////////////////////////////////////////////////////////////
-/// Sort ZObj
+/// Remove ZObj
 ////////////////////////////////////////////////////////////
 struct remove_zobj_id : public std::binary_function<ZObj, ZObj, bool> {
 	remove_zobj_id(VALUE val) : id(val) {}

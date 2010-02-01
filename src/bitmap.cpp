@@ -28,10 +28,11 @@
 #include "bitmap.h"
 #include "SDL_image.h"
 #include "SDL_ttf.h"
+#include "gl/glu.h"
 #include "defines.h"
 #include "hslrgb.h"
 #include "graphics.h"
-#include "argss_ruby.h"
+#include "system.h"
 #include "argss_error.h"
 #include "filefinder.h"
 
@@ -60,6 +61,8 @@ Bitmap::Bitmap(int width, int height) {
 		rb_raise(ARGSS::AError::id, "couldn't optimize %dx%d image.\n%s\n", width, height, SDL_GetError());
 	}
 	SDL_FreeSurface(temp);
+
+	gl_bitmap = 0;
 }
 Bitmap::Bitmap(unsigned long iid, std::string filename) {
 	std::string path = FileFinder::FindImage(filename);
@@ -78,6 +81,8 @@ Bitmap::Bitmap(unsigned long iid, std::string filename) {
 		rb_raise(ARGSS::AError::id, "couldn't optimize %s image.\n%s\n", filename.c_str(), SDL_GetError());
 	}
 	SDL_FreeSurface(temp);
+
+	gl_bitmap = 0;
 }
 Bitmap::Bitmap(unsigned long iid, int width, int height) {
 	id = iid;
@@ -91,6 +96,8 @@ Bitmap::Bitmap(unsigned long iid, int width, int height) {
 		rb_raise(ARGSS::AError::id, "couldn't optimize %dx%d image.\n%s\n", width, height, SDL_GetError());
 	}
 	SDL_FreeSurface(temp);
+
+	gl_bitmap = 0;
 }
 Bitmap::Bitmap(Bitmap* source, Rect src_rect) {
 	SDL_Surface* temp;
@@ -103,7 +110,10 @@ Bitmap::Bitmap(Bitmap* source, Rect src_rect) {
 		rb_raise(ARGSS::AError::id, "couldn't optimize %dx%d image.\n%s\n", src_rect.width, src_rect.height, SDL_GetError());
 	}
 	SDL_FreeSurface(temp);
+
 	Blit(0, 0, source, src_rect, 255);
+
+	gl_bitmap = 0;
 }
 
 ////////////////////////////////////////////////////////////
@@ -111,6 +121,7 @@ Bitmap::Bitmap(Bitmap* source, Rect src_rect) {
 ////////////////////////////////////////////////////////////
 Bitmap::~Bitmap() {
 	SDL_FreeSurface(bitmap);
+	glDeleteTextures(1, &gl_bitmap);
 }
 
 ////////////////////////////////////////////////////////////
@@ -148,57 +159,100 @@ void Bitmap::Dispose(unsigned long id) {
 }
 
 ////////////////////////////////////////////////////////////
+/// Changed
+////////////////////////////////////////////////////////////
+void Bitmap::Changed() {
+	if (gl_bitmap != 0)  {
+		glDeleteTextures(1, &gl_bitmap);
+		gl_bitmap = 0;
+	}
+}
+////////////////////////////////////////////////////////////
+/// Refresh
+////////////////////////////////////////////////////////////
+void Bitmap::Refresh() {
+	if (gl_bitmap != 0) return;
+
+	glGenTextures(1, &gl_bitmap);
+	glBindTexture(GL_TEXTURE_2D, gl_bitmap);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+	int bpp = bitmap->format->BytesPerPixel;
+	int format;
+
+	if (bitmap->format->Rmask == 0x00FF0000) format = GL_BGRA;
+	else format = GL_RGBA;
+
+	glTexImage2D(GL_TEXTURE_2D, 0, bpp, bitmap->w, bitmap->h, 0, format, GL_UNSIGNED_BYTE, bitmap->pixels);
+	//gluBuild2DMipmaps(GL_TEXTURE_2D, bpp, bitmap->w, bitmap->h, format, GL_UNSIGNED_BYTE, bitmap->pixels);
+}
+
+////////////////////////////////////////////////////////////
 /// Blit screen
 ////////////////////////////////////////////////////////////
 void Bitmap::BlitScreen(int x, int y) {
-	SDL_Rect offset = {x, y, 0, 0};
-	SDL_BlitSurface(bitmap, NULL, Graphics::GetScreen(), &offset);
+	Refresh();
+
+	glLoadIdentity();
+
+	glTranslatef(0, 0, 0);
+	glBindTexture(GL_TEXTURE_2D, gl_bitmap);
+
+	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+
+	glBegin(GL_QUADS);
+		glTexCoord2f(0, 0); glVertex2i(x, y);
+		glTexCoord2f(1, 0); glVertex2i(x + bitmap->w, y);
+		glTexCoord2f(1, 1); glVertex2i(x + bitmap->w, y + bitmap->h);
+		glTexCoord2f(0, 1); glVertex2i(x, y + bitmap->h);
+	glEnd();
 }
 void Bitmap::BlitScreen(int x, int y, int opacity) {
-	Rect src_rect(0, 0, GetWidth(), GetHeight());
-	BlitScreen(x, y, src_rect, opacity);
+	Refresh();
+
+	glLoadIdentity();
+
+	glTranslatef(0, 0, 0);
+	glBindTexture(GL_TEXTURE_2D, gl_bitmap);
+
+	glColor4f(1.0f, 1.0f, 1.0f, opacity / 255.0f);
+
+	glBegin(GL_QUADS);
+		glTexCoord2f(0, 0); glVertex2i(x, y);
+		glTexCoord2f(1, 0); glVertex2i(x + bitmap->w, y);
+		glTexCoord2f(1, 1); glVertex2i(x + bitmap->w, y + bitmap->h);
+		glTexCoord2f(0, 1); glVertex2i(x, y + bitmap->h);
+	glEnd();
 }
 void Bitmap::BlitScreen(int x, int y, Rect src_rect, int opacity) {
-	SDL_Surface* screen = Graphics::GetScreen();
+	Refresh();
 
-	if (GetWidth() == 0 || GetHeight() == 0 || screen->w == 0 || screen->h == 0) return;
-	if (x >= screen->w || y >= screen->h) return;
-	
-	if (opacity >= 255) {
-		SDL_Rect offset = {x, y, 0, 0};
-		SDL_Rect src_rect_sdl = src_rect.Get();
-		SDL_BlitSurface(bitmap, &src_rect_sdl, Graphics::GetScreen(), &offset);
-	}
-	else if (opacity > 0) {
-		src_rect.Adjust(GetWidth(), GetHeight());
-		if (src_rect.IsOutOfBounds(GetWidth(), GetHeight())) return;
+	if (GetWidth() == 0 || GetHeight() == 0 || System::Width == 0 || System::Height == 0) return;
+	if (x >= System::Width || y >= System::Height) return;
 
-		SDL_LockSurface(Graphics::GetScreen());
-		SDL_LockSurface(bitmap);
-		
-		int src_stride = GetWidth() * 4;
-		int dst_stride = screen->w * 4;
-		const Uint8* src_pixels = ((Uint8*)bitmap->pixels) + (src_rect.x + src_rect.y * GetWidth()) * 4;
-		Uint8* dst_pixels = ((Uint8*)screen->pixels) + (x + y * screen->w) * 4;
+	src_rect.Adjust(GetWidth(), GetHeight());
+	if (src_rect.IsOutOfBounds(GetWidth(), GetHeight())) return;
 
-		for (int i = 0; i < src_rect.height; ++i) {
-			for (int j = 0; j < src_rect.width; ++j) {
-				const Uint8* src   = src_pixels + j * 4;
-				Uint8*       dst   = dst_pixels + j * 4;
+	glLoadIdentity();
 
-				Uint8 srca = src[3] * opacity / 255;
-				dst[0] = (dst[0] * (255 - srca) + src[0] * srca) / 255;
-				dst[1] = (dst[1] * (255 - srca) + src[1] * srca) / 255;
-				dst[2] = (dst[2] * (255 - srca) + src[2] * srca) / 255;
-				dst[3] = dst[3] * (255 - srca) / 255 + srca;
-			}
-			src_pixels += src_stride;
-			dst_pixels += dst_stride;
-		}
-		
-		SDL_UnlockSurface(screen);
-		SDL_UnlockSurface(bitmap);
-	}
+	glTranslatef(0, 0, 0);
+	glBindTexture(GL_TEXTURE_2D, gl_bitmap);
+
+	glColor4f(1.0f, 1.0f, 1.0f, opacity / 255.0f);
+
+	GLfloat srcx = (GLfloat)src_rect.x / bitmap->w;
+	GLfloat srcy = (GLfloat)src_rect.y / bitmap->h;
+	GLfloat srcw = (GLfloat)src_rect.width / bitmap->w;
+	GLfloat srch = (GLfloat)src_rect.height / bitmap->h;
+
+	glBegin(GL_QUADS);
+		glTexCoord2f(srcx, srcy); glVertex2i(x, y);
+		glTexCoord2f(srcx + srcw, srcy); glVertex2i(x + src_rect.width, y);
+		glTexCoord2f(srcx + srcw, srcy + srch); glVertex2i(x + src_rect.width, y + src_rect.height);
+		glTexCoord2f(srcx, srcy+ srch); glVertex2i(x, y + src_rect.height);
+	glEnd();
 }
 
 ////////////////////////////////////////////////////////////
@@ -223,20 +277,21 @@ void Bitmap::Blit(int x, int y, Bitmap* src_bitmap, Rect src_rect, int opacity) 
 
 	if (source->w == 0 || source->h == 0 || GetWidth() == 0 || GetHeight() == 0) return;
 	if (x >= GetWidth() || y >= GetHeight()) return;
+
+	if (x < 0) {
+		src_rect.x -= x;
+		x = 0;
+	}
+	if (y < 0) {
+		src_rect.y -= y;
+		y = 0;
+	}
 	
 	src_rect.Adjust(src_bitmap->GetWidth(), src_bitmap->GetHeight());
 	if (src_rect.IsOutOfBounds(src_bitmap->GetWidth(), src_bitmap->GetHeight())) return;
 	
 	int width = src_rect.width;
     int height = src_rect.height;
-	if (x < 0) {
-		width += x;
-		x = 0;
-	}
-	if (y < 0) {
-		height += y; 
-		y = 0;
-	}
     if (x + width  > GetWidth()) width = GetWidth() - x;
     if (y + height > GetHeight()) height = GetHeight() - y;    
     if (width <= 0 || height <= 0)  return;
@@ -255,7 +310,16 @@ void Bitmap::Blit(int x, int y, Bitmap* src_bitmap, Rect src_rect, int opacity) 
 	const int abyte = MaskGetByte(bitmap->format->Amask);
 
     if (opacity > 255) opacity = 255;
-	if (opacity > 0) {
+	/*if (opacity >= 255) {
+		SDL_Rect offset = {x, y, 0, 0};
+		SDL_Rect src_rect_sdl = {src_rect.x, src_rect.y, width, height};
+		SDL_SetAlpha(bitmap, SDL_SRCALPHA, bitmap->format->alpha);
+		//SDL_SetAlpha(source, SDL_SRCALPHA, source->format->alpha);
+		SDL_BlitSurface(source, &src_rect_sdl, bitmap, &offset);
+		SDL_SetAlpha(bitmap, 0, bitmap->format->alpha);
+		//SDL_SetAlpha(source, 0, source->format->alpha);
+	}
+	else*/ if (opacity > 0) {
 		for (int i = 0; i < height; ++i) {
 			for (int j = 0; j < width; ++j) {
 				const Uint8* src   = src_pixels + j * 4;
@@ -274,6 +338,8 @@ void Bitmap::Blit(int x, int y, Bitmap* src_bitmap, Rect src_rect, int opacity) 
 	
 	SDL_UnlockSurface(source);
 	SDL_UnlockSurface(bitmap);
+
+	Changed();
 }
 
 ////////////////////////////////////////////////////////////
@@ -292,6 +358,8 @@ void Bitmap::StretchBlit(Rect dst_rect, Bitmap* src_bitmap, Rect src_rect, int o
 		Blit(dst_rect.x, dst_rect.y, resampled, rect, opacity);
 		delete resampled;
     }
+
+	Changed();
 }
 
 ////////////////////////////////////////////////////////////
@@ -303,6 +371,8 @@ void Bitmap::FillRect(Rect rect, Color color) {
 	
 	SDL_Rect rect_sdl = rect.Get();
 	SDL_FillRect(bitmap, &rect_sdl, color.GetUint32(bitmap->format));
+
+	Changed();
 }
 
 ////////////////////////////////////////////////////////////
@@ -310,9 +380,13 @@ void Bitmap::FillRect(Rect rect, Color color) {
 ////////////////////////////////////////////////////////////
 void Bitmap::Clear() {
 	SDL_FillRect(bitmap, NULL, 0);
+
+	Changed();
 }
 void Bitmap::Clear(Color color) {
 	SDL_FillRect(bitmap, NULL, color.GetUint32(bitmap->format));
+
+	Changed();
 }
 
 ////////////////////////////////////////////////////////////
@@ -333,6 +407,8 @@ void Bitmap::SetPixel(int x, int y, Color color) {
 	if (x >= GetWidth() || y > GetHeight()) return;
 	Uint32 *pixels = (Uint32*)bitmap->pixels;
 	pixels[(y * GetWidth()) + x] = color.GetUint32(bitmap->format);
+
+	Changed();
 }
 
 ////////////////////////////////////////////////////////////
@@ -347,6 +423,8 @@ void Bitmap::HueChange(double hue) {
 			pixels[(y * GetWidth()) + x] = RGBAdjustHSL(color, hue, 0, 1).GetUint32(bitmap->format);
         }
     }
+
+	Changed();
 }
 
 ////////////////////////////////////////////////////////////
@@ -360,6 +438,8 @@ void Bitmap::SatChange(double saturation) {
 			pixels[(y * GetWidth()) + x] = RGBAdjustHSL(color, 0, saturation, 1).GetUint32(bitmap->format);
         }
     }
+
+	Changed();
 }
 
 ////////////////////////////////////////////////////////////
@@ -373,6 +453,8 @@ void Bitmap::LumChange(double luminance) {
 			pixels[(y * GetWidth()) + x] = RGBAdjustHSL(color, 0, 0, luminance).GetUint32(bitmap->format);
         }
     }
+
+	Changed();
 }
 
 ////////////////////////////////////////////////////////////
@@ -387,6 +469,8 @@ void Bitmap::HSLChange(double h, double s, double l) {
 			pixels[(y * GetWidth()) + x] = RGBAdjustHSL(color, h, s, l).GetUint32(bitmap->format);
         }
     }
+
+	Changed();
 }
 void Bitmap::HSLChange(double h, double s, double l, Rect rect) {
     Uint32 *pixels = (Uint32*)bitmap->pixels;
@@ -402,6 +486,8 @@ void Bitmap::HSLChange(double h, double s, double l, Rect rect) {
 			pixels[(y * GetWidth()) + x] = RGBAdjustHSL(color, h, s, l).GetUint32(bitmap->format);
         }
     }
+
+	Changed();
 }
 
 ////////////////////////////////////////////////////////////
@@ -457,6 +543,8 @@ void Bitmap::DrawText(Rect rect, std::string text, int align) {
 	Blit(x, y, text_bmp, src_rect, (int)color.alpha);
 	delete text_bmp;
 	TTF_CloseFont(ttf_font);
+
+	Changed();
 }
 
 ////////////////////////////////////////////////////////////
@@ -552,6 +640,8 @@ void Bitmap::ToneChange(Tone tone) {
 		}
 	}
 	SDL_UnlockSurface(bitmap);
+
+	Changed();
 }
 
 ////////////////////////////////////////////////////////////
@@ -595,6 +685,8 @@ void Bitmap::OpacityChange(int opacity, int bush_depth) {
 		}
 	}
 	SDL_UnlockSurface(bitmap);
+
+	Changed();
 }
 
 ////////////////////////////////////////////////////////////
@@ -656,6 +748,8 @@ void Bitmap::Flip(bool flipx, bool flipy) {
 
 	temp_bmp->bitmap = NULL;
 	delete temp_bmp;
+
+	Changed();
 }
 
 ////////////////////////////////////////////////////////////
@@ -698,6 +792,8 @@ void Bitmap::Zoom(double zoom_x, double zoom_y) {
 
 	nbitmap->bitmap = NULL;
 	delete nbitmap;
+
+	Changed();
 }
 
 ////////////////////////////////////////////////////////////
@@ -788,7 +884,9 @@ void Bitmap::Rotate(double angle) {
 	SDL_UnlockSurface(nbitmap);
 	SDL_FreeSurface(bitmap);
 	
-	bitmap = nbitmap;*/
+	bitmap = nbitmap;
+	
+	Changed();*/
 }
 
 ////////////////////////////////////////////////////////////
@@ -802,8 +900,7 @@ void Bitmap::Flash(Color color, int frame, int duration) {
 /// Get Rect
 ////////////////////////////////////////////////////////////
 Rect Bitmap::GetRect() {
-	Rect rect(0, 0, GetWidth(), GetHeight());
-	return rect;
+	return Rect(0, 0, GetWidth(), GetHeight());
 }
 
 ////////////////////////////////////////////////////////////

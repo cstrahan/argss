@@ -30,7 +30,9 @@
 ////////////////////////////////////////////////////////////
 #include <map>
 #include <string>
+#include "argss_ruby.h"
 #include "SDL.h"
+#include "SDL_opengl.h"
 #include "rect.h"
 #include "color.h"
 #include "tone.h"
@@ -93,6 +95,7 @@ public:
 	Rect GetRect();
 
 	SDL_Surface* bitmap;
+	GLuint gl_bitmap;
 
 private:
 	static std::map<unsigned long, Bitmap*> bitmaps;
@@ -100,6 +103,10 @@ private:
 	int MaskGetByte(Uint32 mask);
 
 	unsigned long id;
+
+	void Refresh();
+	void Changed();
 };
 
 #endif
+
