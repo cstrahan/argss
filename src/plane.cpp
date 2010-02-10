@@ -31,6 +31,8 @@
 #include "argss_plane.h"
 #include "graphics.h"
 #include "viewport.h"
+#include "rect.h"
+#include "player.h"
 
 ////////////////////////////////////////////////////////////
 /// Constructor
@@ -39,7 +41,7 @@ Plane::Plane(VALUE iid) {
 	id = iid;
 	viewport = rb_iv_get(id, "@viewport");
 	bitmap = Qnil;
-	visible = false;
+	visible = true;
 	z = 0;
 	ox = 0;
 	oy = 0;
@@ -49,6 +51,13 @@ Plane::Plane(VALUE iid) {
 	blend_type = 0;
 	color = rb_iv_get(id, "@color");
 	tone = rb_iv_get(id, "@tone");
+
+	if (viewport != Qnil) {
+		Viewport::Get(viewport)->RegisterZObj(0, id);
+	}
+	else {
+		Graphics::RegisterZObj(0, id);
+	}
 }
 
 ////////////////////////////////////////////////////////////
@@ -83,16 +92,93 @@ Plane* Plane::Get(VALUE id) {
 /// Class Dispose Plane
 ////////////////////////////////////////////////////////////
 void Plane::Dispose(unsigned long id) {
+	if (Plane::Get(id)->viewport != Qnil) {
+		Viewport::Get(Plane::Get(id)->viewport)->RemoveZObj(id);
+	}
+	else {
+		Graphics::RemoveZObj(id);
+	}
 	delete Graphics::drawable_map[id];
 	std::map<unsigned long, Drawable*>::iterator it = Graphics::drawable_map.find(id);
 	Graphics::drawable_map.erase(it);
 }
 
 ////////////////////////////////////////////////////////////
+/// Refresh Bitmaps
+////////////////////////////////////////////////////////////
+void Plane::RefreshBitmaps() {
+	
+}
+
+////////////////////////////////////////////////////////////
 /// Draw
 ////////////////////////////////////////////////////////////
 void Plane::Draw(long z) {
+	if (!visible) return;
+	if (bitmap == Qnil) return;
 
+	glEnable(GL_TEXTURE_2D);
+
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+
+	float rectw, recth;
+
+	if (viewport != Qnil) {
+		Rect rect = Viewport::Get(viewport)->GetViewportRect();
+
+		glEnable(GL_SCISSOR_TEST);
+		glScissor(rect.x, Player::GetHeight() - (rect.y + rect.height), rect.width, rect.height);
+
+		rectw = (float)rect.width;
+		recth = (float)rect.height;
+
+		glTranslatef((float)rect.x, (float)rect.y, 0.0f);
+	}
+	else {
+		rectw = (float)Player::GetWidth();
+		recth = (float)Player::GetHeight();
+	}
+
+	Bitmap* bmp = Bitmap::Get(bitmap);
+
+	bmp->Refresh();
+
+	glBindTexture(GL_TEXTURE_2D, bmp->gl_bitmap);
+
+	glColor4f(1.0f, 1.0f, 1.0f, opacity / 255.0f);
+	
+	glEnable(GL_BLEND);
+	switch(blend_type) {
+		case 1:
+			glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+			break;
+		case 2:
+			glBlendFunc(GL_SRC_ALPHA_SATURATE, GL_ONE_MINUS_SRC_COLOR);
+			break;
+		default:
+			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	}
+
+	float bmpw = bmp->GetWidth() * zoom_x;
+	float bmph = bmp->GetHeight() * zoom_y;
+	float tilesx = ceil(rectw / bmpw);
+	float tilesy = ceil(recth / bmph);
+	glBegin(GL_QUADS);
+		for (float i = 0; i < tilesx; i++) {
+			for (float j = 0; j < tilesy; j++) {
+				glTexCoord2f(0.0f, 0.0f);  glVertex2f(i * bmpw - ox, j * bmph - oy);
+				glTexCoord2f(1.0f, 0.0f);  glVertex2f((i + 1) * bmpw - ox, j * bmph - oy);
+				glTexCoord2f(1.0f, 1.0f);  glVertex2f((i + 1) * bmpw - ox, (j + 1) * bmph - oy);
+				glTexCoord2f(0.0f, 1.0f);  glVertex2f(i * bmpw - ox, (j + 1) * bmph - oy);
+			}
+		}
+	glEnd();
+
+	glDisable(GL_SCISSOR_TEST);
 }
 void Plane::Draw(long z, Bitmap* dst_bitmap) {
 
@@ -105,6 +191,16 @@ VALUE Plane::GetViewport() {
 	return viewport;
 }
 void Plane::SetViewport(VALUE nviewport) {
+	if (viewport != nviewport) {
+		if (nviewport != Qnil) {
+			Graphics::RemoveZObj(id);
+			Viewport::Get(nviewport)->RegisterZObj(0, id);
+		}
+		else {
+			if (viewport != Qnil) Viewport::Get(viewport)->RemoveZObj(id);
+			Graphics::RegisterZObj(0, id);
+		}
+	}
 	viewport = nviewport;
 }
 VALUE Plane::GetBitmap() {
@@ -124,6 +220,14 @@ int Plane::GetZ() {
 	return z;
 }
 void Plane::SetZ(int nz) {
+	if (z != nz) {
+		if (viewport != Qnil) {
+			Viewport::Get(viewport)->UpdateZObj(id, nz);
+		}
+		else {
+			Graphics::UpdateZObj(id, nz);
+		}
+	}
 	z = nz;
 }
 int Plane::GetOx() {
@@ -138,17 +242,17 @@ int Plane::GetOy() {
 void Plane::SetOy(int noy) {
 	oy = noy;
 }
-double Plane::GetZoomX() {
+float Plane::GetZoomX() {
 	return zoom_x;
 }
-void Plane::SetZoomX(double nzoom_x) {
+void Plane::SetZoomX(float nzoom_x) {
 	if (zoom_x != nzoom_x) needs_refresh = true;
 	zoom_x = nzoom_x;
 }
-double Plane::GetZoomY() {
+float Plane::GetZoomY() {
 	return zoom_y;
 }
-void Plane::SetZoomY(double nzoom_y) {
+void Plane::SetZoomY(float nzoom_y) {
 	if (zoom_y != nzoom_y) needs_refresh = true;
 	zoom_y = nzoom_y;
 }

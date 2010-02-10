@@ -43,7 +43,7 @@ double CapToneValue(double v) {
 ////////////////////////////////////////////////////////////
 /// ARGSS Tone ruby functions
 ////////////////////////////////////////////////////////////
-static VALUE argss_tone_initialize(int argc, VALUE *argv, VALUE self) {
+VALUE ARGSS::ATone::rinitialize(int argc, VALUE *argv, VALUE self) {
     if (argc < 3) raise_argn(argc, 3);
     else if (argc > 4) raise_argn(argc, 4);
 	rb_iv_set(self, "@red", rb_float_new(CapToneValue(NUM2DBL(argv[0]))));
@@ -57,7 +57,7 @@ static VALUE argss_tone_initialize(int argc, VALUE *argv, VALUE self) {
 	}
     return self;
 }
-static VALUE argss_tone_set(int argc, VALUE *argv, VALUE self) {
+VALUE ARGSS::ATone::rset(int argc, VALUE *argv, VALUE self) {
     if (argc < 3) raise_argn(argc, 3);
     else if (argc > 4) raise_argn(argc, 4);
 	rb_iv_set(self, "@red", rb_float_new(CapToneValue(NUM2DBL(argv[0]))));
@@ -71,31 +71,31 @@ static VALUE argss_tone_set(int argc, VALUE *argv, VALUE self) {
 	}
     return self;
 }
-static VALUE argss_tone_red(VALUE self) {
+VALUE ARGSS::ATone::rred(VALUE self) {
     return rb_iv_get(self, "@red");
 }
-static VALUE argss_tone_redE(VALUE self, VALUE r) {
+VALUE ARGSS::ATone::rredE(VALUE self, VALUE r) {
     return rb_iv_set(self, "@red", rb_float_new(CapToneValue(NUM2DBL(r))));
 }
-static VALUE argss_tone_green(VALUE self) {
+VALUE ARGSS::ATone::rgreen(VALUE self) {
     return rb_iv_get(self, "@green");
 }
-static VALUE argss_tone_greenE(VALUE self, VALUE g) {
+VALUE ARGSS::ATone::rgreenE(VALUE self, VALUE g) {
     return rb_iv_set(self, "@green", rb_float_new(CapToneValue(NUM2DBL(g))));
 }
-static VALUE argss_tone_blue(VALUE self) {
+VALUE ARGSS::ATone::rblue(VALUE self) {
     return rb_iv_get(self, "@blue");
 }
-static VALUE argss_tone_blueE(VALUE self, VALUE b) {
+VALUE ARGSS::ATone::rblueE(VALUE self, VALUE b) {
     return rb_iv_set(self, "@blue", rb_float_new(CapToneValue(NUM2DBL(b))));
 }
-static VALUE argss_tone_gray(VALUE self) {
+VALUE ARGSS::ATone::rgray(VALUE self) {
     return rb_iv_get(self, "@gray");
 }
-static VALUE argss_tone_grayE(VALUE self, VALUE g) {
+VALUE ARGSS::ATone::rgrayE(VALUE self, VALUE g) {
     return rb_iv_set(self, "@gray", rb_float_new(CapToneValue(NUM2DBL(g))));
 }
-static VALUE argss_tone_inspect(VALUE self) {
+VALUE ARGSS::ATone::rinspect(VALUE self) {
     char str[255];
     long n;
 #ifdef MSVC
@@ -111,12 +111,12 @@ static VALUE argss_tone_inspect(VALUE self) {
 #endif
     return rb_str_new(str, n);
 }
-static VALUE argss_tone_dump(int argc, VALUE* argv, VALUE self) {
+VALUE ARGSS::ATone::rdump(int argc, VALUE* argv, VALUE self) {
 	if (argc > 1) raise_argn(argc, 1);
 	VALUE arr = rb_ary_new3(4, rb_iv_get(self, "@red"), rb_iv_get(self, "@green"), rb_iv_get(self, "@blue"), rb_iv_get(self, "@gray"));
     return rb_funcall(arr, rb_intern("pack"), 1, rb_str_new2("d4"));
 }
-static VALUE argss_tone_load(VALUE self, VALUE str) {
+VALUE ARGSS::ATone::rload(VALUE self, VALUE str) {
 	VALUE arr = rb_funcall(str, rb_intern("unpack"), 1, rb_str_new2("d4"));
 	VALUE args[4] = {rb_ary_entry(arr, 0), rb_ary_entry(arr, 1), rb_ary_entry(arr, 2), rb_ary_entry(arr, 3)};
 	VALUE tone = rb_class_new_instance(4, args, ARGSS::ATone::id);
@@ -129,19 +129,19 @@ static VALUE argss_tone_load(VALUE self, VALUE str) {
 void ARGSS::ATone::Init() {
     typedef VALUE (*rubyfunc)(...);
     id = rb_define_class("Tone", rb_cObject);
-    rb_define_method(id, "initialize", (rubyfunc)argss_tone_initialize, -1);
-    rb_define_method(id, "set", (rubyfunc)argss_tone_set, -1);
-    rb_define_method(id, "red", (rubyfunc)argss_tone_red, 0);
-    rb_define_method(id, "red=", (rubyfunc)argss_tone_redE, 1);
-    rb_define_method(id, "green", (rubyfunc)argss_tone_green, 0);
-    rb_define_method(id, "green=", (rubyfunc)argss_tone_greenE, 1);
-    rb_define_method(id, "blue", (rubyfunc)argss_tone_blue, 0);
-    rb_define_method(id, "blue=", (rubyfunc)argss_tone_blueE, 1);
-    rb_define_method(id, "gray", (rubyfunc)argss_tone_gray, 0);
-    rb_define_method(id, "gray=", (rubyfunc)argss_tone_grayE, 1);
-    rb_define_method(id, "inspect", (rubyfunc)argss_tone_inspect, 0);
-    rb_define_method(id, "_dump", (rubyfunc)argss_tone_dump, -1);
-    rb_define_singleton_method(id, "_load", (rubyfunc)argss_tone_load, 1);
+    rb_define_method(id, "initialize", (rubyfunc)rinitialize, -1);
+    rb_define_method(id, "set", (rubyfunc)rset, -1);
+    rb_define_method(id, "red", (rubyfunc)rred, 0);
+    rb_define_method(id, "red=", (rubyfunc)rredE, 1);
+    rb_define_method(id, "green", (rubyfunc)rgreen, 0);
+    rb_define_method(id, "green=", (rubyfunc)rgreenE, 1);
+    rb_define_method(id, "blue", (rubyfunc)rblue, 0);
+    rb_define_method(id, "blue=", (rubyfunc)rblueE, 1);
+    rb_define_method(id, "gray", (rubyfunc)rgray, 0);
+    rb_define_method(id, "gray=", (rubyfunc)rgrayE, 1);
+    rb_define_method(id, "inspect", (rubyfunc)rinspect, 0);
+    rb_define_method(id, "_dump", (rubyfunc)rdump, -1);
+    rb_define_singleton_method(id, "_load", (rubyfunc)rload, 1);
 }
 
 ////////////////////////////////////////////////////////////

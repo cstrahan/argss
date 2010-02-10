@@ -43,7 +43,7 @@ double CapColorValue(double v) {
 ////////////////////////////////////////////////////////////
 /// ARGSS Color ruby functions
 ////////////////////////////////////////////////////////////
-static VALUE argss_color_initialize(int argc, VALUE *argv, VALUE self) {
+VALUE ARGSS::AColor::rinitialize(int argc, VALUE *argv, VALUE self) {
     if (argc < 3) raise_argn(argc, 3);
     else if (argc > 4) raise_argn(argc, 4);
 	rb_iv_set(self, "@red", rb_float_new(CapColorValue(NUM2DBL(argv[0]))));
@@ -57,7 +57,7 @@ static VALUE argss_color_initialize(int argc, VALUE *argv, VALUE self) {
 	}
     return self;
 }
-static VALUE argss_color_set(int argc, VALUE *argv, VALUE self) {
+VALUE ARGSS::AColor::rset(int argc, VALUE *argv, VALUE self) {
     if (argc < 3) raise_argn(argc, 3);
     else if (argc > 4) raise_argn(argc, 4);
 	rb_iv_set(self, "@red", rb_float_new(CapColorValue(NUM2DBL(argv[0]))));
@@ -71,31 +71,31 @@ static VALUE argss_color_set(int argc, VALUE *argv, VALUE self) {
 	}
     return self;
 }
-static VALUE argss_color_red(VALUE self) {
+VALUE ARGSS::AColor::rred(VALUE self) {
     return rb_iv_get(self, "@red");
 }
-static VALUE argss_color_redE(VALUE self, VALUE red) {
+VALUE ARGSS::AColor::rredE(VALUE self, VALUE red) {
     return rb_iv_set(self, "@red", rb_float_new(CapColorValue(NUM2DBL(red))));
 }
-static VALUE argss_color_green(VALUE self) {
+VALUE ARGSS::AColor::rgreen(VALUE self) {
     return rb_iv_get(self, "@green");
 }
-static VALUE argss_color_greenE(VALUE self, VALUE green) {
+VALUE ARGSS::AColor::rgreenE(VALUE self, VALUE green) {
     return rb_iv_set(self, "@green", rb_float_new(CapColorValue(NUM2DBL(green))));
 }
-static VALUE argss_color_blue(VALUE self) {
+VALUE ARGSS::AColor::rblue(VALUE self) {
     return rb_iv_get(self, "@blue");
 }
-static VALUE argss_color_blueE(VALUE self, VALUE blue) {
+VALUE ARGSS::AColor::rblueE(VALUE self, VALUE blue) {
     return rb_iv_set(self, "@blue", rb_float_new(CapColorValue(NUM2DBL(blue))));
 }
-static VALUE argss_color_alpha(VALUE self) {
+VALUE ARGSS::AColor::ralpha(VALUE self) {
     return rb_iv_get(self, "@alpha");
 }
-static VALUE argss_color_alphaE(VALUE self, VALUE alpha) {
+VALUE ARGSS::AColor::ralphaE(VALUE self, VALUE alpha) {
     return rb_iv_set(self, "@alpha", rb_float_new(CapColorValue(NUM2DBL(alpha))));
 }
-static VALUE argss_color_inspect(VALUE self) {
+VALUE ARGSS::AColor::rinspect(VALUE self) {
     char str[255];
     long n;
 #ifdef MSVC
@@ -111,12 +111,12 @@ static VALUE argss_color_inspect(VALUE self) {
 #endif
     return rb_str_new(str, n);
 }
-static VALUE argss_color_dump(int argc, VALUE* argv, VALUE self) {
+VALUE ARGSS::AColor::rdump(int argc, VALUE* argv, VALUE self) {
 	if (argc > 1) raise_argn(argc, 1);
 	VALUE arr = rb_ary_new3(4, rb_iv_get(self, "@red"), rb_iv_get(self, "@green"), rb_iv_get(self, "@blue"), rb_iv_get(self, "@alpha"));
     return rb_funcall(arr, rb_intern("pack"), 1, rb_str_new2("d4"));
 }
-static VALUE argss_color_load(VALUE self, VALUE str) {
+VALUE ARGSS::AColor::rload(VALUE self, VALUE str) {
 	VALUE arr = rb_funcall(str, rb_intern("unpack"), 1, rb_str_new2("d4"));
 	VALUE args[4] = {rb_ary_entry(arr, 0), rb_ary_entry(arr, 1), rb_ary_entry(arr, 2), rb_ary_entry(arr, 3)};
 	VALUE color = rb_class_new_instance(4, args, ARGSS::AColor::id);
@@ -129,19 +129,19 @@ static VALUE argss_color_load(VALUE self, VALUE str) {
 void ARGSS::AColor::Init() {
     typedef VALUE (*rubyfunc)(...);
     id = rb_define_class("Color", rb_cObject);
-    rb_define_method(id, "initialize", (rubyfunc)argss_color_initialize, -1);
-    rb_define_method(id, "set", (rubyfunc)argss_color_set, -1);
-    rb_define_method(id, "red", (rubyfunc)argss_color_red, 0);
-    rb_define_method(id, "red=", (rubyfunc)argss_color_redE, 1);
-    rb_define_method(id, "green", (rubyfunc)argss_color_green, 0);
-    rb_define_method(id, "green=", (rubyfunc)argss_color_greenE, 1);
-    rb_define_method(id, "blue", (rubyfunc)argss_color_blue, 0);
-    rb_define_method(id, "blue=", (rubyfunc)argss_color_blueE, 1);
-    rb_define_method(id, "alpha", (rubyfunc)argss_color_alpha, 0);
-    rb_define_method(id, "alpha=", (rubyfunc)argss_color_alphaE, 1);
-    rb_define_method(id, "inspect", (rubyfunc)argss_color_inspect, 0);
-    rb_define_method(id, "_dump", (rubyfunc)argss_color_dump, -1);
-    rb_define_singleton_method(id, "_load", (rubyfunc)argss_color_load, 1);
+    rb_define_method(id, "initialize", (rubyfunc)rinitialize, -1);
+    rb_define_method(id, "set", (rubyfunc)rset, -1);
+    rb_define_method(id, "red", (rubyfunc)rred, 0);
+    rb_define_method(id, "red=", (rubyfunc)rredE, 1);
+    rb_define_method(id, "green", (rubyfunc)rgreen, 0);
+    rb_define_method(id, "green=", (rubyfunc)rgreenE, 1);
+    rb_define_method(id, "blue", (rubyfunc)rblue, 0);
+    rb_define_method(id, "blue=", (rubyfunc)rblueE, 1);
+    rb_define_method(id, "alpha", (rubyfunc)ralpha, 0);
+    rb_define_method(id, "alpha=", (rubyfunc)ralphaE, 1);
+    rb_define_method(id, "inspect", (rubyfunc)rinspect, 0);
+    rb_define_method(id, "_dump", (rubyfunc)rdump, -1);
+    rb_define_singleton_method(id, "_load", (rubyfunc)rload, 1);
 }
 
 ////////////////////////////////////////////////////////////

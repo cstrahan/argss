@@ -39,6 +39,16 @@ namespace ARGSS {
 		VALUE New(int xsize);
 		VALUE New(int xsize, int ysize);
 		VALUE New(int xsize, int ysize, int zsize);
+
+		VALUE rinitialize(int argc, VALUE *argv, VALUE self);
+		VALUE rresize(int argc, VALUE *argv, VALUE self);
+		VALUE rxsize(VALUE self);
+		VALUE rysize(VALUE self);
+		VALUE rzsize(VALUE self);
+		VALUE raref(int argc, VALUE *argv, VALUE self);
+		VALUE raset(int argc, VALUE *argv, VALUE self);
+		VALUE rdump(int argc, VALUE* argv, VALUE self);
+		VALUE rload(VALUE self, VALUE str);
 	};
 };
 

@@ -60,7 +60,7 @@
 #define RTP3 ""
 #define SCREEN_WIDTH 640
 #define SCREEN_HEIGHT 480
-#define PAUSE_GAME_WHEN_FOCUS_LOST false
+#define PAUSE_GAME_WHEN_FOCUS_LOST true
 #define PAUSE_AUDIO_WHEN_FOCUS_LOST false
 
 ////////////////////////////////////////////////////////////

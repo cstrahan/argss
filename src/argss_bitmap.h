@@ -37,7 +37,32 @@ namespace ARGSS {
 	namespace ABitmap {
 		extern VALUE id;
 		void Init();
-		void Check(unsigned long self);
+		void CheckDisposed(unsigned long self);
+
+	    VALUE rinitialize(int argc, VALUE* argv, VALUE self);
+		VALUE rdispose(VALUE self);
+		VALUE rdisposedQ(VALUE self);
+		VALUE rwidth(VALUE self);
+		VALUE rheight(VALUE self);
+		VALUE rrect(VALUE self);
+		VALUE rblt(int argc, VALUE* argv, VALUE self);
+		VALUE rstretch_blt(int argc, VALUE* argv, VALUE self);
+		VALUE rfill_rect(int argc, VALUE* argv, VALUE self);
+		VALUE rclear(int argc, VALUE* argv, VALUE self);
+		VALUE rget_pixel(VALUE self, VALUE x, VALUE y);
+		VALUE rset_pixel(VALUE self, VALUE x, VALUE y, VALUE color);
+		VALUE rhue_change(VALUE self, VALUE hue);
+		VALUE rsaturation_change(VALUE self, VALUE saturation);
+		VALUE rluminance_change(VALUE self, VALUE luminance);
+		VALUE rhsl_change(int argc, VALUE* argv, VALUE self);
+		VALUE rdraw_text(int argc, VALUE* argv, VALUE self);
+		VALUE rtext_size(VALUE self, VALUE text);
+		VALUE rgradient_fill_rect(int argc, VALUE* argv, VALUE self);
+		VALUE rclear_rect(int argc, VALUE* argv, VALUE self);
+		VALUE rblur(VALUE self);
+		VALUE rradial_blur(VALUE self, VALUE angle, VALUE division);
+		VALUE rfont(VALUE self);
+		VALUE rfontE(VALUE self, VALUE font);
 	};
 };
 

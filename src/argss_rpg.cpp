@@ -69,7 +69,7 @@ VALUE ARGSS::ARPG::AudioFile_id;
 ////////////////////////////////////////////////////////////
 /// ARGSS RPG ruby functions
 ////////////////////////////////////////////////////////////
-static VALUE argss_rpg_map_initialize(VALUE self, VALUE width, VALUE height) {
+VALUE ARGSS::ARPG::rmap_initialize(VALUE self, VALUE width, VALUE height) {
 	rb_iv_set(self, "@tileset_id", INT2NUM(1));
 	rb_iv_set(self, "@width", width);
 	rb_iv_set(self, "@height", height);
@@ -84,7 +84,7 @@ static VALUE argss_rpg_map_initialize(VALUE self, VALUE width, VALUE height) {
 	rb_iv_set(self, "@events", rb_hash_new());
 	return self;
 }
-static VALUE argss_rpg_mapinfo_initialize(VALUE self) {
+VALUE ARGSS::ARPG::rmapinfo_initialize(VALUE self) {
 	rb_iv_set(self, "@name", rb_str_new2(""));
 	rb_iv_set(self, "@parent_id", INT2NUM(0));
 	rb_iv_set(self, "@order", INT2NUM(0));
@@ -93,7 +93,7 @@ static VALUE argss_rpg_mapinfo_initialize(VALUE self) {
 	rb_iv_set(self, "@scroll_y", INT2NUM(0));
 	return self;
 }
-static VALUE argss_rpg_event_initialize(VALUE self, VALUE x, VALUE y) {
+VALUE ARGSS::ARPG::revent_initialize(VALUE self, VALUE x, VALUE y) {
 	rb_iv_set(self, "@id", INT2NUM(0));
 	rb_iv_set(self, "@name", rb_str_new2(""));
 	rb_iv_set(self, "@x", x);
@@ -101,7 +101,7 @@ static VALUE argss_rpg_event_initialize(VALUE self, VALUE x, VALUE y) {
 	rb_iv_set(self, "@pages", rb_ary_new3(1, rb_class_new_instance(0, 0, ARGSS::ARPG::EventPage_id)));
 	return self;
 }
-static VALUE argss_rpg_eventpage_initialize(VALUE self) {
+VALUE ARGSS::ARPG::reventpage_initialize(VALUE self) {
 	rb_iv_set(self, "@condition", rb_class_new_instance(0, 0, ARGSS::ARPG::EventPageCondition_id));
 	rb_iv_set(self, "@graphic", rb_class_new_instance(0, 0, ARGSS::ARPG::EventPageGraphic_id));
 	rb_iv_set(self, "@move_type", INT2NUM(0));
@@ -117,7 +117,7 @@ static VALUE argss_rpg_eventpage_initialize(VALUE self) {
 	rb_iv_set(self, "@list", rb_ary_new3(1, rb_class_new_instance(0, 0, ARGSS::ARPG::EventCommand_id)));
 	return self;
 }
-static VALUE argss_rpg_eventpagecondition_initialize(VALUE self) {
+VALUE ARGSS::ARPG::reventpagecondition_initialize(VALUE self) {
 	rb_iv_set(self, "@switch1_valid", Qfalse);
 	rb_iv_set(self, "@switch2_valid", Qfalse);
 	rb_iv_set(self, "@variable_valid", Qfalse);
@@ -129,7 +129,7 @@ static VALUE argss_rpg_eventpagecondition_initialize(VALUE self) {
 	rb_iv_set(self, "@self_switch_ch", rb_str_new("A", 1));
 	return self;
 }
-static VALUE argss_rpg_eventpagegraphic_initialize(VALUE self) {
+VALUE ARGSS::ARPG::reventpagegraphic_initialize(VALUE self) {
 	rb_iv_set(self, "@tile_id", INT2NUM(0));
 	rb_iv_set(self, "@character_name", rb_str_new2(""));
 	rb_iv_set(self, "@character_hue", INT2NUM(0));
@@ -139,26 +139,26 @@ static VALUE argss_rpg_eventpagegraphic_initialize(VALUE self) {
 	rb_iv_set(self, "@blend_type", INT2NUM(0));
 	return self;
 }
-static VALUE argss_rpg_eventcommand_initialize(int argc, VALUE* argv, VALUE self) {
+VALUE ARGSS::ARPG::reventcommand_initialize(int argc, VALUE* argv, VALUE self) {
 	if (argc > 3) raise_argn(argc, 3);
 	rb_iv_set(self, "@code", argc < 1 ?  INT2NUM(0) : argv[0]);
 	rb_iv_set(self, "@indent", argc < 2 ? INT2NUM(0) : argv[1]);
 	rb_iv_set(self, "@parameters", argc < 3 ? rb_ary_new() : argv[2]);
 	return self;
 }
-static VALUE argss_rpg_moveroute_initialize(VALUE self) {
+VALUE ARGSS::ARPG::rmoveroute_initialize(VALUE self) {
 	rb_iv_set(self, "@repeat", Qtrue);
 	rb_iv_set(self, "@skippable", Qfalse);
 	rb_iv_set(self, "@list", rb_ary_new3(1, rb_class_new_instance(0, 0, ARGSS::ARPG::MoveCommand_id)));
 	return self;
 }
-static VALUE argss_rpg_movecommand_initialize(int argc, VALUE* argv, VALUE self) {
+VALUE ARGSS::ARPG::rmovecommand_initialize(int argc, VALUE* argv, VALUE self) {
 	if (argc > 2) raise_argn(argc, 2);
 	rb_iv_set(self, "@code", argc < 1 ?  INT2NUM(0) : argv[0]);
 	rb_iv_set(self, "@parameters", argc < 2 ? rb_ary_new() : argv[1]);
 	return self;
 }
-static VALUE argss_rpg_actor_initialize(VALUE self) {
+VALUE ARGSS::ARPG::ractor_initialize(VALUE self) {
 	rb_iv_set(self, "@id", INT2NUM(0));
 	rb_iv_set(self, "@name", rb_str_new2(""));
 	rb_iv_set(self, "@class_id", INT2NUM(1));
@@ -194,7 +194,7 @@ static VALUE argss_rpg_actor_initialize(VALUE self) {
 	rb_iv_set(self, "@armor4_fix", Qfalse);
 	return self;
 }
-static VALUE argss_rpg_class_initialize(VALUE self) {
+VALUE ARGSS::ARPG::rclass_initialize(VALUE self) {
 	rb_iv_set(self, "@id", INT2NUM(0));
 	rb_iv_set(self, "@name", rb_str_new2(""));
 	rb_iv_set(self, "@position", INT2NUM(0));
@@ -205,12 +205,12 @@ static VALUE argss_rpg_class_initialize(VALUE self) {
 	rb_iv_set(self, "@learnings", rb_ary_new());
 	return self;
 }
-static VALUE argss_rpg_classlearning_initialize(VALUE self) {
+VALUE ARGSS::ARPG::rclasslearning_initialize(VALUE self) {
 	rb_iv_set(self, "@level", INT2NUM(1));
 	rb_iv_set(self, "@skill_id", INT2NUM(1));
 	return self;
 }
-static VALUE argss_rpg_skill_initialize(VALUE self) {
+VALUE ARGSS::ARPG::rskill_initialize(VALUE self) {
 	rb_iv_set(self, "@id", INT2NUM(0));
 	rb_iv_set(self, "@name", rb_str_new2(""));
 	rb_iv_set(self, "@icon_name", rb_str_new2(""));
@@ -239,7 +239,7 @@ static VALUE argss_rpg_skill_initialize(VALUE self) {
 	rb_iv_set(self, "@minus_state_set", rb_ary_new());
 	return self;
 }
-static VALUE argss_rpg_item_initialize(VALUE self) {
+VALUE ARGSS::ARPG::ritem_initialize(VALUE self) {
 	rb_iv_set(self, "@id", INT2NUM(0));
 	rb_iv_set(self, "@name", rb_str_new2(""));
 	rb_iv_set(self, "@icon_name", rb_str_new2(""));
@@ -268,7 +268,7 @@ static VALUE argss_rpg_item_initialize(VALUE self) {
 	rb_iv_set(self, "@minus_state_set", rb_ary_new());
 	return self;
 }
-static VALUE argss_rpg_weapon_initialize(VALUE self) {
+VALUE ARGSS::ARPG::rweapon_initialize(VALUE self) {
 	rb_iv_set(self, "@id", INT2NUM(0));
 	rb_iv_set(self, "@name", rb_str_new2(""));
 	rb_iv_set(self, "@icon_name", rb_str_new2(""));
@@ -288,7 +288,7 @@ static VALUE argss_rpg_weapon_initialize(VALUE self) {
 	rb_iv_set(self, "@minus_state_set", rb_ary_new());
 	return self;
 }
-static VALUE argss_rpg_armor_initialize(VALUE self) {
+VALUE ARGSS::ARPG::rarmor_initialize(VALUE self) {
 	rb_iv_set(self, "@id", INT2NUM(0));
 	rb_iv_set(self, "@name", rb_str_new2(""));
 	rb_iv_set(self, "@icon_name", rb_str_new2(""));
@@ -307,7 +307,7 @@ static VALUE argss_rpg_armor_initialize(VALUE self) {
 	rb_iv_set(self, "@guard_state_set", rb_ary_new());
 	return self;
 }
-static VALUE argss_rpg_enemy_initialize(VALUE self) {
+VALUE ARGSS::ARPG::renemy_initialize(VALUE self) {
 	rb_iv_set(self, "@id", INT2NUM(0));
 	rb_iv_set(self, "@name", rb_str_new2(""));
 	rb_iv_set(self, "@battler_name", rb_str_new2(""));
@@ -335,7 +335,7 @@ static VALUE argss_rpg_enemy_initialize(VALUE self) {
 	rb_iv_set(self, "@treasure_prob", INT2NUM(100));
 	return self;
 }
-static VALUE argss_rpg_enemyaction_initialize(VALUE self) {
+VALUE ARGSS::ARPG::renemyaction_initialize(VALUE self) {
 	rb_iv_set(self, "@kind", INT2NUM(0));
 	rb_iv_set(self, "@basic", INT2NUM(0));
 	rb_iv_set(self, "@skill_id", INT2NUM(1));
@@ -347,14 +347,14 @@ static VALUE argss_rpg_enemyaction_initialize(VALUE self) {
 	rb_iv_set(self, "@rating", INT2NUM(5));
 	return self;
 }
-static VALUE argss_rpg_troop_initialize(VALUE self) {
+VALUE ARGSS::ARPG::rtroop_initialize(VALUE self) {
 	rb_iv_set(self, "@id", INT2NUM(0));
 	rb_iv_set(self, "@name", rb_str_new2(""));
 	rb_iv_set(self, "@members", rb_ary_new());
 	rb_iv_set(self, "@pages", rb_ary_new3(1, rb_class_new_instance(0, 0, ARGSS::ARPG::TroopPage_id)));
 	return self;
 }
-static VALUE argss_rpg_troopmember_initialize(VALUE self) {
+VALUE ARGSS::ARPG::rtroopmember_initialize(VALUE self) {
 	rb_iv_set(self, "@enemy_id", INT2NUM(1));
 	rb_iv_set(self, "@x", INT2NUM(0));
 	rb_iv_set(self, "@y", INT2NUM(0));
@@ -362,13 +362,13 @@ static VALUE argss_rpg_troopmember_initialize(VALUE self) {
 	rb_iv_set(self, "@immortal", Qfalse);
 	return self;
 }
-static VALUE argss_rpg_trooppage_initialize(VALUE self) {
+VALUE ARGSS::ARPG::rtrooppage_initialize(VALUE self) {
 	rb_iv_set(self, "@condition", rb_class_new_instance(0, 0, ARGSS::ARPG::TroopPageCondition_id));
 	rb_iv_set(self, "@span", INT2NUM(0));
 	rb_iv_set(self, "@list", rb_ary_new3(1, rb_class_new_instance(0, 0, ARGSS::ARPG::EventCommand_id)));
 	return self;
 }
-static VALUE argss_rpg_trooppagecondition_initialize(VALUE self) {
+VALUE ARGSS::ARPG::rtrooppagecondition_initialize(VALUE self) {
 	rb_iv_set(self, "@turn_valid", Qfalse);
 	rb_iv_set(self, "@enemy_valid", Qfalse);
 	rb_iv_set(self, "@actor_valid", Qfalse);
@@ -382,7 +382,7 @@ static VALUE argss_rpg_trooppagecondition_initialize(VALUE self) {
 	rb_iv_set(self, "@switch_id", INT2NUM(1));
 	return self;
 }
-static VALUE argss_rpg_state_initialize(VALUE self) {
+VALUE ARGSS::ARPG::rstate_initialize(VALUE self) {
 	rb_iv_set(self, "@id", INT2NUM(0));
 	rb_iv_set(self, "@name", rb_str_new2(""));
 	rb_iv_set(self, "@animation_id", INT2NUM(0));
@@ -413,7 +413,7 @@ static VALUE argss_rpg_state_initialize(VALUE self) {
 	rb_iv_set(self, "@minus_state_set", rb_ary_new());
 	return self;
 }
-static VALUE argss_rpg_animation_initialize(VALUE self) {
+VALUE ARGSS::ARPG::ranimation_initialize(VALUE self) {
 	rb_iv_set(self, "@id", INT2NUM(0));
 	rb_iv_set(self, "@name", rb_str_new2(""));
 	rb_iv_set(self, "@animation_name", rb_str_new2(""));
@@ -424,12 +424,12 @@ static VALUE argss_rpg_animation_initialize(VALUE self) {
 	rb_iv_set(self, "@timings", rb_ary_new());
 	return self;
 }
-static VALUE argss_rpg_animationframe_initialize(VALUE self) {
+VALUE ARGSS::ARPG::ranimationframe_initialize(VALUE self) {
 	rb_iv_set(self, "@cell_max", INT2NUM(0));
 	rb_iv_set(self, "@cell_data", ARGSS::ATable::New(INT2NUM(0), INT2NUM(0)));
 	return self;
 }
-static VALUE argss_rpg_animationtiming_initialize(VALUE self) {
+VALUE ARGSS::ARPG::ranimationtiming_initialize(VALUE self) {
 	rb_iv_set(self, "@frame", INT2NUM(0));
 	VALUE args[2] = {rb_str_new2(""), INT2NUM(80)};
 	rb_iv_set(self, "@se", rb_class_new_instance(2, args, ARGSS::ARPG::AudioFile_id));
@@ -439,7 +439,7 @@ static VALUE argss_rpg_animationtiming_initialize(VALUE self) {
 	rb_iv_set(self, "@condition", INT2NUM(0));
 	return self;
 }
-static VALUE argss_rpg_tileset_initialize(VALUE self) {
+VALUE ARGSS::ARPG::rtileset_initialize(VALUE self) {
 	rb_iv_set(self, "@id", INT2NUM(0));
 	rb_iv_set(self, "@name", rb_str_new2(""));
 	rb_iv_set(self, "@tileset_name", rb_str_new2(""));
@@ -465,7 +465,7 @@ static VALUE argss_rpg_tileset_initialize(VALUE self) {
 	rb_iv_set(self, "@terrain_tags", ARGSS::ATable::New(384));
 	return self;
 }
-static VALUE argss_rpg_commonevent_initialize(VALUE self) {
+VALUE ARGSS::ARPG::rcommonevent_initialize(VALUE self) {
 	rb_iv_set(self, "@id", INT2NUM(0));
 	rb_iv_set(self, "@name", rb_str_new2(""));
 	rb_iv_set(self, "@trigger", INT2NUM(0));
@@ -473,7 +473,7 @@ static VALUE argss_rpg_commonevent_initialize(VALUE self) {
 	rb_iv_set(self, "@list", rb_ary_new3(1, rb_class_new_instance(0, 0, ARGSS::ARPG::EventCommand_id)));
 	return self;
 }
-static VALUE argss_rpg_system_initialize(VALUE self) {
+VALUE ARGSS::ARPG::rsystem_initialize(VALUE self) {
 	rb_iv_set(self, "@magic_number", INT2NUM(0));
 	rb_iv_set(self, "@party_members", rb_ary_new3(1, INT2NUM(1)));
 	rb_iv_set(self, "@elements", rb_ary_new3(2, Qnil, rb_str_new2("")));
@@ -512,7 +512,7 @@ static VALUE argss_rpg_system_initialize(VALUE self) {
 	rb_iv_set(self, "@edit_map_id", INT2NUM(1));
 	return self;
 }
-static VALUE argss_rpg_systemwords_initialize(VALUE self) {
+VALUE ARGSS::ARPG::rsystemwords_initialize(VALUE self) {
 	rb_iv_set(self, "@gold", rb_str_new2(""));
 	rb_iv_set(self, "@hp", rb_str_new2(""));
 	rb_iv_set(self, "@sp", rb_str_new2(""));
@@ -535,7 +535,7 @@ static VALUE argss_rpg_systemwords_initialize(VALUE self) {
 	rb_iv_set(self, "@equip", rb_str_new2(""));
 	return self;
 }
-static VALUE argss_rpg_systemtestbattler_initialize(VALUE self) {
+VALUE ARGSS::ARPG::rsystemtestbattler_initialize(VALUE self) {
 	rb_iv_set(self, "@actor_id", INT2NUM(1));
 	rb_iv_set(self, "@level", INT2NUM(1));
 	rb_iv_set(self, "@weapon_id", INT2NUM(0));
@@ -545,7 +545,7 @@ static VALUE argss_rpg_systemtestbattler_initialize(VALUE self) {
 	rb_iv_set(self, "@armor4_id", INT2NUM(0));
 	return self;
 }
-static VALUE argss_rpg_audiofile_initialize(int argc, VALUE* argv, VALUE self) {
+VALUE ARGSS::ARPG::raudiofile_initialize(int argc, VALUE* argv, VALUE self) {
 	if (argc > 3) raise_argn(argc, 3);
 	rb_iv_set(self, "@name", argc < 1 ? rb_str_new2("") : argv[0]);
 	rb_iv_set(self, "@volume", argc < 2 ? INT2NUM(100) : argv[1]);
@@ -592,38 +592,38 @@ void ARGSS::ARPG::Init() {
 	SystemTestBattler_id = rb_define_class_under(System_id, "TestBattler", rb_cObject);
 	AudioFile_id = rb_define_class_under(id, "AudioFile", rb_cObject);
 
-	rb_define_method(Map_id, "initialize", (rubyfunc)argss_rpg_map_initialize, 2);
-	rb_define_method(MapInfo_id, "initialize", (rubyfunc)argss_rpg_mapinfo_initialize, 0);
-	rb_define_method(Event_id, "initialize", (rubyfunc)argss_rpg_event_initialize, 2);
-	rb_define_method(EventPage_id, "initialize", (rubyfunc)argss_rpg_eventpage_initialize, 0);
-	rb_define_method(EventPageCondition_id, "initialize", (rubyfunc)argss_rpg_eventpagecondition_initialize, 0);
-	rb_define_method(EventPageGraphic_id, "initialize", (rubyfunc)argss_rpg_eventpagegraphic_initialize, 0);
-	rb_define_method(EventCommand_id, "initialize", (rubyfunc)argss_rpg_eventcommand_initialize, -1);
-	rb_define_method(MoveRoute_id, "initialize", (rubyfunc)argss_rpg_moveroute_initialize, 0);
-	rb_define_method(MoveCommand_id, "initialize", (rubyfunc)argss_rpg_movecommand_initialize, -1);
-	rb_define_method(Actor_id, "initialize", (rubyfunc)argss_rpg_actor_initialize, 0);
-	rb_define_method(Class_id, "initialize", (rubyfunc)argss_rpg_class_initialize, 0);
-	rb_define_method(ClassLearning_id, "initialize", (rubyfunc)argss_rpg_classlearning_initialize, 0);
-	rb_define_method(Skill_id, "initialize", (rubyfunc)argss_rpg_skill_initialize, 0);
-	rb_define_method(Item_id, "initialize", (rubyfunc)argss_rpg_item_initialize, 0);
-	rb_define_method(Weapon_id, "initialize", (rubyfunc)argss_rpg_weapon_initialize, 0);
-	rb_define_method(Armor_id, "initialize", (rubyfunc)argss_rpg_armor_initialize, 0);
-	rb_define_method(Enemy_id, "initialize", (rubyfunc)argss_rpg_enemy_initialize, 0);
-	rb_define_method(EnemyAction_id, "initialize", (rubyfunc)argss_rpg_enemyaction_initialize, 0);
-	rb_define_method(Troop_id, "initialize", (rubyfunc)argss_rpg_troop_initialize, 0);
-	rb_define_method(TroopMember_id, "initialize", (rubyfunc)argss_rpg_troopmember_initialize, 0);
-	rb_define_method(TroopPage_id, "initialize", (rubyfunc)argss_rpg_trooppage_initialize, 0);
-	rb_define_method(TroopPageCondition_id, "initialize", (rubyfunc)argss_rpg_trooppagecondition_initialize, 0);
-	rb_define_method(State_id, "initialize", (rubyfunc)argss_rpg_state_initialize, 0);
-	rb_define_method(Animation_id, "initialize", (rubyfunc)argss_rpg_animation_initialize, 0);
-	rb_define_method(AnimationFrame_id, "initialize", (rubyfunc)argss_rpg_animationframe_initialize, 0);
-	rb_define_method(AnimationTiming_id, "initialize", (rubyfunc)argss_rpg_animationtiming_initialize, 0);
-	rb_define_method(Tileset_id, "initialize", (rubyfunc)argss_rpg_tileset_initialize, 0);
-	rb_define_method(CommonEvent_id, "initialize", (rubyfunc)argss_rpg_commonevent_initialize, 0);
-	rb_define_method(System_id, "initialize", (rubyfunc)argss_rpg_system_initialize, 0);
-	rb_define_method(SystemWords_id, "initialize", (rubyfunc)argss_rpg_systemwords_initialize, 0);
-	rb_define_method(SystemTestBattler_id, "initialize", (rubyfunc)argss_rpg_systemtestbattler_initialize, 0);
-	rb_define_method(AudioFile_id, "initialize", (rubyfunc)argss_rpg_audiofile_initialize, -1);
+	rb_define_method(Map_id, "initialize", (rubyfunc)rmap_initialize, 2);
+	rb_define_method(MapInfo_id, "initialize", (rubyfunc)rmapinfo_initialize, 0);
+	rb_define_method(Event_id, "initialize", (rubyfunc)revent_initialize, 2);
+	rb_define_method(EventPage_id, "initialize", (rubyfunc)reventpage_initialize, 0);
+	rb_define_method(EventPageCondition_id, "initialize", (rubyfunc)reventpagecondition_initialize, 0);
+	rb_define_method(EventPageGraphic_id, "initialize", (rubyfunc)reventpagegraphic_initialize, 0);
+	rb_define_method(EventCommand_id, "initialize", (rubyfunc)reventcommand_initialize, -1);
+	rb_define_method(MoveRoute_id, "initialize", (rubyfunc)rmoveroute_initialize, 0);
+	rb_define_method(MoveCommand_id, "initialize", (rubyfunc)rmovecommand_initialize, -1);
+	rb_define_method(Actor_id, "initialize", (rubyfunc)ractor_initialize, 0);
+	rb_define_method(Class_id, "initialize", (rubyfunc)rclass_initialize, 0);
+	rb_define_method(ClassLearning_id, "initialize", (rubyfunc)rclasslearning_initialize, 0);
+	rb_define_method(Skill_id, "initialize", (rubyfunc)rskill_initialize, 0);
+	rb_define_method(Item_id, "initialize", (rubyfunc)ritem_initialize, 0);
+	rb_define_method(Weapon_id, "initialize", (rubyfunc)rweapon_initialize, 0);
+	rb_define_method(Armor_id, "initialize", (rubyfunc)rarmor_initialize, 0);
+	rb_define_method(Enemy_id, "initialize", (rubyfunc)renemy_initialize, 0);
+	rb_define_method(EnemyAction_id, "initialize", (rubyfunc)renemyaction_initialize, 0);
+	rb_define_method(Troop_id, "initialize", (rubyfunc)rtroop_initialize, 0);
+	rb_define_method(TroopMember_id, "initialize", (rubyfunc)rtroopmember_initialize, 0);
+	rb_define_method(TroopPage_id, "initialize", (rubyfunc)rtrooppage_initialize, 0);
+	rb_define_method(TroopPageCondition_id, "initialize", (rubyfunc)rtrooppagecondition_initialize, 0);
+	rb_define_method(State_id, "initialize", (rubyfunc)rstate_initialize, 0);
+	rb_define_method(Animation_id, "initialize", (rubyfunc)ranimation_initialize, 0);
+	rb_define_method(AnimationFrame_id, "initialize", (rubyfunc)ranimationframe_initialize, 0);
+	rb_define_method(AnimationTiming_id, "initialize", (rubyfunc)ranimationtiming_initialize, 0);
+	rb_define_method(Tileset_id, "initialize", (rubyfunc)rtileset_initialize, 0);
+	rb_define_method(CommonEvent_id, "initialize", (rubyfunc)rcommonevent_initialize, 0);
+	rb_define_method(System_id, "initialize", (rubyfunc)rsystem_initialize, 0);
+	rb_define_method(SystemWords_id, "initialize", (rubyfunc)rsystemwords_initialize, 0);
+	rb_define_method(SystemTestBattler_id, "initialize", (rubyfunc)rsystemtestbattler_initialize, 0);
+	rb_define_method(AudioFile_id, "initialize", (rubyfunc)raudiofile_initialize, -1);
 
 	rb_define_attr(Map_id, "tileset_id", 1, 1);
 	rb_define_attr(Map_id, "width", 1, 1);

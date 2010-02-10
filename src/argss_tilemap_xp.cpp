@@ -42,7 +42,7 @@ VALUE ARGSS::ATilemap::id;
 ////////////////////////////////////////////////////////////
 /// ARGSS Tilemap ruby functions
 ////////////////////////////////////////////////////////////
-static VALUE argss_tilemap_initialize(int argc, VALUE *argv, VALUE self) {
+VALUE ARGSS::ATilemap::rinitialize(int argc, VALUE *argv, VALUE self) {
 	if (argc == 1) {
 		Check_Classes_N(argv[0], ARGSS::AViewport::id);
 		rb_iv_set(self, "@viewport", argv[0]);
@@ -63,98 +63,99 @@ static VALUE argss_tilemap_initialize(int argc, VALUE *argv, VALUE self) {
 	ARGSS::ARuby::AddObject(self);
 	return self;
 }
-static VALUE argss_tilemap_dispose(VALUE self) {
-	ARGSS::ATilemap::Check(self);
+VALUE ARGSS::ATilemap::rdispose(VALUE self) {
+	ARGSS::ATilemap::CheckDisposed(self);
 	Tilemap::Dispose(self);
 	ARGSS::ARuby::RemoveObject(self);
+	rb_gc_start();
     return self;
 }
-static VALUE argss_tilemap_disposeQ(VALUE self) {
+VALUE ARGSS::ATilemap::rdisposeQ(VALUE self) {
 	return INT2BOOL(Tilemap::IsDisposed(self));
 }
-static VALUE argss_tilemap_update(VALUE self) {
-	ARGSS::ATilemap::Check(self);
+VALUE ARGSS::ATilemap::rupdate(VALUE self) {
+	ARGSS::ATilemap::CheckDisposed(self);
 	Tilemap::Get(self)->Update();
 	return Qnil;
 }
-static VALUE argss_tilemap_viewport(VALUE self) {
-	ARGSS::ATilemap::Check(self);
+VALUE ARGSS::ATilemap::rviewport(VALUE self) {
+	ARGSS::ATilemap::CheckDisposed(self);
 	return rb_iv_get(self, "@viewport");
 }
-static VALUE argss_tilemap_viewportE(VALUE self, VALUE viewport) {
-    ARGSS::ATilemap::Check(self);
+VALUE ARGSS::ATilemap::rviewportE(VALUE self, VALUE viewport) {
+    ARGSS::ATilemap::CheckDisposed(self);
 	Check_Classes_N(viewport, ARGSS::AViewport::id);
 	Tilemap::Get(self)->SetViewport(viewport);
 	return rb_iv_set(self, "@viewport", viewport);
 }
-static VALUE argss_tilemap_tileset(VALUE self) {
-	ARGSS::ATilemap::Check(self);
+VALUE ARGSS::ATilemap::rtileset(VALUE self) {
+	ARGSS::ATilemap::CheckDisposed(self);
 	return rb_iv_get(self, "@tileset");
 }
-static VALUE argss_tilemap_tilesetE(VALUE self, VALUE tileset) {
-    ARGSS::ATilemap::Check(self);
+VALUE ARGSS::ATilemap::rtilesetE(VALUE self, VALUE tileset) {
+    ARGSS::ATilemap::CheckDisposed(self);
 	Check_Classes_N(tileset, ARGSS::ABitmap::id);
 	Tilemap::Get(self)->SetTileset(tileset);
 	return rb_iv_set(self, "@tileset", tileset);
 }
-static VALUE argss_tilemap_autotiles(VALUE self) {
-	ARGSS::ATilemap::Check(self);
+VALUE ARGSS::ATilemap::rautotiles(VALUE self) {
+	ARGSS::ATilemap::CheckDisposed(self);
 	return rb_iv_get(self, "@autotiles");
 }
-static VALUE argss_tilemap_map_data(VALUE self) {
-	ARGSS::ATilemap::Check(self);
+VALUE ARGSS::ATilemap::rmap_data(VALUE self) {
+	ARGSS::ATilemap::CheckDisposed(self);
 	return rb_iv_get(self, "@map_data");
 }
-static VALUE argss_tilemap_map_dataE(VALUE self, VALUE map_data) {
-    ARGSS::ATilemap::Check(self);
+VALUE ARGSS::ATilemap::rmap_dataE(VALUE self, VALUE map_data) {
+    ARGSS::ATilemap::CheckDisposed(self);
 	Check_Classes_N(map_data, ARGSS::ATable::id);
 	Tilemap::Get(self)->SetMapData(map_data);
 	return rb_iv_set(self, "@map_data", map_data);
 }
-static VALUE argss_tilemap_flash_data(VALUE self) {
-	ARGSS::ATilemap::Check(self);
+VALUE ARGSS::ATilemap::rflash_data(VALUE self) {
+	ARGSS::ATilemap::CheckDisposed(self);
 	return rb_iv_get(self, "@flash_data");
 }
-static VALUE argss_tilemap_flash_dataE(VALUE self, VALUE flash_data) {
-    ARGSS::ATilemap::Check(self);
+VALUE ARGSS::ATilemap::rflash_dataE(VALUE self, VALUE flash_data) {
+    ARGSS::ATilemap::CheckDisposed(self);
 	Check_Classes_N(flash_data, ARGSS::ATable::id);
 	Tilemap::Get(self)->SetFlashData(flash_data);
 	return rb_iv_set(self, "@flash_data", flash_data);
 }
-static VALUE argss_tilemap_priorities(VALUE self) {
-	ARGSS::ATilemap::Check(self);
+VALUE ARGSS::ATilemap::rpriorities(VALUE self) {
+	ARGSS::ATilemap::CheckDisposed(self);
 	return rb_iv_get(self, "@priorities");
 }
-static VALUE argss_tilemap_prioritiesE(VALUE self, VALUE priorities) {
-    ARGSS::ATilemap::Check(self);
+VALUE ARGSS::ATilemap::rprioritiesE(VALUE self, VALUE priorities) {
+    ARGSS::ATilemap::CheckDisposed(self);
 	Check_Classes_N(priorities, ARGSS::ATable::id);
 	Tilemap::Get(self)->SetPriorities(priorities);
 	return rb_iv_set(self, "@priorities", priorities);
 }
-static VALUE argss_tilemap_visible(VALUE self) {
-	ARGSS::ATilemap::Check(self);
+VALUE ARGSS::ATilemap::rvisible(VALUE self) {
+	ARGSS::ATilemap::CheckDisposed(self);
 	return rb_iv_get(self, "@visible");
 }
-static VALUE argss_tilemap_visibleE(VALUE self, VALUE visible) {
-    ARGSS::ATilemap::Check(self);
+VALUE ARGSS::ATilemap::rvisibleE(VALUE self, VALUE visible) {
+    ARGSS::ATilemap::CheckDisposed(self);
 	Tilemap::Get(self)->SetVisible(NUM2BOOL(visible));
     return rb_iv_set(self, "@visible", visible);
 }
-static VALUE argss_tilemap_ox(VALUE self) {
-	ARGSS::ATilemap::Check(self);
+VALUE ARGSS::ATilemap::rox(VALUE self) {
+	ARGSS::ATilemap::CheckDisposed(self);
 	return rb_iv_get(self, "@ox");
 }
-static VALUE argss_tilemap_oxE(VALUE self, VALUE ox) {
-    ARGSS::ATilemap::Check(self);
+VALUE ARGSS::ATilemap::roxE(VALUE self, VALUE ox) {
+    ARGSS::ATilemap::CheckDisposed(self);
     Tilemap::Get(self)->SetOx(NUM2INT(ox));
     return rb_iv_set(self, "@ox", ox);
 }
-static VALUE argss_tilemap_oy(VALUE self) {
-	ARGSS::ATilemap::Check(self);
+VALUE ARGSS::ATilemap::roy(VALUE self) {
+	ARGSS::ATilemap::CheckDisposed(self);
 	return rb_iv_get(self, "@oy");
 }
-static VALUE argss_tilemap_oyE(VALUE self, VALUE oy) {
-    ARGSS::ATilemap::Check(self);
+VALUE ARGSS::ATilemap::royE(VALUE self, VALUE oy) {
+    ARGSS::ATilemap::CheckDisposed(self);
 	Tilemap::Get(self)->SetOy(NUM2INT(oy));
     return rb_iv_set(self, "@oy", oy);
 }
@@ -166,33 +167,33 @@ void ARGSS::ATilemap::Init() {
 	ARGSS::ATilemapAutotiles::Init();
     typedef VALUE (*rubyfunc)(...);
     id = rb_define_class("Tilemap", rb_cObject);
-    rb_define_method(id, "initialize", (rubyfunc)argss_tilemap_initialize, -1);
-    rb_define_method(id, "dispose", (rubyfunc)argss_tilemap_dispose, 0);
-    rb_define_method(id, "disposed?", (rubyfunc)argss_tilemap_disposeQ, 0);
-    rb_define_method(id, "update", (rubyfunc)argss_tilemap_update, 0);
-	rb_define_method(id, "viewport", (rubyfunc)argss_tilemap_viewport, 0);
-	rb_define_method(id, "viewport=", (rubyfunc)argss_tilemap_viewportE, 1);
-    rb_define_method(id, "tileset", (rubyfunc)argss_tilemap_tileset, 0);
-	rb_define_method(id, "tileset=", (rubyfunc)argss_tilemap_tilesetE, 1);
-    rb_define_method(id, "autotiles", (rubyfunc)argss_tilemap_autotiles, 0);
-    rb_define_method(id, "map_data", (rubyfunc)argss_tilemap_map_data, 0);
-	rb_define_method(id, "map_data=", (rubyfunc)argss_tilemap_map_dataE, 1);
-    rb_define_method(id, "flash_data", (rubyfunc)argss_tilemap_flash_data, 0);
-	rb_define_method(id, "flash_data=", (rubyfunc)argss_tilemap_flash_dataE, 1);
-    rb_define_method(id, "priorities", (rubyfunc)argss_tilemap_priorities, 0);
-	rb_define_method(id, "priorities=", (rubyfunc)argss_tilemap_prioritiesE, 1);
-    rb_define_method(id, "visible", (rubyfunc)argss_tilemap_visible, 0);
-	rb_define_method(id, "visible=", (rubyfunc)argss_tilemap_visibleE, 1);
-    rb_define_method(id, "ox", (rubyfunc)argss_tilemap_ox, 0);
-	rb_define_method(id, "ox=", (rubyfunc)argss_tilemap_oxE, 1);
-    rb_define_method(id, "oy", (rubyfunc)argss_tilemap_oy, 0);
-	rb_define_method(id, "oy=", (rubyfunc)argss_tilemap_oyE, 1);
+    rb_define_method(id, "initialize", (rubyfunc)rinitialize, -1);
+    rb_define_method(id, "dispose", (rubyfunc)rdispose, 0);
+    rb_define_method(id, "disposed?", (rubyfunc)rdisposeQ, 0);
+    rb_define_method(id, "update", (rubyfunc)rupdate, 0);
+	rb_define_method(id, "viewport", (rubyfunc)rviewport, 0);
+	rb_define_method(id, "viewport=", (rubyfunc)rviewportE, 1);
+    rb_define_method(id, "tileset", (rubyfunc)rtileset, 0);
+	rb_define_method(id, "tileset=", (rubyfunc)rtilesetE, 1);
+    rb_define_method(id, "autotiles", (rubyfunc)rautotiles, 0);
+    rb_define_method(id, "map_data", (rubyfunc)rmap_data, 0);
+	rb_define_method(id, "map_data=", (rubyfunc)rmap_dataE, 1);
+    rb_define_method(id, "flash_data", (rubyfunc)rflash_data, 0);
+	rb_define_method(id, "flash_data=", (rubyfunc)rflash_dataE, 1);
+    rb_define_method(id, "priorities", (rubyfunc)rpriorities, 0);
+	rb_define_method(id, "priorities=", (rubyfunc)rprioritiesE, 1);
+    rb_define_method(id, "visible", (rubyfunc)rvisible, 0);
+	rb_define_method(id, "visible=", (rubyfunc)rvisibleE, 1);
+    rb_define_method(id, "ox", (rubyfunc)rox, 0);
+	rb_define_method(id, "ox=", (rubyfunc)roxE, 1);
+    rb_define_method(id, "oy", (rubyfunc)roy, 0);
+	rb_define_method(id, "oy=", (rubyfunc)royE, 1);
 }
 
 ////////////////////////////////////////////////////////////
 /// Check if tilemap isn't disposed
 ////////////////////////////////////////////////////////////
-void ARGSS::ATilemap::Check(VALUE self) {
+void ARGSS::ATilemap::CheckDisposed(VALUE self) {
     if (Tilemap::IsDisposed(self)) {
 		rb_raise(ARGSS::AError::id, "disposed tilemap <%i>", self);
     }

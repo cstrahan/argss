@@ -38,6 +38,30 @@ namespace ARGSS {
 		namespace ASprite {
 			extern VALUE id;
 			void Init();
+
+			VALUE rinitialize(int argc, VALUE* argv, VALUE self);
+			VALUE rdispose(VALUE self);
+			VALUE rwhiten(VALUE self);
+			VALUE rappear(VALUE self);
+			VALUE rescape(VALUE self);
+			VALUE rcollapse(VALUE self);
+			VALUE rdamage(VALUE self, VALUE value, VALUE critical);
+			VALUE ranimation(VALUE self, VALUE animation, VALUE hit);
+			VALUE rloop_animation(VALUE self, VALUE animation);
+			VALUE rdispose_damage(VALUE self);
+			VALUE rdispose_animation(VALUE self);
+			VALUE rdispose_loop_animation(VALUE self);
+			VALUE rblink_on(VALUE self);
+			VALUE rblink_off(VALUE self);
+			VALUE rblinkQ(VALUE self);
+			VALUE reffectQ(VALUE self);
+			VALUE rupdate(VALUE self);
+			VALUE rupdate_animation(VALUE self);
+			VALUE rupdate_loop_animation(VALUE self);
+			VALUE ranimation_set_sprites(VALUE self, VALUE sprites, VALUE cell_data, VALUE position);
+			VALUE ranimation_process_timing(VALUE self, VALUE timing, VALUE hit);
+			VALUE rxE(VALUE self, VALUE x);
+			VALUE ryE(VALUE self, VALUE y);
 		};
 	};
 };

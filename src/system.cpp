@@ -38,9 +38,6 @@ std::string System::ScriptsPath;
 std::string System::RTPS[3];
 int System::Width;
 int System::Height;
-bool System::Focus;
-bool System::FocusPauseGame;
-bool System::FocusPauseAudio;
 
 ////////////////////////////////////////////////////////////
 /// Initialize system
@@ -53,27 +50,24 @@ void System::Init() {
 	RTPS[2] = RTP3;
 	Width = SCREEN_WIDTH;
 	Height = SCREEN_HEIGHT;
-	Focus = true;
-	FocusPauseGame = PAUSE_GAME_WHEN_FOCUS_LOST;
-	FocusPauseAudio = PAUSE_AUDIO_WHEN_FOCUS_LOST;
-	if(READ_INI_GAME_TITLE || READ_INI_SCRIPTS_PATH || READ_INI_SCREEN_SIZE || READ_INI_RTPS) {
+	if (READ_INI_GAME_TITLE || READ_INI_SCRIPTS_PATH || READ_INI_SCREEN_SIZE || READ_INI_RTPS) {
 		CSimpleIniA ini(true, false, false);
 		SI_Error rc = ini.LoadFile(INI_NAME);
 		if (rc < 0) {
 			Output::Warning("ARGSS could not open %s file.", INI_NAME);
 		}
-		if(READ_INI_SCRIPTS_PATH) {
+		if (READ_INI_SCRIPTS_PATH) {
 			ScriptsPath = ini.GetValue("Game", "Scripts", SCRIPTS_PATH);
 		}
-		if(READ_INI_GAME_TITLE) {
+		if (READ_INI_GAME_TITLE) {
 			Title = ini.GetValue("Game", "Title", GAME_TITLE);
 		}
-		if(READ_INI_RTPS) {
+		if (READ_INI_RTPS) {
 			RTPS[0] = ini.GetValue("Game", "RTP1", RTP1);
 			RTPS[1] = ini.GetValue("Game", "RTP2", RTP2);
 			RTPS[2] = ini.GetValue("Game", "RTP3", RTP3);
 		}
-		if(READ_INI_SCREEN_SIZE) {
+		if (READ_INI_SCREEN_SIZE) {
 			Width = ini.GetLongValue("Game", "Width", Width);
 			Height = ini.GetLongValue("Game", "Height", Height);
 		}

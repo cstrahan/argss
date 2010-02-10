@@ -25,6 +25,7 @@
 ////////////////////////////////////////////////////////////
 /// Headers
 ////////////////////////////////////////////////////////////
+#include "SDL.h"
 #include "audio.h"
 #include "argss_ruby.h"
 #include "argss_error.h"
@@ -48,13 +49,33 @@ std::map<int, Mix_Chunk*>::iterator Audio::it_sounds;
 /// Initialize
 ////////////////////////////////////////////////////////////
 void Audio::Init() {
+	if (SDL_InitSubSystem(SDL_INIT_AUDIO) < 0) { 
+		char errstr[] = "ARGSS couldn't initialize audio.\n%s\n";
+		Output::Error(errstr, SDL_GetError());
+    }
+
 	if (Mix_OpenAudio(22050, MIX_DEFAULT_FORMAT, 2, 4096) == -1) {
-		Output::Error("ARGSS couldn't initialize audio.\n%s\n", Mix_GetError());
+		char errstr[] = "ARGSS couldn't initialize audio.\n%s\n";
+		Output::Error(errstr, Mix_GetError());
 	}
 	bgm = NULL;
 	bgs = NULL;
 	me = NULL;
 	me_stopped_bgm = false;
+}
+
+////////////////////////////////////////////////////////////
+/// Audio Pause
+////////////////////////////////////////////////////////////
+void Audio::Pause() {
+	// TODO
+}
+
+////////////////////////////////////////////////////////////
+/// Audio Continue
+////////////////////////////////////////////////////////////
+void Audio::Continue() {
+	// TODO
 }
 
 ////////////////////////////////////////////////////////////

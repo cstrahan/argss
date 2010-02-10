@@ -38,6 +38,21 @@ namespace ARGSS {
 		extern VALUE id;
 		void Init();
 		VALUE New(double x, double y, double width, double height);
+
+		VALUE rinitialize(VALUE self, VALUE x, VALUE y, VALUE w, VALUE h);
+		VALUE rset(VALUE self, VALUE x, VALUE y, VALUE w, VALUE h);
+		VALUE rx(VALUE self);
+		VALUE rxE(VALUE self, VALUE x);
+		VALUE ry(VALUE self);
+		VALUE ryE(VALUE self, VALUE y);
+		VALUE rwidth(VALUE self);
+		VALUE rwidthE(VALUE self, VALUE w);
+		VALUE rheight(VALUE self);
+		VALUE rheightE(VALUE self, VALUE h);
+		VALUE rempty(VALUE self);
+		VALUE rinspect(VALUE self);
+		VALUE rdump(int argc, VALUE* argv, VALUE self);
+		VALUE rload(VALUE self, VALUE str);
 	};
 };
 

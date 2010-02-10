@@ -39,6 +39,20 @@ namespace ARGSS {
 		void Init();
 		VALUE New(double r, double g, double b, double gray);
 		VALUE New();
+
+		VALUE rinitialize(int argc, VALUE *argv, VALUE self);
+		VALUE rset(int argc, VALUE *argv, VALUE self);
+		VALUE rred(VALUE self);
+		VALUE rredE(VALUE self, VALUE r);
+		VALUE rgreen(VALUE self);
+		VALUE rgreenE(VALUE self, VALUE g);
+		VALUE rblue(VALUE self);
+		VALUE rblueE(VALUE self, VALUE b);
+		VALUE rgray(VALUE self);
+		VALUE rgrayE(VALUE self, VALUE g);
+		VALUE rinspect(VALUE self);
+		VALUE rdump(int argc, VALUE* argv, VALUE self);
+		VALUE rload(VALUE self, VALUE str);
 	};
 };
 

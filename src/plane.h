@@ -46,6 +46,7 @@ public:
 	static Plane* Get(unsigned long id);
 	static void Dispose(unsigned long id);
 
+	void RefreshBitmaps();
 	void Draw(long z);
 	void Draw(long z, Bitmap* dst_bitmap);
 
@@ -61,10 +62,10 @@ public:
 	void SetOx(int nox);
 	int GetOy();
 	void SetOy(int noy);
-	double GetZoomX();
-	void SetZoomX(double nzoom_x);
-	double GetZoomY();
-	void SetZoomY(double nzoom_y);
+	float GetZoomX();
+	void SetZoomX(float nzoom_x);
+	float GetZoomY();
+	void SetZoomY(float nzoom_y);
 	int GetOpacity();
 	void SetOpacity(int nopacity);
 	int GetBlendType();
@@ -88,8 +89,8 @@ private:
 	int z;
 	int ox;
 	int oy;
-	double zoom_x;
-	double zoom_y;
+	float zoom_x;
+	float zoom_y;
 	int opacity;
 	int blend_type;
 	unsigned long color;

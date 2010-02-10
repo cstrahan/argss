@@ -37,7 +37,27 @@ namespace ARGSS {
 	namespace AViewport {
 		extern VALUE id;
 		void Init();
-		void Check(VALUE self);
+		void CheckDisposed(VALUE self);
+
+		VALUE rinitialize(int argc, VALUE *argv, VALUE self);
+		VALUE rdispose(VALUE self);
+		VALUE rdisposedQ(VALUE self);
+		VALUE rflash(VALUE self, VALUE color, VALUE duration);
+		VALUE rupdate(VALUE self);
+		VALUE rrect(VALUE self);
+		VALUE rrectE(VALUE self, VALUE rect);
+		VALUE rvisible(VALUE self);
+		VALUE rvisibleE(VALUE self, VALUE visible);
+		VALUE rz(VALUE self);
+		VALUE rzE(VALUE self, VALUE z);
+		VALUE rox(VALUE self);
+		VALUE roxE(VALUE self, VALUE ox);
+		VALUE roy(VALUE self);
+		VALUE royE(VALUE self, VALUE oy);
+		VALUE rcolor(VALUE self);
+		VALUE rcolorE(VALUE self, VALUE color);
+		VALUE rtone(VALUE self);
+		VALUE rtoneE(VALUE self, VALUE tone);
 	};
 };
 

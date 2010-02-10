@@ -40,11 +40,13 @@ namespace ARGSS {
 	namespace ARuby {
 		void Init();
 		void Run();
-		VALUE IntVectorToRArr(std::vector<int> vector); // Remove?
 
 		void AddObject(VALUE id);
 		void RemoveObject(VALUE id);
 		extern VALUE protected_objects;
+
+		VALUE rload_data(VALUE self, VALUE filename);
+		VALUE rsave_data(VALUE self, VALUE obj, VALUE filename);
 	}
 }
 
@@ -62,7 +64,7 @@ namespace ARGSS {
 void Check_Kind(VALUE o, VALUE c);
 void Check_Types2(VALUE x, VALUE t1, VALUE t2);
 void Check_Bool(VALUE x);
-void Check_Class(VALUE x, VALUE t);
-void Check_Classes_N(VALUE x, VALUE type);
+void Check_Class(VALUE x, VALUE c);
+void Check_Classes_N(VALUE x, VALUE c);
 
 #endif

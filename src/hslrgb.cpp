@@ -59,7 +59,7 @@ ColorHSL RGB2HSL(Color col) {
         ncol.s = 0;
     }
     else {
-        if(ncol.l < 0.5) {
+        if (ncol.l < 0.5) {
             ncol.s = delta / (vmax + vmin);
         }
         else {
@@ -68,13 +68,13 @@ ColorHSL RGB2HSL(Color col) {
         dr = (((vmax - r) / 6) + (delta / 2)) / delta;
         dg = (((vmax - g) / 6) + (delta / 2)) / delta;
         db = (((vmax - b) / 6) + (delta / 2)) / delta;
-        if(r == vmax) {
+        if (r == vmax) {
             ncol.h = db - dg;
         }
-        else if(g == vmax) {
+        else if (g == vmax) {
             ncol.h = (1.0 / 3) + dr - db;
         }
-        else if(b == vmax) {
+        else if (b == vmax) {
             ncol.h = (2.0 / 3) + dg - dr;
         }
     }
@@ -99,13 +99,13 @@ double Hue_2_RGB(double v1, double v2, double vH) {
 Color HSL2RGB(ColorHSL col) {
     Color ncol(0, 0, 0, 0);
     double v1, v2;
-    if(col.s == 0) {
+    if (col.s == 0) {
         ncol.red = (Uint8)(col.l * 255);
         ncol.green = (Uint8)(col.l * 255);
         ncol.blue = (Uint8)(col.l * 255);
     }
     else {
-        if(col.l < 0.5) {
+        if (col.l < 0.5) {
             v2 = col.l * (1 + col.s);
         }
         else {

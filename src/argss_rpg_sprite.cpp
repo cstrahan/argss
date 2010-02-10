@@ -30,6 +30,7 @@
 #include "argss_rpg_cache.h"
 #include "argss_color.h"
 #include "argss_rect.h"
+#include "argss_font.h"
 #include "argss_bitmap.h"
 #include "argss_sprite.h"
 #include "argss_graphics.h"
@@ -43,7 +44,7 @@ VALUE ARGSS::ARPG::ASprite::id;
 ////////////////////////////////////////////////////////////
 /// ARGSS RPG::Sprite ruby functions
 ////////////////////////////////////////////////////////////
-static VALUE argss_rpg_sprite_initialize(int argc, VALUE* argv, VALUE self) {
+VALUE ARGSS::ARPG::ASprite::rinitialize(int argc, VALUE* argv, VALUE self) {
 	if (argc > 1) raise_argn(argc, 1);
 	VALUE viewport = Qnil;
 	if (argc == 1) viewport = argv[0];
@@ -57,50 +58,50 @@ static VALUE argss_rpg_sprite_initialize(int argc, VALUE* argv, VALUE self) {
 	rb_iv_set(self, "@_blink", Qfalse);
 	return self;
 }
-static VALUE argss_rpg_sprite_dispose(VALUE self) {
-	rb_funcall(self, rb_intern("dispose_damage"), 0);
-	rb_funcall(self, rb_intern("dispose_animation"), 0);
-	rb_funcall(self, rb_intern("dispose_loop_animation"), 0);
+VALUE ARGSS::ARPG::ASprite::rdispose(VALUE self) {
+	rdispose_damage(self);
+	rdispose_animation(self);
+	rdispose_loop_animation(self);
 	return rb_call_super(0, 0);
 }
-static VALUE argss_rpg_sprite_whiten(VALUE self) {
-	rb_funcall(self, rb_intern("blend_type="), 1, INT2NUM(0));
+VALUE ARGSS::ARPG::ASprite::rwhiten(VALUE self) {
+	ARGSS::ASprite::rblend_typeE(self, INT2NUM(0));
 	rb_funcall(rb_iv_get(rb_iv_get(rb_iv_get(self, "@bitmap"), "@font"), "@color"), rb_intern("set"), 4, INT2NUM(255), INT2NUM(255), INT2NUM(255), INT2NUM(128));
-	rb_funcall(self, rb_intern("opacity="), 1, INT2NUM(255));
+	ARGSS::ASprite::ropacityE(self, INT2NUM(255));
 	rb_iv_set(self, "@_whiten_duration", INT2NUM(16));
 	rb_iv_set(self, "@_appear_duration", INT2NUM(0));
 	rb_iv_set(self, "@_escape_duration", INT2NUM(0));
 	return rb_iv_set(self, "@_collapse_duration", INT2NUM(0));
 }
-static VALUE argss_rpg_sprite_appear(VALUE self) {
-	rb_funcall(self, rb_intern("blend_type="), 1, INT2NUM(0));
+VALUE ARGSS::ARPG::ASprite::rappear(VALUE self) {
+ARGSS::ASprite::rblend_typeE(self, INT2NUM(0));
 	rb_funcall(rb_iv_get(rb_iv_get(rb_iv_get(self, "@bitmap"), "@font"), "@color"), rb_intern("set"), 4, INT2NUM(0), INT2NUM(0), INT2NUM(0), INT2NUM(0));
-	rb_funcall(self, rb_intern("opacity="), 1, INT2NUM(0));
+	ARGSS::ASprite::ropacityE(self, INT2NUM(0));
 	rb_iv_set(self, "@_appear_duration", INT2NUM(16));
 	rb_iv_set(self, "@_whiten_duration", INT2NUM(0));
 	rb_iv_set(self, "@_escape_duration", INT2NUM(0));
 	return rb_iv_set(self, "@_collapse_duration", INT2NUM(0));
 }
-static VALUE argss_rpg_sprite_escape(VALUE self) {
-	rb_funcall(self, rb_intern("blend_type="), 1, INT2NUM(0));
+VALUE ARGSS::ARPG::ASprite::rescape(VALUE self) {
+	ARGSS::ASprite::rblend_typeE(self, INT2NUM(0));
 	rb_funcall(rb_iv_get(rb_iv_get(rb_iv_get(self, "@bitmap"), "@font"), "@color"), rb_intern("set"), 4, INT2NUM(0), INT2NUM(0), INT2NUM(0), INT2NUM(0));
-	rb_funcall(self, rb_intern("opacity="), 1, INT2NUM(255));
+	ARGSS::ASprite::ropacityE(self, INT2NUM(255));
 	rb_iv_set(self, "@_escape_duration", INT2NUM(32));
 	rb_iv_set(self, "@_whiten_duration", INT2NUM(0));
 	rb_iv_set(self, "@_appear_duration", INT2NUM(0));
 	return rb_iv_set(self, "@_collapse_duration", INT2NUM(0));
 }
-static VALUE argss_rpg_sprite_collapse(VALUE self) {
-	rb_funcall(self, rb_intern("blend_type="), 1, INT2NUM(1));
+VALUE ARGSS::ARPG::ASprite::rcollapse(VALUE self) {
+	ARGSS::ASprite::rblend_typeE(self, INT2NUM(1));
 	rb_funcall(rb_iv_get(rb_iv_get(rb_iv_get(self, "@bitmap"), "@font"), "@color"), rb_intern("set"), 4, INT2NUM(255), INT2NUM(64), INT2NUM(64), INT2NUM(255));
-	rb_funcall(self, rb_intern("opacity="), 1, INT2NUM(255));
+	ARGSS::ASprite::ropacityE(self, INT2NUM(255));
 	rb_iv_set(self, "@_collapse_duration", INT2NUM(48));
 	rb_iv_set(self, "@_whiten_duration", INT2NUM(0));
 	rb_iv_set(self, "@_appear_duration", INT2NUM(0));
 	return rb_iv_set(self, "@_escape_duration", INT2NUM(0));
 }
-static VALUE argss_rpg_sprite_damage(VALUE self, VALUE value, VALUE critical) {
-	rb_funcall(self, rb_intern("dispose_damage"), 0);
+VALUE ARGSS::ARPG::ASprite::rdamage(VALUE self, VALUE value, VALUE critical) {
+	rdispose_damage(self);
     VALUE damage_string;
 	if (rb_obj_is_kind_of(value, rb_cNumeric)) {
 		damage_string = rb_obj_as_string(rb_funcall(value, rb_intern("abs"), 0));
@@ -111,8 +112,8 @@ static VALUE argss_rpg_sprite_damage(VALUE self, VALUE value, VALUE critical) {
 	VALUE args[2] = {INT2NUM(160), INT2NUM(48)};
 	VALUE bitmap = rb_class_new_instance(2, args, ARGSS::ABitmap::id);
 	VALUE bitmap_font = rb_iv_get(bitmap, "@font");
-	rb_funcall(bitmap_font, rb_intern("name="), 1, rb_str_new2("Arial Black"));
-	rb_funcall(bitmap_font, rb_intern("size="), 1, INT2NUM(32));
+	ARGSS::AFont::rnameE(bitmap_font, rb_str_new2("Arial Black"));
+	ARGSS::AFont::rsizeE(bitmap_font, INT2NUM(32));
 	rb_funcall(rb_iv_get(bitmap_font, "@color"), rb_intern("set="), 3, INT2NUM(0), INT2NUM(0), INT2NUM(0));
 	rb_funcall(bitmap, rb_intern("draw_text"), 6, INT2NUM(-1), INT2NUM(13), INT2NUM(160), INT2NUM(36), damage_string, INT2NUM(1));
 	rb_funcall(bitmap, rb_intern("draw_text"), 6, INT2NUM(1), INT2NUM(13), INT2NUM(160), INT2NUM(36), damage_string, INT2NUM(1));
@@ -146,7 +147,7 @@ static VALUE argss_rpg_sprite_damage(VALUE self, VALUE value, VALUE critical) {
 	rb_iv_set(self, "@_damage_sprite", damage_sprite);
 	return rb_iv_set(self, "@_damage_duration", INT2NUM(40));
 }
-static VALUE argss_rpg_sprite_animation(VALUE self, VALUE animation, VALUE hit) {
+VALUE ARGSS::ARPG::ASprite::ranimation(VALUE self, VALUE animation, VALUE hit) {
 	rb_funcall(self, rb_intern("dispose_animation"), 0);
     rb_iv_set(self, "@_animation", animation);
     if (animation == Qnil) return Qnil;
@@ -178,7 +179,7 @@ static VALUE argss_rpg_sprite_animation(VALUE self, VALUE animation, VALUE hit) 
 	}
 	return rb_funcall(self, rb_intern("update_animation"), 0);
 }
-static VALUE argss_rpg_sprite_loop_animation(VALUE self, VALUE animation) {
+VALUE ARGSS::ARPG::ASprite::rloop_animation(VALUE self, VALUE animation) {
 	if (animation == rb_iv_get(self, "@_loop_animation")) return Qnil;
 	rb_funcall(self, rb_intern("dispose_loop_animation"), 0);
 	rb_iv_set(self, "@_loop_animation", animation);
@@ -204,7 +205,7 @@ static VALUE argss_rpg_sprite_loop_animation(VALUE self, VALUE animation) {
 	}
 	return rb_funcall(self, rb_intern("update_loop_animation"), 0);
 }
-static VALUE argss_rpg_sprite_dispose_damage(VALUE self) {
+VALUE ARGSS::ARPG::ASprite::rdispose_damage(VALUE self) {
 	VALUE damage_sprite = rb_iv_get(self, "@_damage_sprite");
 	if (damage_sprite != Qnil) {
 		rb_funcall(rb_iv_get(damage_sprite, "@bitmap"), rb_intern("dispose"), 0);
@@ -214,7 +215,7 @@ static VALUE argss_rpg_sprite_dispose_damage(VALUE self) {
 	}
 	return Qnil;
 }
-static VALUE argss_rpg_sprite_dispose_animation(VALUE self) {
+VALUE ARGSS::ARPG::ASprite::rdispose_animation(VALUE self) {
 	VALUE animation_sprites = rb_iv_get(self, "@_animation_sprites");
 	if (animation_sprites != Qnil) {
 		VALUE sprite = rb_ary_entry(animation_sprites, 0);
@@ -234,7 +235,7 @@ static VALUE argss_rpg_sprite_dispose_animation(VALUE self) {
 	}
 	return Qnil;
 }
-static VALUE argss_rpg_sprite_dispose_loop_animation(VALUE self) {
+VALUE ARGSS::ARPG::ASprite::rdispose_loop_animation(VALUE self) {
 	VALUE loop_animation_sprites = rb_iv_get(self, "@_loop_animation_sprites");
 	if (loop_animation_sprites != Qnil) {
 		VALUE sprite = rb_ary_entry(loop_animation_sprites, 0);
@@ -254,24 +255,24 @@ static VALUE argss_rpg_sprite_dispose_loop_animation(VALUE self) {
 	}
 	return Qnil;
 }
-static VALUE argss_rpg_sprite_blink_on(VALUE self) {
+VALUE ARGSS::ARPG::ASprite::rblink_on(VALUE self) {
 	if (rb_iv_get(self, "@_blink") == Qfalse) {
 		rb_iv_set(self, "@_blink", Qtrue);
 		rb_iv_set(self, "@_blink_count", INT2NUM(0));
 	}
 	return Qnil;
 }
-static VALUE argss_rpg_sprite_blink_off(VALUE self) {
+VALUE ARGSS::ARPG::ASprite::rblink_off(VALUE self) {
 	if (rb_iv_get(self, "@_blink") == Qtrue) {
         rb_iv_set(self, "@_blink", Qfalse);
 		rb_funcall(rb_iv_get(self, "@color"), rb_intern("set"), 4, INT2NUM(0), INT2NUM(0), INT2NUM(0), INT2NUM(0));
 	}
 	return Qnil;
 }
-static VALUE argss_rpg_sprite_blinkQ(VALUE self) {
+VALUE ARGSS::ARPG::ASprite::rblinkQ(VALUE self) {
 	return rb_iv_get(self, "@_blink");
 }
-static VALUE argss_rpg_sprite_effectQ(VALUE self) {
+VALUE ARGSS::ARPG::ASprite::reffectQ(VALUE self) {
       return BOOL2NUM(NUM2INT(rb_iv_get(self, "@_whiten_duration")) > 0 ||
 					  NUM2INT(rb_iv_get(self, "@_appear_duration")) > 0 ||
 					  NUM2INT(rb_iv_get(self, "@_escape_duration")) > 0 ||
@@ -279,7 +280,7 @@ static VALUE argss_rpg_sprite_effectQ(VALUE self) {
 					  NUM2INT(rb_iv_get(self, "@_damage_duration")) > 0 ||
 					  NUM2INT(rb_iv_get(self, "@_animation_duration")) > 0);
 }
-static VALUE argss_rpg_sprite_update(VALUE self) {
+VALUE ARGSS::ARPG::ASprite::rupdate(VALUE self) {
 	rb_call_super(0, 0);
 	if (NUM2INT(rb_iv_get(self, "@_whiten_duration")) > 0) {
 		rb_iv_set(self, "@_whiten_duration", INT2NUM(NUM2INT(rb_iv_get(self, "@_whiten_duration")) - 1));
@@ -343,7 +344,7 @@ static VALUE argss_rpg_sprite_update(VALUE self) {
 	}
     return rb_ary_clear(rb_cvar_get(ARGSS::ARPG::ASprite::id, rb_intern("@@_animations")));
 }
-static VALUE argss_rpg_sprite_update_animation(VALUE self) {
+VALUE ARGSS::ARPG::ASprite::rupdate_animation(VALUE self) {
 	int val_animation_duration = NUM2INT(rb_iv_get(self, "@_animation_duration"));
 	if (val_animation_duration > 0) {
 		VALUE animation = rb_iv_get(self, "@_animation");
@@ -364,7 +365,7 @@ static VALUE argss_rpg_sprite_update_animation(VALUE self) {
 	}
 	return Qnil;
 }
-static VALUE argss_rpg_sprite_update_loop_animation(VALUE self) {
+VALUE ARGSS::ARPG::ASprite::rupdate_loop_animation(VALUE self) {
 	VALUE loop_animation = rb_iv_get(self, "@_loop_animation");
 	VALUE frame_index = rb_iv_get(self, "@_loop_animation_index");
 	VALUE cell_data = rb_iv_get(rb_ary_entry(rb_iv_get(loop_animation, "@frames"), NUM2INT(frame_index)), "@cell_data");
@@ -379,7 +380,7 @@ static VALUE argss_rpg_sprite_update_loop_animation(VALUE self) {
 	}
 	return Qnil;
 }
-static VALUE argss_rpg_sprite_animation_set_sprites(VALUE self, VALUE sprites, VALUE cell_data, VALUE position) {
+VALUE ARGSS::ARPG::ASprite::ranimation_set_sprites(VALUE self, VALUE sprites, VALUE cell_data, VALUE position) {
 	for (int i = 0; i < 16; i++) {
 		VALUE sprite = rb_ary_entry(sprites, i);
 		VALUE cell_table_data = rb_iv_get(cell_data, "@data");
@@ -440,7 +441,7 @@ static VALUE argss_rpg_sprite_animation_set_sprites(VALUE self, VALUE sprites, V
 	}
 	return Qnil;
 }
-static VALUE argss_rpg_sprite_animation_process_timing(VALUE self, VALUE timing, VALUE hit) {
+VALUE ARGSS::ARPG::ASprite::ranimation_process_timing(VALUE self, VALUE timing, VALUE hit) {
 	int val_condition = NUM2INT(rb_iv_get(timing, "@condition"));
 	if ((val_condition == 0) ||
 		(val_condition == 1 && hit == Qtrue) ||
@@ -470,7 +471,7 @@ static VALUE argss_rpg_sprite_animation_process_timing(VALUE self, VALUE timing,
 	}
 	return Qnil;
 }
-static VALUE argss_rpg_sprite_xE(VALUE self, VALUE x) {
+VALUE ARGSS::ARPG::ASprite::rxE(VALUE self, VALUE x) {
 	int sx = NUM2INT(x) - NUM2INT(rb_iv_get(self, "@x"));
 	if (sx != 0) {
 		VALUE animation_sprites = rb_iv_get(self, "@_animation_sprites");
@@ -492,7 +493,7 @@ static VALUE argss_rpg_sprite_xE(VALUE self, VALUE x) {
 	}
     return rb_call_super(1, &x);
 }
-static VALUE argss_rpg_sprite_yE(VALUE self, VALUE y) {
+VALUE ARGSS::ARPG::ASprite::ryE(VALUE self, VALUE y) {
 	int sy = NUM2INT(y) - NUM2INT(rb_iv_get(self, "@y"));
 	if (sy != 0) {
 		VALUE animation_sprites = rb_iv_get(self, "@_animation_sprites");
@@ -521,29 +522,29 @@ static VALUE argss_rpg_sprite_yE(VALUE self, VALUE y) {
 void ARGSS::ARPG::ASprite::Init() {
     typedef VALUE (*rubyfunc)(...);
 	id = rb_define_class_under(ARGSS::ARPG::id, "Sprite", ARGSS::ASprite::id);
-	rb_define_method(id, "initialize", (rubyfunc)argss_rpg_sprite_initialize, -1);
-	rb_define_method(id, "dispose", (rubyfunc)argss_rpg_sprite_dispose, 0);
-	rb_define_method(id, "whiten", (rubyfunc)argss_rpg_sprite_whiten, 0);
-	rb_define_method(id, "appear", (rubyfunc)argss_rpg_sprite_appear, 0);
-	rb_define_method(id, "escape", (rubyfunc)argss_rpg_sprite_escape, 0);
-	rb_define_method(id, "collapse", (rubyfunc)argss_rpg_sprite_collapse, 0);
-	rb_define_method(id, "damage", (rubyfunc)argss_rpg_sprite_damage, 2);
-	rb_define_method(id, "animation", (rubyfunc)argss_rpg_sprite_animation, 2);
-	rb_define_method(id, "loop_animation", (rubyfunc)argss_rpg_sprite_loop_animation, 1);
-	rb_define_method(id, "dispose_damage", (rubyfunc)argss_rpg_sprite_dispose_damage, 0);
-	rb_define_method(id, "dispose_animation", (rubyfunc)argss_rpg_sprite_dispose_animation, 0);
-	rb_define_method(id, "dispose_loop_animation", (rubyfunc)argss_rpg_sprite_dispose_loop_animation, 0);
-	rb_define_method(id, "blink_on", (rubyfunc)argss_rpg_sprite_blink_on, 0);
-	rb_define_method(id, "blink_off", (rubyfunc)argss_rpg_sprite_blink_off, 0);
-	rb_define_method(id, "blink?", (rubyfunc)argss_rpg_sprite_blinkQ, 0);
-	rb_define_method(id, "effect?", (rubyfunc)argss_rpg_sprite_effectQ, 0);
-	rb_define_method(id, "update", (rubyfunc)argss_rpg_sprite_update, 0);
-	rb_define_method(id, "update_animation", (rubyfunc)argss_rpg_sprite_update_animation, 0);
-	rb_define_method(id, "update_loop_animation", (rubyfunc)argss_rpg_sprite_update_loop_animation, 0);
-	rb_define_method(id, "animation_set_sprites", (rubyfunc)argss_rpg_sprite_animation_set_sprites, 3);
-	rb_define_method(id, "animation_process_timing", (rubyfunc)argss_rpg_sprite_animation_process_timing, 2);
-	rb_define_method(id, "x=", (rubyfunc)argss_rpg_sprite_xE, 1);
-	rb_define_method(id, "y=", (rubyfunc)argss_rpg_sprite_yE, 1);
+	rb_define_method(id, "initialize", (rubyfunc)rinitialize, -1);
+	rb_define_method(id, "dispose", (rubyfunc)rdispose, 0);
+	rb_define_method(id, "whiten", (rubyfunc)rwhiten, 0);
+	rb_define_method(id, "appear", (rubyfunc)rappear, 0);
+	rb_define_method(id, "escape", (rubyfunc)rescape, 0);
+	rb_define_method(id, "collapse", (rubyfunc)rcollapse, 0);
+	rb_define_method(id, "damage", (rubyfunc)rdamage, 2);
+	rb_define_method(id, "animation", (rubyfunc)ranimation, 2);
+	rb_define_method(id, "loop_animation", (rubyfunc)rloop_animation, 1);
+	rb_define_method(id, "dispose_damage", (rubyfunc)rdispose_damage, 0);
+	rb_define_method(id, "dispose_animation", (rubyfunc)rdispose_animation, 0);
+	rb_define_method(id, "dispose_loop_animation", (rubyfunc)rdispose_loop_animation, 0);
+	rb_define_method(id, "blink_on", (rubyfunc)rblink_on, 0);
+	rb_define_method(id, "blink_off", (rubyfunc)rblink_off, 0);
+	rb_define_method(id, "blink?", (rubyfunc)rblinkQ, 0);
+	rb_define_method(id, "effect?", (rubyfunc)reffectQ, 0);
+	rb_define_method(id, "update", (rubyfunc)rupdate, 0);
+	rb_define_method(id, "update_animation", (rubyfunc)rupdate_animation, 0);
+	rb_define_method(id, "update_loop_animation", (rubyfunc)rupdate_loop_animation, 0);
+	rb_define_method(id, "animation_set_sprites", (rubyfunc)ranimation_set_sprites, 3);
+	rb_define_method(id, "animation_process_timing", (rubyfunc)ranimation_process_timing, 2);
+	rb_define_method(id, "x=", (rubyfunc)rxE, 1);
+	rb_define_method(id, "y=", (rubyfunc)ryE, 1);
 
 	rb_define_class_variable(id, "@@_animations", rb_ary_new());
 	rb_define_class_variable(id, "@@_reference_count", rb_hash_new());

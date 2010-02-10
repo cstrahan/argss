@@ -53,6 +53,7 @@ public:
 	static void New(unsigned long id, int width, int height);
 	static Bitmap* Get(unsigned long id);
 	static void Dispose(unsigned long id);
+	static void RefreshBitmaps();
 
 	void BlitScreen(int x, int y);
 	void BlitScreen(int x, int y, int opacity);
@@ -89,13 +90,14 @@ public:
 	void Flip(bool flipx, bool flipy);
 	void Zoom(double zoom_x, double zoom_y);
 	Bitmap* Resample(int scalew, int scaleh, Rect src_rect);
-	void Rotate(double angle);
-	void Flash(Color color, int frame, int duration);
+	void Rotate(float angle);
 	
 	Rect GetRect();
 
 	SDL_Surface* bitmap;
 	GLuint gl_bitmap;
+	void Refresh();
+	void Changed();
 
 private:
 	static std::map<unsigned long, Bitmap*> bitmaps;
@@ -103,9 +105,6 @@ private:
 	int MaskGetByte(Uint32 mask);
 
 	unsigned long id;
-
-	void Refresh();
-	void Changed();
 };
 
 #endif

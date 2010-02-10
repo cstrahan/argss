@@ -45,6 +45,7 @@ public:
 	static Window* Get(unsigned long id);
 	static void Dispose(unsigned long id);
 
+	void RefreshBitmaps();
 	void Draw(long z);
 	void Draw(long z, Bitmap* dst_bitmap);
 
@@ -107,17 +108,6 @@ private:
 	int back_opacity;
 	int contents_opacity;
 
-	Bitmap* background;
-	Bitmap* frame;
-	Bitmap* cursor;
-
-	void RefreshBackground();
-	void RefreshFrame();
-	void RefreshCursor();
-	bool background_needs_refresh;
-	bool frame_needs_refresh;
-	bool cursor_needs_refresh;
-	Rect last_cursor_rect;
 	int cursor_frame;
 	int pause_frame;
 	int pause_id;

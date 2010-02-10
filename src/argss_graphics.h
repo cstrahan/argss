@@ -37,6 +37,27 @@ namespace ARGSS {
 	namespace AGraphics {
 		extern VALUE id;
 		void Init();
+
+		VALUE rupdate(VALUE self);
+		VALUE rfreeze(VALUE self);
+		VALUE rtransition(int argc, VALUE *argv, VALUE self);
+		VALUE rframe_reset(VALUE self);
+		VALUE rframe_rate(VALUE self);
+		VALUE rframe_rateE(VALUE self, VALUE framerate);
+		VALUE rframe_count(VALUE self);
+		VALUE rframe_countE(VALUE self, VALUE framecount);
+		VALUE rfps(VALUE self);
+		VALUE rbackcolor(VALUE self);
+		VALUE rbackcolorE(VALUE self, VALUE backcolor);
+		VALUE rwait(VALUE self, VALUE duration);
+		VALUE rwidth(VALUE self);
+		VALUE rheight(VALUE self);
+		VALUE rresize_screen(VALUE self, VALUE width, VALUE height);
+		VALUE rsnap_to_bitmap(VALUE self);
+		VALUE rfadeout(VALUE self, VALUE duration);
+		VALUE rfadein(VALUE self, VALUE duration);
+		VALUE rbrightness(VALUE self);
+		VALUE rbrightnessE(VALUE self, VALUE brightness);
 	};
 };
 

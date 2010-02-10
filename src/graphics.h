@@ -34,16 +34,20 @@
 #include "SDL.h"
 #include "drawable.h"
 #include "zobj.h"
+#include "color.h"
 
 ////////////////////////////////////////////////////////////
 /// Graphics namespace
 ////////////////////////////////////////////////////////////
 namespace Graphics {
 	void Init();
-	void Wait();
-	void Continue();
-	void Update();
+	void InitOpenGL();
+	void TimerWait();
+	void TimerContinue();
 	void DrawFrame();
+	void RefreshAll();
+
+	void Update();
 	void Freeze();
 	void Transition(int duration, std::string filename, int vague);
 	void FrameReset();
@@ -72,7 +76,7 @@ namespace Graphics {
 	extern int fps;
 	extern int framerate;
 	extern int framecount;
-	extern Uint32 backcolor;
+	extern Color backcolor;
 	extern int brightness;
 	extern double framerate_interval;
 	extern long creation;

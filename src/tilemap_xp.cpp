@@ -32,7 +32,7 @@
 #include "argss_tilemap.h"
 #include "graphics.h"
 #include "viewport.h"
-#include "system.h"
+#include "player.h"
 
 ////////////////////////////////////////////////////////////
 /// Static Variables
@@ -74,6 +74,8 @@ Tilemap::Tilemap(VALUE iid) {
 	oy = 0;
 	autotile_time = 0;
 	autotile_frame = 0;
+
+
 }
 
 ////////////////////////////////////////////////////////////
@@ -131,6 +133,13 @@ void Tilemap::Update() {
 }
 
 ////////////////////////////////////////////////////////////
+/// Refresh Bitmaps
+////////////////////////////////////////////////////////////
+void Tilemap::RefreshBitmaps() {
+
+}
+
+////////////////////////////////////////////////////////////
 /// Draw
 ////////////////////////////////////////////////////////////
 void Tilemap::Draw(long z_level) {
@@ -144,8 +153,29 @@ void Tilemap::Draw(long z_level) {
 	VALUE map_data_array = rb_iv_get(map_data, "@data");
 	VALUE priorities_array = rb_iv_get(priorities, "@data");
 
-	int tiles_x = (int)ceil(System::Width / 32.0);
-	int tiles_y = (int)ceil(System::Height / 32.0);
+	Bitmap::Get(tileset)->Refresh();
+
+	glEnable(GL_TEXTURE_2D);
+
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+
+	if (viewport != Qnil) {
+		Rect rect = Viewport::Get(viewport)->GetViewportRect();
+
+		glEnable(GL_SCISSOR_TEST);
+		glScissor(rect.x, Player::GetHeight() - (rect.y + rect.height), rect.width, rect.height);
+
+		glTranslatef((float)rect.x, (float)rect.y, 0.0f);
+	}
+
+	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+
+	int tiles_x = (int)ceil(Player::GetWidth() / 32.0);
+	int tiles_y = (int)ceil(Player::GetHeight() / 32.0);
 
 	for (int z = 0; z < layers; z++) {
 		for (int y = 0; y <= tiles_y; y++) {
@@ -169,8 +199,8 @@ void Tilemap::Draw(long z_level) {
 				}
 
 				if (tile_z == z_level) {
-					int dst_x = x * 32 - ox % 32;
-					int dst_y = y * 32 - oy % 32;
+					float dst_x = (float)(x * 32 - ox % 32);
+					float dst_y = (float)(y * 32 - oy % 32);
 					if (tile_id < 384 && tile_id != 0) {
 							VALUE bitmap_id = rb_ary_entry(rb_iv_get(autotiles, "@autotiles"), tile_id / 48 - 1);
 							if (Bitmap::IsDisposed(bitmap_id)) continue;
@@ -187,18 +217,39 @@ void Tilemap::Draw(long z_level) {
 									Rect rect((tiles[i] % 6 << 4) + frame * 96, tiles[i] / 6 << 4, 16, 16);
 									autotiles_cache[bitmap_id][tile_id][frame]->Blit(i % 2 << 4, i / 2 << 4, autotile_bitmap, rect, 255);
 								}
+								autotiles_cache[bitmap_id][tile_id][frame]->Refresh();
 							}
-							autotiles_cache[bitmap_id][tile_id][frame]->BlitScreen(dst_x, dst_y);
+							glBindTexture(GL_TEXTURE_2D, autotiles_cache[bitmap_id][tile_id][frame]->gl_bitmap);
+							
+							glBegin(GL_QUADS);
+								glTexCoord2f(0.0f, 0.0f); glVertex2f(dst_x, dst_y);
+								glTexCoord2f(1.0f, 0.0f); glVertex2f(dst_x + 32.0f, dst_y);
+								glTexCoord2f(1.0f, 1.0f); glVertex2f(dst_x + 32.0f, dst_y + 32.0f);
+								glTexCoord2f(0.0f, 1.0f); glVertex2f(dst_x, dst_y + 32.0f);
+							glEnd();
 					}
-					else {
-						int src_x = (tile_id - 384) % 8 * 32;
-						int src_y = (tile_id - 384) / 8 * 32;
-						Bitmap::Get(tileset)->BlitScreen(dst_x, dst_y, Rect(src_x, src_y, 32, 32));
+					else if (tile_id != 0){
+						float src_x = (float)((tile_id - 384) % 8 * 32);
+						float src_y = (float)((tile_id - 384) / 8 * 32);
+
+						glBindTexture(GL_TEXTURE_2D, Bitmap::Get(tileset)->gl_bitmap);
+
+						float bmpw =(float)Bitmap::Get(tileset)->GetWidth();
+						float bmph =(float)Bitmap::Get(tileset)->GetHeight();
+
+						glBegin(GL_QUADS);
+							glTexCoord2f(src_x / bmpw, src_y / bmph);					  glVertex2f(dst_x, dst_y);
+							glTexCoord2f((src_x + 32.0f) / bmpw, src_y / bmph); 		  glVertex2f(dst_x + 32.0f, dst_y);
+							glTexCoord2f((src_x + 32.0f) / bmpw, (src_y + 32.0f) / bmph);  glVertex2f(dst_x + 32.0f, dst_y + 32.0f);
+							glTexCoord2f(src_x / bmpw, (src_y + 32.0f) / bmph);			  glVertex2f(dst_x, dst_y + 32.0f);
+						glEnd();
 					}
 				}
 			}
 		}
 	}
+
+	glDisable(GL_SCISSOR_TEST);
 }
 void Tilemap::Draw(long z, Bitmap* dst_bitmap) {
 

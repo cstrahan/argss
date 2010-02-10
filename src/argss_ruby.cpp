@@ -26,6 +26,7 @@
 /// Headers
 ////////////////////////////////////////////////////////////
 #include <string>
+#include <stdarg.h>
 #include "argss_ruby.h"
 #include "options.h"
 #include "system.h"
@@ -40,18 +41,16 @@ VALUE ARGSS::ARuby::protected_objects;
 ////////////////////////////////////////////////////////////
 /// ARGSS Ruby functions
 ////////////////////////////////////////////////////////////
-static VALUE argss_load_data(VALUE self, VALUE filename) {
-	VALUE mMarshal = rb_const_get(rb_cObject, rb_intern("Marshal"));
-	VALUE file = rb_funcall(rb_cFile, rb_intern("open"), 2, filename, rb_str_new2("rb"));
-	VALUE obj = rb_funcall(mMarshal, rb_intern("load"), 1, file);
-	rb_funcall(file, rb_intern("close"), 0);
+VALUE ARGSS::ARuby::rload_data(VALUE self, VALUE filename) {
+	VALUE file = rb_file_open(StringValuePtr(filename), "rb");
+	VALUE obj = rb_marshal_load(file);
+	rb_io_close(file);
 	return obj;
 }
-static VALUE argss_save_data(VALUE self, VALUE obj, VALUE filename) {
-	VALUE mMarshal = rb_const_get(rb_cObject, rb_intern("Marshal"));
-	VALUE file = rb_funcall(rb_cFile, rb_intern("open"), 2, filename, rb_str_new2("wb"));
-	rb_funcall(mMarshal, rb_intern("dump"), 2, obj, file);
-	rb_funcall(file, rb_intern("close"), 0);
+VALUE ARGSS::ARuby::rsave_data(VALUE self, VALUE obj, VALUE filename) {
+	VALUE file = rb_file_open(StringValuePtr(filename), "wb");
+	rb_marshal_dump(obj, file);
+	rb_io_close(file);
 	return Qnil;
 }
 
@@ -61,13 +60,13 @@ static VALUE argss_save_data(VALUE self, VALUE obj, VALUE filename) {
 void ARGSS::ARuby::Init() {
 	ruby_init();
 	ruby_init_loadpath();
-	atexit(ruby_finalize);
+	//atexit(ruby_finalize);
 	protected_objects = rb_hash_new();
 	rb_gc_register_address(&protected_objects);
 
 	typedef VALUE (*rubyfunc)(...);
-	rb_define_global_function("load_data", (rubyfunc)argss_load_data, 1);
-	rb_define_global_function("save_data", (rubyfunc)argss_save_data, 2);
+	rb_define_global_function("load_data", (rubyfunc)rload_data, 1);
+	rb_define_global_function("save_data", (rubyfunc)rsave_data, 2);
 }
 
 ////////////////////////////////////////////////////////////
@@ -76,31 +75,30 @@ void ARGSS::ARuby::Init() {
 VALUE require_wrap(VALUE arg) {
     return rb_require(System::ScriptsPath.c_str());
 }
+VALUE eval_wrap(VALUE arg) {
+    return rb_funcall(rb_cObject, rb_intern("eval"), 2, rb_ary_entry(arg, 0), rb_ary_entry(arg, 1));
+}
 void ARGSS::ARuby::Run() {
 	int error;
 	VALUE result;
-	/*if (SCRIPTS_ZLIB) {
-		VALUE mMarshal = rb_const_get(rb_cObject, rb_intern("Marshal"));
+	if (SCRIPTS_ZLIB) {
 		VALUE cZlib = rb_const_get(rb_cObject, rb_intern("Zlib"));
 		VALUE cInflate = rb_const_get(cZlib, rb_intern("Inflate"));
-		VALUE args[2] = {rb_str_new(System::ScriptsPath.c_str(), System::ScriptsPath.size()), rb_str_new("rb", 2)};
-		VALUE file = rb_class_new_instance(2, args, rb_cFile);
-		VALUE scripts = rb_funcall3(mMarshal, rb_intern("load"), 1, &file);
+		VALUE file = rb_file_open(System::ScriptsPath.c_str(), "rb");
+		VALUE scripts = rb_marshal_load(file);
 		RArray* arr = RARRAY(scripts);
 		VALUE section_arr;
 		VALUE section;
 		for (int i = 0; i < arr->len; i++) {
 			section_arr = rb_ary_entry(scripts, i);
 			section = rb_ary_entry(section_arr, 2);
-			Output::PostStr(StringValuePtr(section));
 			section = rb_funcall3(cInflate, rb_intern("inflate"), 1, &section);
-			Output::PostStr(StringValuePtr(section));
-			result = rb_eval_string_protect(StringValuePtr(section), &error);
+			result = rb_protect(eval_wrap, rb_ary_new3(2, StringValuePtr(section), rb_ary_entry(section_arr, 1)), &error);
 		}
 	}
-	else {*/
-		result = rb_protect(require_wrap, 0, &error);
-	//}
+	else {
+		result = rb_protect(require_wrap, Qundef, &error);
+	}
 	if (error) {
 		VALUE lasterr = rb_gv_get("$!");
 		VALUE klass = rb_class_path(CLASS_OF(lasterr));
@@ -124,39 +122,25 @@ void ARGSS::ARuby::Run() {
 }
 
 ////////////////////////////////////////////////////////////
-/// Int vetor to Ruby Array
-////////////////////////////////////////////////////////////
-VALUE ARGSS::ARuby::IntVectorToRArr(std::vector<int> vector) {
-	VALUE* values = new VALUE[vector.size()];;
-	for (unsigned int i = 0; i < vector.size(); i++) {
-		values[i] = INT2NUM(vector[i]);
-	}
-	VALUE arr = rb_ary_new4(vector.size(), values);
-	delete values;
-	return arr;
-}
-
-////////////////////////////////////////////////////////////
-/// Int vetor to Ruby Array
+/// Add a ruby object to the protected list
 ////////////////////////////////////////////////////////////
 void ARGSS::ARuby::AddObject(VALUE id) {
 	rb_hash_aset(protected_objects, id, id);
 }
 
 ////////////////////////////////////////////////////////////
-/// Int vetor to Ruby Array
+/// Remove a ruby object from the protected list
 ////////////////////////////////////////////////////////////
 void ARGSS::ARuby::RemoveObject(VALUE id) {
 	rb_hash_delete(protected_objects, id);
 }
 
 ////////////////////////////////////////////////////////////
-/// 
+/// Check if object o is kind of c
 ////////////////////////////////////////////////////////////
 void Check_Kind(VALUE o, VALUE c) {
     if (!rb_obj_is_kind_of(o, c)) {
-        rb_raise(rb_eTypeError, "wrong argument type %s (expected %s)",
-            rb_obj_classname(o), rb_obj_classname(c));
+        rb_raise(rb_eTypeError, "wrong argument type %s (expected %s)", rb_class2name(o), rb_class2name(c));
     };
 }
 
@@ -164,47 +148,29 @@ static struct types {
     int type;
     const char *name;
 } builtin_types[] = {
-    {T_NIL,	"nil"},
-    {T_OBJECT,	"Object"},
-    {T_CLASS,	"Class"},
-    {T_ICLASS,	"iClass"},	/* internal use: mixed-in module holder */
-    {T_MODULE,	"Module"},
-    {T_FLOAT,	"Float"},
-    {T_STRING,	"String"},
-    {T_REGEXP,	"Regexp"},
-    {T_ARRAY,	"Array"},
-    {T_FIXNUM,	"Fixnum"},
-    {T_HASH,	"Hash"},
-    {T_STRUCT,	"Struct"},
-    {T_BIGNUM,	"Bignum"},
-    {T_FILE,	"File"},
-    {T_TRUE,	"true"},
-    {T_FALSE,	"false"},
-    {T_SYMBOL,	"Symbol"},	/* :symbol */
-    {T_DATA,	"Data"},	/* internal use: wrapped C pointers */
-    {T_MATCH,	"MatchData"},	/* data of $~ */
-    {T_VARMAP,	"Varmap"},	/* internal use: dynamic variables */
-    {T_SCOPE,	"Scope"},	/* internal use: variable scope */
-    {T_NODE,	"Node"},	/* internal use: syntax tree node */
-    {T_UNDEF,	"undef"},	/* internal use: #undef; should not happen */
-    {-1,	0}
+    {T_NIL, "nil"},{T_OBJECT, "Object"},{T_CLASS, "Class"},{T_ICLASS, "iClass"},{T_MODULE, "Module"},
+	{T_FLOAT, "Float"},{T_STRING, "String"},{T_REGEXP, "Regexp"},{T_ARRAY, "Array"},{T_FIXNUM, "Fixnum"},
+	{T_HASH, "Hash"},{T_STRUCT, "Struct"},{T_BIGNUM, "Bignum"},{T_FILE, "File"},{T_TRUE, "true"},
+	{T_FALSE, "false"},{T_SYMBOL, "Symbol"},{T_DATA, "Data"},{T_MATCH, "MatchData"},{T_VARMAP, "Varmap"},
+	{T_SCOPE, "Scope"},{T_NODE, "Node"},{T_UNDEF, "undef"},{-1, 0}
 };
 
-void Check_Types2(VALUE x, VALUE t1, VALUE t2)
-{
+////////////////////////////////////////////////////////////
+/// Check if object x is type of t1 or t2
+////////////////////////////////////////////////////////////
+void Check_Types2(VALUE x, VALUE t1, VALUE t2) {
     struct types *type = builtin_types;
-    if (x == Qundef) {rb_bug("undef leaked to the Ruby space");}
+    if (x == Qundef) rb_bug("undef leaked to the Ruby space");
     if (TYPE(x) != t1 && TYPE(x) != t2) {
         while (type->type >= 0) {
             if (type->type == t1) {
                 char *etype;
-                if (NIL_P(x)) {etype = (char *)"nil";}
-                else if (FIXNUM_P(x)) {etype = (char *)"Fixnum";}
-                else if (SYMBOL_P(x)) {etype = (char *)"Symbol";}
-                else if (rb_special_const_p(x)) {etype = RSTRING(rb_obj_as_string(x))->ptr;}
-                else {etype = rb_obj_classname(x);}
-                rb_raise(rb_eTypeError, "wrong argument type %s (expected %s)",
-                     etype, type->name);
+                if (NIL_P(x)) etype = (char*)"nil";
+                else if (FIXNUM_P(x)) etype = (char*)"Fixnum";
+                else if (SYMBOL_P(x)) etype = (char*)"Symbol";
+                else if (rb_special_const_p(x)) etype = RSTRING(rb_obj_as_string(x))->ptr;
+                else etype = rb_class2name(x);
+                rb_raise(rb_eTypeError, "wrong argument type %s (expected %s)", etype, type->name);
             }
             type++;
         }
@@ -212,43 +178,49 @@ void Check_Types2(VALUE x, VALUE t1, VALUE t2)
     }
 }
 
+////////////////////////////////////////////////////////////
+/// Check if object x is a boolean
+////////////////////////////////////////////////////////////
 void Check_Bool(VALUE x) {
-    if (x == Qundef) {rb_bug("undef leaked to the Ruby space");}
+    if (x == Qundef) rb_bug("undef leaked to the Ruby space");
     if (TYPE(x) != T_TRUE && TYPE(x) != T_FALSE) {
         char *etype;
-        if (NIL_P(x)) {etype = (char *)"nil";}
-        else if (FIXNUM_P(x)) {etype = (char *)"Fixnum";}
-        else if (SYMBOL_P(x)) {etype = (char *)"Symbol";}
-        else if (rb_special_const_p(x)) {etype = RSTRING(rb_obj_as_string(x))->ptr;}
-        else {etype = rb_obj_classname(x);}
+        if (NIL_P(x)) etype = (char*)"nil";
+        else if (FIXNUM_P(x)) etype = (char*)"Fixnum";
+        else if (SYMBOL_P(x)) etype = (char*)"Symbol";
+        else if (rb_special_const_p(x)) etype = RSTRING(rb_obj_as_string(x))->ptr;
+        else etype = rb_class2name(x);
         rb_raise(rb_eTypeError, "wrong argument type %s (expected boolean)", etype);
     }
 }
 
-void Check_Class(VALUE x, VALUE t)
-{
+////////////////////////////////////////////////////////////
+/// Check if object x class is c
+////////////////////////////////////////////////////////////
+void Check_Class(VALUE x, VALUE c) {
     if (x == Qundef) {rb_bug("undef leaked to the Ruby space");}
-    if (rb_class_real(CLASS_OF(x)) != t) {
+    if (rb_class_real(CLASS_OF(x)) != c) {
         struct types *type = builtin_types;
         while (type->type >= 0) {
-            if (type->type == TYPE(t)) {
+            if (type->type == TYPE(c)) {
                 char *etype;
-                if (NIL_P(x)) {etype = (char *)"nil";}
-                else if (FIXNUM_P(x)) {etype = (char *)"Fixnum";}
-                else if (SYMBOL_P(x)) {etype = (char *)"Symbol";}
-                else if (rb_special_const_p(x)) {etype = RSTRING(rb_obj_as_string(x))->ptr;}
-                else {etype = rb_obj_classname(x);}
-                rb_raise(rb_eTypeError, "wrong argument type %s (expected %s)",
-                     etype, type->name);
+                if (NIL_P(x)) etype = (char*)"nil";
+                else if (FIXNUM_P(x)) etype = (char*)"Fixnum";
+                else if (SYMBOL_P(x)) etype = (char*)"Symbol";
+                else if (rb_special_const_p(x)) etype = RSTRING(rb_obj_as_string(x))->ptr;
+                else etype = rb_class2name(x);
+                rb_raise(rb_eTypeError, "wrong argument type %s (expected %s)", etype, type->name);
             }
             type++;
         }
-        rb_bug("unknown type 0x%x", t);
+        rb_bug("unknown type 0x%x", c);
     }
 }
 
-void Check_Classes_N(VALUE x, VALUE type)
-{
+////////////////////////////////////////////////////////////
+/// Check if object x is nil or its class is c
+////////////////////////////////////////////////////////////
+void Check_Classes_N(VALUE x, VALUE c) {
     if (x == Qnil) return;
-	Check_Class(x, type);
+	Check_Class(x, c);
 }

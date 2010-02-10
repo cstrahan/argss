@@ -40,6 +40,15 @@ namespace ARGSS {
 		extern VALUE stderr_id;
 		extern VALUE stdin_id;
 		void Init();
+
+		VALUE rconsole(VALUE self);
+		VALUE rmsgbox(VALUE self);
+		VALUE rfile(VALUE self, VALUE file);
+		VALUE rnone(VALUE self);
+		VALUE rstdout_write(VALUE self, VALUE str);
+		VALUE rstderr_write(VALUE self, VALUE str);
+		VALUE stdin_gets(int argc, VALUE *argv, VALUE self);
+		VALUE stdin_getc(int argc, VALUE *argv, VALUE self);
 	};
 };
 

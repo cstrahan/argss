@@ -48,6 +48,7 @@ public:
 	static Sprite* Get(unsigned long id);
 	static void Dispose(unsigned long id);
 
+	void RefreshBitmaps();
 	void Draw(long z);
 	void Draw(long z, Bitmap* dst_bitmap);
 
@@ -72,12 +73,12 @@ public:
 	void SetOx(int nox);
 	int GetOy();
 	void SetOy(int noy);
-	double GetZoomX();
-	void SetZoomX(double nzoom_x);
-	double GetZoomY();
-	void SetZoomY(double nzoom_y);
-	double GetAngle();
-	void SetAngle(double nangle);
+	float GetZoomX();
+	void SetZoomX(float nzoom_x);
+	float GetZoomY();
+	void SetZoomY(float nzoom_y);
+	float GetAngle();
+	void SetAngle(float nangle);
     bool GetFlipX();
 	void SetFlipX(bool nflipx);
     bool GetFlipY();
@@ -104,9 +105,9 @@ private:
 	int z;
 	int ox;
 	int oy;
-	double zoom_x;
-	double zoom_y;
-	double angle;
+	float zoom_x;
+	float zoom_y;
+	float angle;
 	bool flipx;
 	bool flipy;
 	int bush_depth;
@@ -114,7 +115,8 @@ private:
 	int blend_type;
 	unsigned long color;
 	unsigned long tone;
-	
+
+	GLuint flash_texture;
 	Color flash_color;
 	int flash_duration;
 	int flash_frame;
@@ -122,8 +124,10 @@ private:
 	Rect src_rect_sprite;
 	Rect src_rect_last;
 	bool needs_refresh;
+	bool flash_needs_refresh;
 
 	void Refresh();
+	void RefreshFlash();
 	int GetWidth();
 	int GetHeight();
 };

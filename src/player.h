@@ -26,6 +26,11 @@
 #define _PLAYER_H_
 
 ////////////////////////////////////////////////////////////
+/// Headers
+////////////////////////////////////////////////////////////
+#include "SDL.h"
+
+////////////////////////////////////////////////////////////
 /// Player namespace
 ////////////////////////////////////////////////////////////
 namespace Player {
@@ -33,8 +38,17 @@ namespace Player {
 	void Update();
 	void Exit();
 
+	void ToggleFullscreen();
+	void ResizeWindow(int width, int height);
+	int GetWidth();
+	int GetHeight();
+
 	void Wait();
 	void Continue();
+
+	extern SDL_Surface* mainwindow;
+	extern bool focus;
+	extern bool alt_pressing;
 };
 
 #endif

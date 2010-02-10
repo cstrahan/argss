@@ -32,12 +32,8 @@
 #include "tilemap_xp.h"
 #include "window_xp.h"
 #include "argss_ruby.h"
-#include "argss_viewport.h"
-#include "argss_sprite.h"
-#include "argss_plane.h"
-#include "argss_tilemap.h"
-#include "argss_window.h"
 #include "graphics.h"
+#include "player.h"
 
 ////////////////////////////////////////////////////////////
 /// Constructor
@@ -54,8 +50,7 @@ Viewport::Viewport(VALUE iid) {
 	flash_duration = 0;
 	disposing = false;
 
-	last_dst_rect = Rect(rect);
-	viewport = new Bitmap(last_dst_rect.width, last_dst_rect.height);
+	dst_rect = Rect(rect);
 
 	Graphics::RegisterZObj(0, id);
 }
@@ -64,7 +59,7 @@ Viewport::Viewport(VALUE iid) {
 /// Destructor
 ////////////////////////////////////////////////////////////
 Viewport::~Viewport() {
-	delete viewport;
+
 }
 
 ////////////////////////////////////////////////////////////
@@ -100,32 +95,25 @@ void Viewport::Dispose(unsigned long id) {
 }
 
 ////////////////////////////////////////////////////////////
+/// Refresh Bitmaps
+////////////////////////////////////////////////////////////
+void Viewport::RefreshBitmaps() {
+
+}
+
+////////////////////////////////////////////////////////////
 /// Draw
 ////////////////////////////////////////////////////////////
 void Viewport::Draw(long z) {
 	if (!visible) return;
 
-	/*Rect dst_rect(rect);
+	dst_rect = Rect(rect);
 
-	if (dst_rect != last_dst_rect) {
-		delete viewport;
-		viewport = new Bitmap(dst_rect.width, dst_rect.height);
-		last_dst_rect = dst_rect;
-	}
+	if (dst_rect.x < -dst_rect.width || dst_rect.x > Player::GetWidth() || dst_rect.y < -dst_rect.height || dst_rect.y > Player::GetHeight()) return;
 
-	viewport->Clear();*/
-
-	zlist.sort(Graphics::SortZObj);
-    for(it_zlist = zlist.begin(); it_zlist != zlist.end(); it_zlist++) {
+	for(it_zlist = zlist.begin(); it_zlist != zlist.end(); it_zlist++) {
 		Graphics::drawable_map[it_zlist->GetId()]->Draw(it_zlist->GetZ());
 	}
-
-	/*viewport->ToneChange(Tone(tone));
-	if (flash_duration > 0) {
-		viewport ->Flash(flash_color, flash_frame, flash_duration);
-	}
-
-	viewport->BlitScreen(dst_rect.x - ox, dst_rect.y - oy);*/
 }
 
 ////////////////////////////////////////////////////////////
@@ -208,10 +196,12 @@ void Viewport::RegisterZObj(long z, unsigned long id) {
 	Graphics::creation += 1;
 	ZObj zobj(z, Graphics::creation, id);
 	zlist.push_back(zobj);
+	zlist.sort(Graphics::SortZObj);
 }
 void Viewport::RegisterZObj(long z, unsigned long id, bool multiz) {
 	ZObj zobj(z, 999999, id);
 	zlist.push_back(zobj);
+	zlist.sort(Graphics::SortZObj);
 }
 
 ////////////////////////////////////////////////////////////
@@ -224,7 +214,7 @@ struct remove_zobj_id : public std::binary_function<ZObj, ZObj, bool> {
 };
 void Viewport::RemoveZObj(unsigned long id) {
 	if (disposing) return;
-	zlist.remove_if(remove_zobj_id(id));
+	zlist.remove_if (remove_zobj_id(id));
 }
 
 ////////////////////////////////////////////////////////////
@@ -237,4 +227,12 @@ void Viewport::UpdateZObj(unsigned long id, long z) {
 			break;
 		}
 	}
+	zlist.sort(Graphics::SortZObj);
+}
+
+////////////////////////////////////////////////////////////
+/// Get Viewport Rect
+////////////////////////////////////////////////////////////
+Rect Viewport::GetViewportRect() {
+	return dst_rect;
 }

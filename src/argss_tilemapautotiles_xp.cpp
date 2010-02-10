@@ -36,14 +36,14 @@ VALUE ARGSS::ATilemapAutotiles::id;
 ////////////////////////////////////////////////////////////
 /// ARGSS TilemapAutotiles ruby functions
 ////////////////////////////////////////////////////////////
-static VALUE argss_tilemapautotiles_initialize(VALUE self) {
+VALUE ARGSS::ATilemapAutotiles::rinitialize(VALUE self) {
 	rb_iv_set(self, "@autotiles", rb_ary_new2(8));
     return self;
 }
-static VALUE argss_tilemapautotiles_aref(VALUE self, VALUE index) {
+VALUE ARGSS::ATilemapAutotiles::raref(VALUE self, VALUE index) {
 	return rb_ary_entry(rb_iv_get(self, "@autotiles"), NUM2INT(index));
 }
-static VALUE argss_tilemapautotiles_aset(VALUE self, VALUE index, VALUE bitmap) {
+VALUE ARGSS::ATilemapAutotiles::raset(VALUE self, VALUE index, VALUE bitmap) {
 	Check_Classes_N(bitmap, ARGSS::ABitmap::id);
 	rb_ary_store(rb_iv_get(self, "@autotiles"), NUM2INT(index), bitmap);
 	return bitmap;
@@ -55,9 +55,9 @@ static VALUE argss_tilemapautotiles_aset(VALUE self, VALUE index, VALUE bitmap) 
 void ARGSS::ATilemapAutotiles::Init() {
     typedef VALUE (*rubyfunc)(...);
     id = rb_define_class("TilemapAutotiles", rb_cObject);
-    rb_define_method(id, "initialize", (rubyfunc)argss_tilemapautotiles_initialize, 0);
-    rb_define_method(id, "[]", (rubyfunc)argss_tilemapautotiles_aref, 1);
-    rb_define_method(id, "[]=", (rubyfunc)argss_tilemapautotiles_aset, 2);
+    rb_define_method(id, "initialize", (rubyfunc)rinitialize, 0);
+    rb_define_method(id, "[]", (rubyfunc)raref, 1);
+    rb_define_method(id, "[]=", (rubyfunc)raset, 2);
 }
 
 ////////////////////////////////////////////////////////////

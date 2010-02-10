@@ -37,7 +37,29 @@ namespace ARGSS {
 	namespace ATilemap {
 		extern VALUE id;
 		void Init();
-		void Check(VALUE self);
+		void CheckDisposed(VALUE self);
+
+		VALUE rinitialize(int argc, VALUE *argv, VALUE self);
+		VALUE rdispose(VALUE self);
+		VALUE rdisposeQ(VALUE self);
+		VALUE rupdate(VALUE self);
+		VALUE rviewport(VALUE self);
+		VALUE rviewportE(VALUE self, VALUE viewport);
+		VALUE rtileset(VALUE self);
+		VALUE rtilesetE(VALUE self, VALUE tileset);
+		VALUE rautotiles(VALUE self);
+		VALUE rmap_data(VALUE self);
+		VALUE rmap_dataE(VALUE self, VALUE map_data);
+		VALUE rflash_data(VALUE self);
+		VALUE rflash_dataE(VALUE self, VALUE flash_data);
+		VALUE rpriorities(VALUE self);
+		VALUE rprioritiesE(VALUE self, VALUE priorities);
+		VALUE rvisible(VALUE self);
+		VALUE rvisibleE(VALUE self, VALUE visible);
+		VALUE rox(VALUE self);
+		VALUE roxE(VALUE self, VALUE ox);
+		VALUE roy(VALUE self);
+		VALUE royE(VALUE self, VALUE oy);
 	};
 };
 

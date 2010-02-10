@@ -46,6 +46,7 @@ public:
 	static Tilemap* Get(unsigned long id);
 	static void Dispose(unsigned long id);
 
+	void RefreshBitmaps();
 	void Draw(long z);
 	void Draw(long z, Bitmap* dst_bitmap);
 

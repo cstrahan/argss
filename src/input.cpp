@@ -31,7 +31,7 @@
 #include "argss_ruby.h"
 #include "argss_input.h"
 #include "player.h"
-#include "system.h"
+#include "output.h"
 
 ////////////////////////////////////////////////////////////
 /// Global Variables
@@ -49,6 +49,10 @@ int Input::repeat_time;
 /// Initialize
 ////////////////////////////////////////////////////////////
 void Input::Init() {
+	if (SDL_InitSubSystem(SDL_INIT_JOYSTICK) < 0) { 
+		Output::Error("ARGSS couldn't initialize audio.\n%s\n", SDL_GetError());
+    }
+
 	press_time.resize(SDLK_LAST, 0);
 	triggered.resize(SDLK_LAST, false);
 	repeated.resize(SDLK_LAST, false);
@@ -68,12 +72,12 @@ void Input::Update() {
 
 	Uint8 *keystates = SDL_GetKeyState(NULL); 
     for (unsigned int i = 0; i < press_time.size(); ++i) {
-        if(keystates[(SDLKey)i]) {
+        if (keystates[(SDLKey)i]) {
             press_time[i] += 1;
             released[i] = false;
         }
         else {
-            if(press_time[i] > 0) {
+            if (press_time[i] > 0) {
                 released[i] = true;
             }
             else {
@@ -81,7 +85,7 @@ void Input::Update() {
             }
             press_time[i] = 0;
         }
-        if(press_time[i] > 0) {
+        if (press_time[i] > 0) {
             if (press_time[i] == 1) {
 				triggered[i] = true;
             }
@@ -106,7 +110,7 @@ void Input::Update() {
     int dirpress[10];
     for(int i = 1; i < 10; i++) {
 		dirpress[i] = 0;
-        if(i != 5) {
+        if (i != 5) {
 #ifdef MSVC
             sprintf_s(keysvar, 11, "@@dirkeys%d", i);
 #else
@@ -116,7 +120,7 @@ void Input::Update() {
             int presstime;
             for(int e = 0; e < RARRAY(dirkeys)->len; e++) {
 				presstime = press_time[NUM2KEY(rb_ary_entry(dirkeys, e))];
-				if(presstime > dirpress[i]) {
+				if (presstime > dirpress[i]) {
 					dirpress[i] = presstime;
 				}
             }
@@ -135,7 +139,7 @@ void Input::Update() {
 		int e = 0;
 		for(int i = 0; i < 4; i++) {
 			if (dirpress[(i + 1) * 2] > 0) {
-				if(e == 0 || dirpress[(i + 1) * 2] < e) {
+				if (e == 0 || dirpress[(i + 1) * 2] < e) {
 					dir4 = (i + 1) * 2;
 					e = dirpress[(i + 1) * 2];
 				}
@@ -239,7 +243,7 @@ bool Input::IsReleased(VALUE button) {
 VALUE Input::GetPressed() {
 	VALUE arr = rb_ary_new();
 	for(unsigned int i = 0; i < press_time.size(); i++) {
-        if(press_time[i] > 0) {
+        if (press_time[i] > 0) {
             rb_ary_push(arr, KEY2NUM(i));
         }
     }
@@ -252,7 +256,7 @@ VALUE Input::GetPressed() {
 VALUE Input::GetTriggered() {
 	VALUE arr = rb_ary_new();
 	for(unsigned int i = 0; i < triggered.size(); i++) {
-        if(triggered[i]) {
+        if (triggered[i]) {
             rb_ary_push(arr, KEY2NUM(i));
         }
     }
@@ -265,7 +269,7 @@ VALUE Input::GetTriggered() {
 VALUE Input::GetRepeated() {
 	VALUE arr = rb_ary_new();
 	for(unsigned int i = 0; i < repeated.size(); i++) {
-        if(repeated[i]) {
+        if (repeated[i]) {
             rb_ary_push(arr, KEY2NUM(i));
         }
     }
@@ -278,7 +282,7 @@ VALUE Input::GetRepeated() {
 VALUE Input::GetReleased() {
 	VALUE arr = rb_ary_new();
 	for(unsigned int i = 0; i < released.size(); i++) {
-        if(released[i]) {
+        if (released[i]) {
             rb_ary_push(arr, KEY2NUM(i));
         }
     }

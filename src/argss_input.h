@@ -37,6 +37,18 @@ namespace ARGSS {
 	namespace AInput {
 		extern VALUE id;
 		void Init();
+
+		VALUE rupdate(VALUE self);
+		VALUE rpressQ(VALUE self, VALUE button);
+		VALUE rtriggerQ(VALUE self, VALUE button);
+		VALUE rrepeatQ(VALUE self, VALUE button);
+		VALUE rreleaseQ(VALUE self, VALUE button);
+		VALUE rdir4(VALUE self);
+		VALUE rdir8(VALUE self);
+		VALUE rpressed(VALUE self);
+		VALUE rtriggered(VALUE self);
+		VALUE rrepeated(VALUE self);
+		VALUE rreleased(VALUE self);
 	};
 };
 

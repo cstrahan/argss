@@ -38,6 +38,23 @@ namespace ARGSS {
 		namespace ACache {
 			extern VALUE id;
 			void Init();
+
+			VALUE rload_bitmap(int argc, VALUE* argv, VALUE self);
+			VALUE ranimation(VALUE self, VALUE filename, VALUE hue);
+			VALUE rautotile(VALUE self, VALUE filename);
+			VALUE rbattleback(VALUE self, VALUE filename);
+			VALUE rbattler(VALUE self, VALUE filename, VALUE hue);
+			VALUE rcharacter(VALUE self, VALUE filename, VALUE hue);
+			VALUE rfog(VALUE self, VALUE filename, VALUE hue);
+			VALUE rgameover(VALUE self, VALUE filename);
+			VALUE ricon(VALUE self, VALUE filename);
+			VALUE rpanorama(VALUE self, VALUE filename, VALUE hue);
+			VALUE rpicture(VALUE self, VALUE filename);
+			VALUE rtileset(VALUE self, VALUE filename);
+			VALUE rtitle(VALUE self, VALUE filename);
+			VALUE rwindowskin(VALUE self, VALUE filename);
+			VALUE rtile(VALUE self, VALUE filename, VALUE tile_id, VALUE hue);
+			VALUE rclear(VALUE self);
 		};
 	};
 };

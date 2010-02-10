@@ -28,10 +28,10 @@
 #include "output.h"
 #include "system.h"
 #include "filefinder.h"
+#include "player.h"
 #include "graphics.h"
 #include "audio.h"
 #include "input.h"
-#include "player.h"
 #include "argss.h"
 
 ////////////////////////////////////////////////////////////
@@ -42,10 +42,10 @@ int main(int argc, char **argv)
 	Output::Init();
     System::Init();
 	FileFinder::Init();
+	Player::Init();
 	Graphics::Init();
 	Input::Init();
 	Audio::Init();
-	Player::Init();
 	ARGSS::Init();
 	
 	return 0;

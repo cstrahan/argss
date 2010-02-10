@@ -37,6 +37,18 @@ namespace ARGSS {
 	namespace AAudio {
 		extern VALUE id;
 		void Init();
+
+		VALUE rbgm_play(int argc, VALUE *argv, VALUE self);
+		VALUE rbgm_stop(VALUE self);
+		VALUE rbgm_fade(VALUE self, VALUE fade);
+		VALUE rbgs_play(int argc, VALUE *argv, VALUE self);
+		VALUE rbgs_stop(VALUE self);
+		VALUE rbgs_fade(VALUE self, VALUE fade);
+		VALUE rme_play(int argc, VALUE *argv, VALUE self);
+		VALUE rme_stop(VALUE self);
+		VALUE rme_fade(VALUE self, VALUE fade);
+		VALUE rse_play(int argc, VALUE *argv, VALUE self);
+		VALUE rse_stop(VALUE self);
 	};
 };
 

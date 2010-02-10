@@ -187,5 +187,22 @@ std::string FileFinder::FindFont(std::string name) {
 	path = fonts_path; path += name; path += ".ttf";
 	if (fexists(path)) return path;
 
+	std::string real_name;
+	real_name = Registry::ReadStrValue(HKEY_LOCAL_MACHINE, "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Fonts", name + " (TrueType)");
+	if (real_name.length() > 0) {
+		path = real_name;
+		if (fexists(path)) return path;
+		path = fonts_path; path += real_name;
+		if (fexists(path)) return path;
+	}
+
+	real_name = Registry::ReadStrValue(HKEY_LOCAL_MACHINE, "Software\\Microsoft\\Windows\\CurrentVersion\\Fonts", name + " (TrueType)");
+	if (real_name.length() > 0) {
+		path = real_name;
+		if (fexists(path)) return path;
+		path = fonts_path; path += real_name;
+		if (fexists(path)) return path;
+	}
+
 	return "";
 }

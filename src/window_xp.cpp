@@ -32,7 +32,7 @@
 #include "argss_window.h"
 #include "graphics.h"
 #include "viewport.h"
-#include "system.h"
+#include "player.h"
 #include "rect.h"
 
 ////////////////////////////////////////////////////////////
@@ -64,10 +64,6 @@ Window::Window(VALUE iid) {
 	opacity = 255;
 	back_opacity = 255;
 	contents_opacity = 255;
-	background = NULL;
-	frame = NULL;
-	cursor = NULL;
-	last_cursor_rect = Rect(cursor_rect);
 	cursor_frame = 0;
 	pause_frame = 0;
 	pause_id = 0;
@@ -84,9 +80,7 @@ Window::Window(VALUE iid) {
 /// Destructor
 ////////////////////////////////////////////////////////////
 Window::~Window() {
-	delete background;
-	delete frame;
-	delete cursor;
+
 }
 
 ////////////////////////////////////////////////////////////
@@ -126,328 +120,326 @@ void Window::Dispose(unsigned long id) {
 }
 
 ////////////////////////////////////////////////////////////
+/// Refresh Bitmaps
+////////////////////////////////////////////////////////////
+void Window::RefreshBitmaps() {
+	
+}
+
+////////////////////////////////////////////////////////////
 /// Draw
 ////////////////////////////////////////////////////////////
 void Window::Draw(long z) {
 	if (!visible) return;
 	if (width <= 0 || height <= 0) return;
-	if (x < -width || x > System::Width || y < -height || y > System::Height) return;
-	
+	if (x < -width || x > Player::GetWidth() || y < -height || y > Player::GetHeight()) return;
+
+	glEnable(GL_TEXTURE_2D);
+
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+
+	if (viewport != Qnil) {
+		Rect rect = Viewport::Get(viewport)->GetViewportRect();
+
+		glEnable(GL_SCISSOR_TEST);
+		glScissor(rect.x, Player::GetHeight() - (rect.y + rect.height), rect.width, rect.height);
+
+		glTranslatef((float)rect.x, (float)rect.y, 0.0f);
+	}
+
+	glTranslatef((GLfloat)x, (GLfloat)y, 0.0f);
+
 	if (windowskin != Qnil) {
+		Bitmap* bmp = Bitmap::Get(windowskin);
+
+		bmp->Refresh();
+
+		float bmpw = (float)bmp->GetWidth();
+		float bmph = (float)bmp->GetHeight();
+		float widthf = (float)width;
+		float heightf = (float)height;
+
+		glBindTexture(GL_TEXTURE_2D, bmp->gl_bitmap);
+
+		// Background
 		if (width > 4 && height > 4 && (back_opacity * opacity / 255 > 0)) {
-			if (background_needs_refresh) RefreshBackground();
+			glColor4f(1.0f, 1.0f, 1.0f, (back_opacity * opacity / 255.0f) / 255.0f);
+			if (stretch) {
+				glBegin(GL_QUADS);
+					glTexCoord2f(0.0f, 0.0f);					glVertex2f(2.0f, 2.0f);
+					glTexCoord2f(128.0f / bmpw, 0.0f);			glVertex2f(widthf - 4.0f, 2.0f);
+					glTexCoord2f(128.0f / bmpw, 128.0f / bmph); glVertex2f(widthf - 4.0f, heightf - 4.0f);
+					glTexCoord2f(0.0f, 128.0f / bmph);			glVertex2f(2.0f, heightf - 4.0f);
+				glEnd();
+			}
+			else {
+				glEnable(GL_SCISSOR_TEST);
 
-			background->BlitScreen(x + 2, y + 2, back_opacity * opacity / 255);
+				Rect dstrect(x + 2, y + 2, width - 4, height - 4);
+
+				if (viewport != Qnil) {
+					Rect rect = Viewport::Get(viewport)->GetViewportRect();
+
+					dstrect.x -= rect.x;
+					dstrect.y -= rect.y;
+
+					dstrect.Adjust(rect.width, rect.height);
+				}
+				//glScissor(x + 2, Player::GetHeight() - (y + 2 + height - 4), width - 4, height - 4);
+				glScissor(dstrect.x, Player::GetHeight() - (dstrect.y + dstrect.height), dstrect.width, dstrect.height);
+
+				float tilesx = ceil(widthf / 128.0f);
+				float tilesy = ceil(heightf / 128.0f);
+				for (float i = 0; i < tilesx; i++) {
+					for (float j = 0; j < tilesy; j++) {
+						glBegin(GL_QUADS);
+							glTexCoord2f(0.0f, 0.0f);					glVertex2f(2.0f + i * 128.0f, 2.0f + j * 128.0f);
+							glTexCoord2f(128.0f / bmpw, 0.0f);			glVertex2f(2.0f + (i + 1) * 128.0f, 2.0f + j * 128.0f);
+							glTexCoord2f(128.0f / bmpw, 128.0f / bmph); glVertex2f(2.0f + (i + 1) * 128.0f, 2.0f + (j + 1) * 128.0f);
+							glTexCoord2f(0.0f, 128.0f / bmph);			glVertex2f(2.0f + i * 128.0f, 2.0f + (j + 1) * 128.0f);
+						glEnd();
+					}
+				}
+				if (viewport == Qnil) glDisable(GL_SCISSOR_TEST);
+			}
 		}
+
+		// Frame
 		if (width > 0 && height > 0 && opacity > 0) {
-			if (frame_needs_refresh) RefreshFrame();
+			glColor4f(1.0f, 1.0f, 1.0f, opacity / 255.0f);
 
-			frame->BlitScreen(x, y, opacity);
+			glBegin(GL_QUADS);
+				// Corner upper left
+				glTexCoord2f(128.0f / bmpw, 0.0f);			glVertex2f(0.0f, 0.0f);
+				glTexCoord2f(144.0f / bmpw, 0.0f);			glVertex2f(16.0f, 0.0f);
+				glTexCoord2f(144.0f / bmpw, 16.0f / bmph);	glVertex2f(16.0f, 16.0f);
+				glTexCoord2f(128.0f / bmpw, 16.0f / bmph);	glVertex2f(0.0f, 16.0f);
+				// Corner upper right
+				glTexCoord2f(176.0f / bmpw, 0.0f);			glVertex2f(widthf - 16.0f, 0.0f);
+				glTexCoord2f(192.0f / bmpw, 0.0f);			glVertex2f(widthf, 0.0f);
+				glTexCoord2f(192.0f / bmpw, 16.0f / bmph);	glVertex2f(widthf, 16.0f);
+				glTexCoord2f(176.0f / bmpw, 16.0f / bmph);	glVertex2f(widthf - 16.0f, 16.0f);
+				// Corner lower right
+				glTexCoord2f(176.0f / bmpw, 48.0f / bmph);  glVertex2f(widthf - 16.0f, height - 16.0f);
+				glTexCoord2f(192.0f / bmpw, 48.0f / bmph);  glVertex2f(widthf, heightf - 16.0f);
+				glTexCoord2f(192.0f / bmpw, 64.0f / bmph);  glVertex2f(widthf, heightf);
+				glTexCoord2f(176.0f / bmpw, 64.0f / bmph);  glVertex2f(widthf - 16.0f, heightf);
+				// Corner lower left
+				glTexCoord2f(128.0f / bmpw, 48.0f / bmph);	glVertex2f(0.0f, heightf - 16.0f);
+				glTexCoord2f(144.0f / bmpw, 48.0f / bmph);	glVertex2f(16.0f, heightf - 16.0f);
+				glTexCoord2f(144.0f / bmpw, 64.0f / bmph);	glVertex2f(16.0f, heightf);
+				glTexCoord2f(128.0f / bmpw, 64.0f / bmph);	glVertex2f(0.0f, heightf);
+				// Border up
+				glTexCoord2f(144.0f / bmpw, 0.0f);			glVertex2f(16.0f, 0.0f);
+				glTexCoord2f(176.0f / bmpw, 0.0f);			glVertex2f(max(widthf - 16.0f, 1.0f), 0.0f);
+				glTexCoord2f(176.0f / bmpw, 16.0f / bmph);	glVertex2f(max(widthf - 16.0f, 1.0f), 16.0f);
+				glTexCoord2f(144.0f / bmpw, 16.0f / bmph);	glVertex2f(16.0f, 16.0f);
+				// Border down
+				glTexCoord2f(144.0f / bmpw, 48.0f / bmph);	glVertex2f(16.0f, height - 16.0f);
+				glTexCoord2f(176.0f / bmpw, 48.0f / bmph);	glVertex2f(max(widthf - 16.0f, 1.0f), heightf - 16.0f);
+				glTexCoord2f(176.0f / bmpw, 64.0f / bmph);	glVertex2f(max(widthf - 16.0f, 1.0f), heightf);
+				glTexCoord2f(144.0f / bmpw, 64.0f / bmph);	glVertex2f(16.0f, heightf);
+				// Border left
+				glTexCoord2f(128.0f / bmpw, 16.0f / bmph);	glVertex2f(0.0f, 16.0f);
+				glTexCoord2f(144.0f / bmpw, 16.0f / bmph);	glVertex2f(16.0f, 16.0f);
+				glTexCoord2f(144.0f / bmpw, 48.0f / bmph);	glVertex2f(16.0f, max(heightf - 16.0f, 1.0f));
+				glTexCoord2f(128.0f / bmpw, 48.0f / bmph);	glVertex2f(0.0f, max(heightf - 16.0f, 1.0f));
+				// Border right
+				glTexCoord2f(176.0f / bmpw, 16.0f / bmph);	glVertex2f(widthf - 16.0f, 16.0f);
+				glTexCoord2f(192.0f / bmpw, 16.0f / bmph);	glVertex2f(widthf, 16.0f);
+				glTexCoord2f(192.0f / bmpw, 48.0f / bmph);	glVertex2f(widthf, max(heightf - 16.0f, 1.0f));
+				glTexCoord2f(176.0f / bmpw, 48.0f / bmph);	glVertex2f(widthf - 16.0f, max(heightf - 16.0f, 1.0f));
+			glEnd();
 		}
 
+		// Cursor
 		if (width > 32 && height > 32) {
-			RefreshCursor();
-
-			if (last_cursor_rect.width > 0 && last_cursor_rect.height > 0) {
-				int cursor_opacity = 255;
+			Rect rect(cursor_rect);
+			if (rect.width > 0 && rect.height > 0) {
+				float cursor_opacity = 255.0f;
 				if (cursor_frame <= 16) {
-					cursor_opacity -= (int)((128.0f / 16.0f) * cursor_frame);
+					cursor_opacity -= (92.0f / 16.0f) * cursor_frame;
 				}
 				else {
-					cursor_opacity -= (int)((128.0f / 16.0f) * (32 - cursor_frame));
+					cursor_opacity -= (92.0f / 16.0f) * (32 - cursor_frame);
 				}
-				Rect rect(cursor_rect);
-				Rect src_rect(-min(rect.x + 16, 0), -min(rect.y + 16, 0), min(rect.width, width - 16 - rect.x), min(rect.height, height - 16 - rect.y));
-				cursor->BlitScreen(x + 16 + rect.x, y + 16 + rect.y, src_rect, cursor_opacity);
+				glColor4f(1.0f, 1.0f, 1.0f, cursor_opacity / 255.0f);
+
+				float left = (float)rect.x + 16;
+				float top = (float)rect.y + 16;
+				float rigth = left + rect.width;
+				float bottom = top + rect.height;
+
+				glBegin(GL_QUADS);
+					// Background
+					glTexCoord2f(130.0f / bmpw, 66.0f / bmph);	glVertex2f(left + 2.0f, top + 2.0f);
+					glTexCoord2f(158.0f / bmpw, 66.0f / bmph);	glVertex2f(rigth - 2.0f, top + 2.0f);
+					glTexCoord2f(158.0f / bmpw, 94.0f / bmph);	glVertex2f(rigth - 2.0f, bottom - 2.0f);
+					glTexCoord2f(130.0f / bmpw, 94.0f / bmph);	glVertex2f(left + 2.0f, bottom - 2.0f);
+					// Corner upper left
+					glTexCoord2f(128.0f / bmpw, 64.0f / bmph);	glVertex2f(left, top);
+					glTexCoord2f(130.0f / bmpw, 64.0f / bmph);	glVertex2f(left + 2.0f, top);
+					glTexCoord2f(130.0f / bmpw, 66.0f / bmph);	glVertex2f(left + 2.0f, top + 2.0f);
+					glTexCoord2f(128.0f / bmpw, 66.0f / bmph);	glVertex2f(left, top + 2.0f);
+					// Corner upper right
+					glTexCoord2f(158.0f / bmpw, 64.0f / bmph);	glVertex2f(rigth - 2.0f, top);
+					glTexCoord2f(160.0f / bmpw, 64.0f / bmph);	glVertex2f(rigth, top);
+					glTexCoord2f(160.0f / bmpw, 66.0f / bmph);	glVertex2f(rigth, top + 2.0f);
+					glTexCoord2f(158.0f / bmpw, 66.0f / bmph);	glVertex2f(rigth - 2.0f, top + 2.0f);
+					// Corner lower right
+					glTexCoord2f(158.0f / bmpw, 94.0f / bmph);	glVertex2f(rigth - 2.0f, bottom - 2.0f);
+					glTexCoord2f(160.0f / bmpw, 94.0f / bmph);	glVertex2f(rigth, bottom - 2.0f);
+					glTexCoord2f(160.0f / bmpw, 96.0f / bmph);	glVertex2f(rigth, bottom);
+					glTexCoord2f(158.0f / bmpw, 96.0f / bmph);	glVertex2f(rigth - 2.0f, bottom);
+					// Corner lower left
+					glTexCoord2f(128.0f / bmpw, 94.0f / bmph);	glVertex2f(left, bottom - 2.0f);
+					glTexCoord2f(130.0f / bmpw, 94.0f / bmph);	glVertex2f(left + 2.0f, bottom - 2.0f);
+					glTexCoord2f(130.0f / bmpw, 96.0f / bmph);	glVertex2f(left + 2.0f, bottom);
+					glTexCoord2f(128.0f / bmpw, 96.0f / bmph);	glVertex2f(left, bottom);
+					// Border up
+					glTexCoord2f(130.0f / bmpw, 64.0f / bmph);	glVertex2f(left + 2.0f, top);
+					glTexCoord2f(158.0f / bmpw, 64.0f / bmph);	glVertex2f(rigth - 2.0f, top);
+					glTexCoord2f(158.0f / bmpw, 66.0f / bmph);	glVertex2f(rigth - 2.0f, top + 2.0f);
+					glTexCoord2f(130.0f / bmpw, 66.0f / bmph);	glVertex2f(left + 2.0f, top + 2.0f);
+					// Border down
+					glTexCoord2f(130.0f / bmpw, 94.0f / bmph);	glVertex2f(left + 2.0f, bottom - 2.0f);
+					glTexCoord2f(158.0f / bmpw, 94.0f / bmph);	glVertex2f(rigth - 2.0f, bottom - 2.0f);
+					glTexCoord2f(158.0f / bmpw, 96.0f / bmph);	glVertex2f(rigth - 2.0f, bottom);
+					glTexCoord2f(130.0f / bmpw, 96.0f / bmph);	glVertex2f(left + 2.0f, bottom);
+					// Border left
+					glTexCoord2f(128.0f / bmpw, 66.0f / bmph);	glVertex2f(left, top + 2.0f);
+					glTexCoord2f(130.0f / bmpw, 66.0f / bmph);	glVertex2f(left + 2.0f, top + 2.0f);
+					glTexCoord2f(130.0f / bmpw, 94.0f / bmph);	glVertex2f(left + 2.0f, bottom - 2.0f);
+					glTexCoord2f(128.0f / bmpw, 94.0f / bmph);	glVertex2f(left, bottom - 2.0f);
+					// Border right
+					glTexCoord2f(158.0f / bmpw, 66.0f / bmph);	glVertex2f(rigth - 2.0f, top + 2.0f);
+					glTexCoord2f(160.0f / bmpw, 66.0f / bmph);	glVertex2f(rigth, top + 2.0f);
+					glTexCoord2f(160.0f / bmpw, 94.0f / bmph);	glVertex2f(rigth, bottom - 2.0f);
+					glTexCoord2f(158.0f / bmpw, 94.0f / bmph);	glVertex2f(rigth - 2.0f, bottom - 2.0f);
+				glEnd();
 			}
+		}
+		if (pause) {
+			float dstx = (float)max(width / 2 - 8, 0);
+			float dsty = (float)max(height - 16, 0);
+			float w = (float)min(16, width);
+			float h = (float)min(16, height);
+			float srcx;
+			float srcy;
+			switch (pause_id) {
+				case 0:
+					glColor4f(1.0f, 1.0f, 1.0f, (255.0f / 8.0f) * pause_frame / 255.0f);
+				case 4:
+					srcx = 160.0f;
+					srcy = 64.0f;
+					break;
+				case 1:
+					srcx = 176.0f;
+					srcy = 64.0f;
+					break;
+				case 2:
+					srcx = 160.0f;
+					srcy = 80.0f;
+					break;
+				case 3:
+					srcx = 176.0f;
+					srcy = 80.0f;
+			}
+			glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+			glBegin(GL_QUADS); 
+				glTexCoord2f(srcx / bmpw, srcy / bmph);				glVertex2f(dstx, dsty);
+				glTexCoord2f((srcx + w) / bmpw, srcy / bmph);		glVertex2f(dstx + w, dsty);
+				glTexCoord2f((srcx + w) / bmpw, (srcy + h) / bmph);	glVertex2f(dstx + w, dsty + h);
+				glTexCoord2f(srcx / bmpw, (srcy + h) / bmph);		glVertex2f(dstx, dsty + h);
+			glEnd();
 		}
 	}
 
 	if (contents != Qnil) {
 		if (width > 32 && height > 32 && -ox < width - 32 && -oy < height - 32 && contents_opacity > 0) {
-			Rect src_rect(-min(-ox, 0), -min(-oy, 0), min(width - 32, width - 32 + ox), min(height - 32, height - 32 + oy));
-			Bitmap::Get(contents)->BlitScreen(max(x + 16, x + 16 - ox), max(y + 16, y + 16 - oy), src_rect, contents_opacity);
+			Bitmap* bmp = Bitmap::Get(contents);
+
+			bmp->Refresh();
+
+			glBindTexture(GL_TEXTURE_2D, bmp->gl_bitmap);
+			
+			Rect dstrect(x + 16, y + 16, width - 32, height - 32);
+
+			glEnable(GL_SCISSOR_TEST);
+			if (viewport != Qnil) {
+				Rect rect = Viewport::Get(viewport)->GetViewportRect();
+
+				dstrect.x -= rect.x;
+				dstrect.y -= rect.y;
+
+				dstrect.Adjust(rect.width, rect.height);
+			}
+
+			glScissor(dstrect.x, Player::GetHeight() - (dstrect.y + dstrect.height), dstrect.width, dstrect.height);
+
+			glColor4f(1.0f, 1.0f, 1.0f, contents_opacity / 255.0f);
+
+			glBegin(GL_QUADS);
+				glTexCoord2f(0.0f, 0.0f);	glVertex2f(16.0f - ox, 16.0f - oy);
+				glTexCoord2f(1.0f, 0.0f);	glVertex2f(16.0f - ox + bmp->GetWidth(), 16.0f - oy);
+				glTexCoord2f(1.0f, 1.0f);	glVertex2f(16.0f - ox + bmp->GetWidth(), 16.0f - oy + bmp->GetHeight());
+				glTexCoord2f(0.0f, 1.0f);	glVertex2f(16.0f - ox, 16.0f - oy + bmp->GetHeight());
+			glEnd();
+
+			glViewport(0, 0, Player::GetWidth(), Player::GetHeight());
+
+			if (viewport == Qnil) glDisable(GL_SCISSOR_TEST);
 		}
-		if (ox > 0) {
-			Rect src_rect(128 + 16, 24, 8, 16);
-			Bitmap::Get(windowskin)->BlitScreen(x + 4, y + height / 2 - 8, src_rect);
-		}
-		if (oy > 0) {
-			Rect src_rect(128 + 24, 16, 16, 8);
-			Bitmap::Get(windowskin)->BlitScreen(x + width / 2 - 8, y + 4, src_rect);
-		}
-		if (Bitmap::Get(contents)->GetWidth() - ox > width - 32) {
-			Rect src_rect(128 + 40, 24, 8, 16);
-			Bitmap::Get(windowskin)->BlitScreen(x + width - 12, y + height / 2 - 8, src_rect);
-		}
-		if (Bitmap::Get(contents)->GetHeight() - oy > height - 32) {
-			Rect src_rect(128 + 24, 40, 16, 8);
-			Bitmap::Get(windowskin)->BlitScreen(x + width / 2 - 8, y + height - 12, src_rect);
+
+		if (windowskin != Qnil) {
+			Bitmap* bmp = Bitmap::Get(windowskin);
+
+			float bmpw = (float)bmp->GetWidth();
+			float bmph = (float)bmp->GetHeight();
+			float widthf = (float)width;
+			float heightf = (float)height;
+
+			glBindTexture(GL_TEXTURE_2D, bmp->gl_bitmap);
+
+			glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+
+			glBegin(GL_QUADS);
+				if (ox > 0) {
+					glTexCoord2f(144.0f / bmpw, 24.0f / bmph);	glVertex2f(4.0f, heightf / 2.0f - 8.0f);
+					glTexCoord2f(152.0f / bmpw, 24.0f / bmph);	glVertex2f(12.0f, heightf / 2.0f - 8.0f);
+					glTexCoord2f(152.0f / bmpw, 40.0f / bmph);	glVertex2f(12.0f, heightf / 2.0f + 8.0f);
+					glTexCoord2f(144.0f / bmpw, 40.0f / bmph);	glVertex2f(4.0f, heightf / 2.0f + 8.0f);
+				}
+				if (oy > 0) {
+					glTexCoord2f(152.0f / bmpw, 16.0f / bmph);	glVertex2f(widthf / 2.0f - 8.0f, 4.0f);
+					glTexCoord2f(168.0f / bmpw, 16.0f / bmph);	glVertex2f(widthf / 2.0f + 8.0f, 4.0f);
+					glTexCoord2f(168.0f / bmpw, 24.0f / bmph);	glVertex2f(widthf / 2.0f + 8.0f, 12.0f);
+					glTexCoord2f(152.0f / bmpw, 24.0f / bmph);	glVertex2f(widthf / 2.0f - 8.0f, 12.0f);
+				}
+				if (Bitmap::Get(contents)->GetWidth() - ox > width - 32) {
+					glTexCoord2f(168.0f / bmpw, 24.0f / bmph);	glVertex2f(widthf - 12.0f, heightf / 2.0f - 8.0f);
+					glTexCoord2f(176.0f / bmpw, 24.0f / bmph);	glVertex2f(widthf - 4.0f, heightf / 2.0f - 8.0f);
+					glTexCoord2f(176.0f / bmpw, 40.0f / bmph);	glVertex2f(widthf - 4.0f, heightf / 2.0f + 8.0f);
+					glTexCoord2f(168.0f / bmpw, 40.0f / bmph);	glVertex2f(widthf - 12.0f, heightf / 2.0f + 8.0f);
+				}
+				if (Bitmap::Get(contents)->GetHeight() - oy > height - 32) {
+					glTexCoord2f(152.0f / bmpw, 40.0f / bmph);	glVertex2f(widthf / 2.0f - 8.0f, heightf - 12.0f);
+					glTexCoord2f(168.0f / bmpw, 40.0f / bmph);	glVertex2f(widthf / 2.0f + 8.0f, heightf - 12.0f);
+					glTexCoord2f(168.0f / bmpw, 48.0f / bmph);	glVertex2f(widthf / 2.0f + 8.0f, heightf - 4.0f);
+					glTexCoord2f(152.0f / bmpw, 48.0f / bmph);	glVertex2f(widthf / 2.0f - 8.0f, heightf - 4.0f);
+				}
+			glEnd();
 		}
 	}
-	
-	if (pause) {
-		int dstx = max(x + width / 2 - 8, x);
-		int dsty = max(y + height - 16, y);
-		int w = min(16, width);
-		int h = min(16, height);
-		if (pause_id == 0) {
-			Rect src_rect(160, 64, w, h);
-			Bitmap::Get(windowskin)->BlitScreen(dstx, dsty, src_rect, 255 / 8 * pause_frame);
-		}
-		else {
-			Rect src_rect;
-			if (pause_id == 1) src_rect.Set(176, 64, w, h);
-			else if (pause_id == 2) src_rect.Set(160, 80, w, h);
-			else if (pause_id == 3) src_rect.Set(176, 80, w, h);
-			else if (pause_id == 4) src_rect.Set(160, 64, w, h);
-			Bitmap::Get(windowskin)->BlitScreen(dstx, dsty, src_rect);
-		}
-	}
+
+	glDisable(GL_SCISSOR_TEST);
 }
 void Window::Draw(long z, Bitmap* dst_bitmap) {
-	if (!visible) return;
-	if (width <= 0 || height <= 0) return;
-	if (x < -width || x > dst_bitmap->GetWidth() || y < -height || y > dst_bitmap->GetHeight()) return;
-	
-	if (windowskin != Qnil) {
-		if (width > 4 && height > 4 && (back_opacity * opacity / 255 > 0)) {
-			if (background_needs_refresh) RefreshBackground();
 
-			dst_bitmap->Blit(x + 2, y + 2, background, background->GetRect(), back_opacity * opacity / 255);
-		}
-		if (width > 0 && height > 0 && opacity > 0) {
-			if (frame_needs_refresh) RefreshFrame();
-
-			dst_bitmap->Blit(x, y, frame, frame->GetRect(), opacity);
-		}
-
-		if (width > 32 && height > 32) {
-			RefreshCursor();
-
-			if (last_cursor_rect.width > 0 && last_cursor_rect.height > 0) {
-				int cursor_opacity = 255;
-				if (cursor_frame <= 16) {
-					cursor_opacity -= (int)((128.0f / 16.0f) * cursor_frame);
-				}
-				else {
-					cursor_opacity -= (int)((128.0f / 16.0f) * (32 - cursor_frame));
-				}
-				Rect rect(cursor_rect);
-				Rect src_rect(-min(rect.x + 16, 0), -min(rect.y + 16, 0), min(rect.width, width - 16 - rect.x), min(rect.height, height - 16 - rect.y));
-				dst_bitmap->Blit(x + 16 + rect.x, y + 16 + rect.y, cursor, src_rect, cursor_opacity);
-			}
-		}
-	}
-
-	if (contents != Qnil) {
-		if (width > 32 && height > 32 && -ox < width - 32 && -oy < height - 32 && contents_opacity > 0) {
-			Rect src_rect(-min(-ox, 0), -min(-oy, 0), min(width - 32, width - 32 + ox), min(height - 32, height - 32 + oy));
-			dst_bitmap->Blit(max(x + 16, x + 16 - ox), max(y + 16, y + 16 - oy), Bitmap::Get(contents), src_rect, contents_opacity);
-		}
-		if (ox > 0) {
-			Rect src_rect(128 + 16, 24, 8, 16);
-			dst_bitmap->Blit(x + 4, y + height / 2 - 8, Bitmap::Get(windowskin), src_rect, 255);
-		}
-		if (oy > 0) {
-			Rect src_rect(128 + 24, 16, 16, 8);
-			dst_bitmap->Blit(x + width / 2 - 8, y + 4, Bitmap::Get(windowskin), src_rect, 255);
-		}
-		if (Bitmap::Get(contents)->GetWidth() - ox > width - 32) {
-			Rect src_rect(128 + 40, 24, 8, 16);
-			dst_bitmap->Blit(x + width - 12, y + height / 2 - 8, Bitmap::Get(windowskin), src_rect, 255);
-		}
-		if (Bitmap::Get(contents)->GetHeight() - oy > height - 32) {
-			Rect src_rect(128 + 24, 40, 16, 8);
-			dst_bitmap->Blit(x + width / 2 - 8, y + height - 12, Bitmap::Get(windowskin), src_rect, 255);
-		}
-	}
-	
-	if (pause) {
-		int dstx = max(x + width / 2 - 8, x);
-		int dsty = max(y + height - 16, y);
-		int w = min(16, width);
-		int h = min(16, height);
-		if (pause_id == 0) {
-			Rect src_rect(160, 64, w, h);
-			dst_bitmap->Blit(dstx, dsty, Bitmap::Get(windowskin), src_rect, 255 / 8 * pause_frame);
-		}
-		else {
-			Rect src_rect;
-			if (pause_id == 1) src_rect.Set(176, 64, w, h);
-			else if (pause_id == 2) src_rect.Set(160, 80, w, h);
-			else if (pause_id == 3) src_rect.Set(176, 80, w, h);
-			else if (pause_id == 4) src_rect.Set(160, 64, w, h);
-			dst_bitmap->Blit(dstx, dsty, Bitmap::Get(windowskin), src_rect, 255);
-		}
-	}
-}
-
-////////////////////////////////////////////////////////////
-/// Refresh Background
-////////////////////////////////////////////////////////////
-void Window::RefreshBackground() {
-	background_needs_refresh = false;
-
-	delete background;
-
-	if (stretch) {
-		Rect src_rect(0, 0, 128, 128);
-		Rect dst_rect(0, 0, width - 4, height - 4);
-		background = new Bitmap(width - 4, height - 4);
-		background->StretchBlit(dst_rect, Bitmap::Get(windowskin), src_rect, 255);
-	}
-	else {
-		background = new Bitmap(width - 4, height - 4);
-		int tilesx = (int)(ceil(background->GetWidth() / 128.0));
-		int tilesy = (int)(ceil(background->GetHeight() / 128.0));
-		Rect src_rect(0, 0, 128, 128);
-		for (int i = 0; i < tilesx; i++) {
-			for (int j = 0; j < tilesy; j++) {
-				background->Blit(i * 128, j * 128, Bitmap::Get(windowskin), src_rect, 255);
-			}
-		}
-	}
-}
-
-////////////////////////////////////////////////////////////
-/// Refresh Frame
-////////////////////////////////////////////////////////////
-void Window::RefreshFrame() {
-	frame_needs_refresh = false;
-
-	delete frame;
-
-	frame = new Bitmap(width, height);
-
-	Rect src_rect;
-	
-	// Draw Corners
-	src_rect.x = 128;
-	src_rect.y = 0;
-	src_rect.width = 16;
-	src_rect.height = 16;
-	frame->Blit(0, 0, Bitmap::Get(windowskin), src_rect, 255);
-	
-	src_rect.x = 192 - 16;
-	frame->Blit(width - 16, 0, Bitmap::Get(windowskin), src_rect, 255);
-	
-	src_rect.y = 64 - 16;
-	frame->Blit(width - 16, height - 16, Bitmap::Get(windowskin), src_rect, 255);
-	
-	src_rect.x = 128;
-	frame->Blit(0, height - 16, Bitmap::Get(windowskin), src_rect, 255);
-
-
-	Rect dst_rect;
-
-	// Border Up
-	src_rect.x = 128 + 16;
-	src_rect.y = 0;
-	src_rect.width = 32;
-	src_rect.height = 16;
-	dst_rect.x = 16;
-	dst_rect.y = 0;
-	dst_rect.width = max(width - 32, 1);
-	dst_rect.height = 16;
-	frame->StretchBlit(dst_rect, Bitmap::Get(windowskin), src_rect, 255);
-	
-	// Border Down
-	src_rect.y = 64 - 16;
-	dst_rect.y = height - 16;
-	frame->StretchBlit(dst_rect, Bitmap::Get(windowskin), src_rect, 255);
-	
-	// Border Left
-	src_rect.x = 128;
-	src_rect.y = 16;
-	src_rect.width = 16;
-	src_rect.height = 32;
-	dst_rect.x = 0;
-	dst_rect.y = 16;
-	dst_rect.width = 16;
-	dst_rect.height = max(height - 32, 1);
-	frame->StretchBlit(dst_rect, Bitmap::Get(windowskin), src_rect, 255);
-	
-	// Border Right
-	src_rect.x = 192 - 16;
-	dst_rect.x = width - 16;
-	frame->StretchBlit(dst_rect, Bitmap::Get(windowskin), src_rect, 255);
-}
-
-////////////////////////////////////////////////////////////
-/// Refresh Cursor
-////////////////////////////////////////////////////////////
-void Window::RefreshCursor() {
-	Rect rect(cursor_rect);
-
-	if (rect.width != last_cursor_rect.width || rect.height != last_cursor_rect.height) {
-		last_cursor_rect = rect;
-		cursor_needs_refresh = true;
-	}
-
-	if (cursor_needs_refresh) {
-		cursor_needs_refresh = false;
-	}
-	else {
-		return;
-	}
-
-	if (rect.width > 0 && rect.height > 0) {
-		delete cursor;
-
-		cursor = new Bitmap(rect.width, rect.height);
-
-		Rect src_rect(130, 66, 28, 28);
-		Rect dst_rect(2, 2, rect.width - 4, rect.height - 4);
-		cursor->StretchBlit(dst_rect, Bitmap::Get(windowskin), src_rect, 255);
-
-		src_rect.x = 128;
-		src_rect.y = 64;
-		src_rect.width = 2;
-		src_rect.height = 2;
-		cursor->Blit(0, 0, Bitmap::Get(windowskin), src_rect, 255);
-
-		src_rect.x = 158;
-		cursor->Blit(rect.width - 2, 0, Bitmap::Get(windowskin), src_rect, 255);
-
-		src_rect.y = 94;
-		cursor->Blit(rect.width - 2, rect.height - 2, Bitmap::Get(windowskin), src_rect, 255);
-
-		src_rect.x = 128;
-		cursor->Blit(0, rect.height - 2, Bitmap::Get(windowskin), src_rect, 255);
-
-		// Border Up
-		src_rect.x = 130;
-		src_rect.y = 64;
-		src_rect.width = 28;
-		src_rect.height = 2;
-		dst_rect.x = 2;
-		dst_rect.y = 0;
-		dst_rect.width = max(rect.width - 4, 1);
-		dst_rect.height = 2;
-		cursor->StretchBlit(dst_rect, Bitmap::Get(windowskin), src_rect, 255);
-
-		// Border Down
-		src_rect.y = 94;
-		dst_rect.y = rect.height - 2;
-		cursor->StretchBlit(dst_rect, Bitmap::Get(windowskin), src_rect, 255);
-
-		// Border Left
-		src_rect.x = 128;
-		src_rect.y = 66;
-		src_rect.width = 2;
-		src_rect.height = 28;
-		dst_rect.x = 0;
-		dst_rect.y = 2;
-		dst_rect.width = 2;
-		dst_rect.height = max(rect.height - 4, 1);
-		cursor->StretchBlit(dst_rect, Bitmap::Get(windowskin), src_rect, 255);
-		
-		// Border Right
-		src_rect.x = 158;
-		dst_rect.x = rect.width - 2;
-		cursor->StretchBlit(dst_rect, Bitmap::Get(windowskin), src_rect, 255);
-	}
 }
 
 ////////////////////////////////////////////////////////////
@@ -495,11 +487,6 @@ VALUE Window::GetWindowskin() {
 	return windowskin;
 }
 void Window::SetWindowskin(VALUE nwindowskin) {
-	if (windowskin != nwindowskin) {
-		background_needs_refresh = true;
-		frame_needs_refresh = true;
-		cursor_needs_refresh = true;
-	}
 	windowskin = nwindowskin;
 }
 VALUE Window::GetContents() {
@@ -512,7 +499,6 @@ bool Window::GetStretch() {
 	return stretch;
 }
 void Window::SetStretch(bool nstretch) {
-	if (stretch != nstretch) background_needs_refresh = true;
 	stretch = nstretch;
 }
 VALUE Window::GetCursorRect() {
@@ -555,20 +541,12 @@ int Window::GetWidth() {
 	return width;
 }
 void Window::SetWidth(int nwidth) {
-	if (width != nwidth) {
-		background_needs_refresh = true;
-		frame_needs_refresh = true;
-	}
 	width = nwidth;
 }
 int Window::GetHeight() {
 	return height;
 }
 void Window::SetHeight(int nheight) {
-	if (height != nheight) {
-		background_needs_refresh = true;
-		frame_needs_refresh = true;
-	}
 	height = nheight;
 }
 int Window::GetZ() {

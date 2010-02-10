@@ -39,9 +39,6 @@ namespace System {
 	extern std::string RTPS[3];
 	extern int Width;
 	extern int Height;
-	extern bool Focus;
-	extern bool FocusPauseGame;
-	extern bool FocusPauseAudio;
 
 	void Init();
 };

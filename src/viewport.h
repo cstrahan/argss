@@ -50,6 +50,7 @@ public:
 	static Viewport* Get(unsigned long id);
 	static void Dispose(unsigned long id);
 
+	void RefreshBitmaps();
 	void Draw(long z);
 	void Draw(long z, Bitmap* dst_bitmap);
 
@@ -76,6 +77,8 @@ public:
 	void RemoveZObj(unsigned long id);
 	void UpdateZObj(unsigned long id, long z);
 
+	Rect GetViewportRect();
+
 private:
 	std::list<ZObj> zlist;
 	std::list<ZObj>::iterator it_zlist;
@@ -92,15 +95,13 @@ private:
 	Color flash_color;
 	int flash_duration;
 	int flash_frame;
-	Rect rect_viewport;
-	Rect rect_last;
 	Color color_viewport;
 	Tone tone_viewport;
 	bool disposing;
 
 	Bitmap* viewport;
 
-	Rect last_dst_rect;
+	Rect dst_rect;
 };
 
 #endif

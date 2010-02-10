@@ -38,6 +38,10 @@ namespace ARGSS {
 		extern VALUE id;
 		void Init();
 		VALUE New();
+
+		VALUE rinitialize(VALUE self);
+		VALUE raref(VALUE self, VALUE index);
+		VALUE raset(VALUE self, VALUE index, VALUE bitmap);
 	};
 };
 

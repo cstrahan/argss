@@ -37,7 +37,7 @@ VALUE ARGSS::ATable::id;
 ////////////////////////////////////////////////////////////
 /// ARGSS Table ruby functions
 ////////////////////////////////////////////////////////////
-static VALUE argss_table_initialize(int argc, VALUE *argv, VALUE self) {
+VALUE ARGSS::ATable::rinitialize(int argc, VALUE *argv, VALUE self) {
 	if (argc < 1) raise_argn(argc, 1);
     else if (argc > 3) raise_argn(argc, 3);
 	rb_iv_set(self, "@dim", INT2NUM(argc));
@@ -59,7 +59,7 @@ static VALUE argss_table_initialize(int argc, VALUE *argv, VALUE self) {
 	rb_iv_set(self, "@data", arr);
 	return self;
 }
-static VALUE argss_table_resize(int argc, VALUE *argv, VALUE self) {
+VALUE ARGSS::ATable::rresize(int argc, VALUE *argv, VALUE self) {
 	int xsize = 1;
 	int ysize = 1;
 	int zsize = 1;
@@ -84,22 +84,21 @@ static VALUE argss_table_resize(int argc, VALUE *argv, VALUE self) {
 			VALUE slice_argv[2];
 			slice_argv[0] = INT2NUM(nsize);
 			slice_argv[1] = INT2NUM(osize);
-			
-			rb_funcall2(rb_iv_get(self, "@data"), rb_intern("slice!"), 2, slice_argv) ;
+			rb_funcall2(rb_iv_get(self, "@data"), rb_intern("slice!"), 2, slice_argv);
 		}
 	}
 	return self;
 }
-static VALUE argss_table_xsize(VALUE self) {
+VALUE ARGSS::ATable::rxsize(VALUE self) {
 	return rb_iv_get(self, "@xsize");
 }
-static VALUE argss_table_ysize(VALUE self) {
+VALUE ARGSS::ATable::rysize(VALUE self) {
 	return rb_iv_get(self, "@ysize");
 }
-static VALUE argss_table_zsize(VALUE self) {
+VALUE ARGSS::ATable::rzsize(VALUE self) {
 	return rb_iv_get(self, "@zsize");
 }
-static VALUE argss_table_aref(int argc, VALUE *argv, VALUE self) {
+VALUE ARGSS::ATable::raref(int argc, VALUE *argv, VALUE self) {
 	int dim = NUM2INT(rb_iv_get(self, "@dim"));
 	if (argc != dim) raise_argn(argc, dim);
 	int x = 0;
@@ -124,7 +123,7 @@ static VALUE argss_table_aref(int argc, VALUE *argv, VALUE self) {
 		return rb_ary_entry(data, x + y * xsize + z * xsize * ysize);
 	}
 }
-static VALUE argss_table_aset(int argc, VALUE *argv, VALUE self) {
+VALUE ARGSS::ATable::raset(int argc, VALUE *argv, VALUE self) {
 	int dim = NUM2INT(rb_iv_get(self, "@dim"));
 	if (argc != (dim + 1)) raise_argn(argc, dim + 1);
 	int x = 0;
@@ -140,7 +139,7 @@ static VALUE argss_table_aset(int argc, VALUE *argv, VALUE self) {
 	}
 	int val = NUM2INT(argv[argc - 1]);
 	if (val > 65535) val = 65535;
-	else if(val < 0) val = 0;
+	else if (val < 0) val = 0;
 	VALUE data = rb_iv_get(self, "@data");
 	int xsize = NUM2INT(rb_iv_get(self, "@xsize"));
 	int ysize = NUM2INT(rb_iv_get(self, "@ysize"));
@@ -150,7 +149,7 @@ static VALUE argss_table_aset(int argc, VALUE *argv, VALUE self) {
 	}
 	return argv[argc - 1];
 }
-static VALUE argss_table_dump(int argc, VALUE* argv, VALUE self) {
+VALUE ARGSS::ATable::rdump(int argc, VALUE* argv, VALUE self) {
 	if (argc > 1) raise_argn(argc, 1);
 	VALUE str = rb_str_new2("");
 	VALUE xsize = rb_iv_get(self, "@xsize");
@@ -162,7 +161,7 @@ static VALUE argss_table_dump(int argc, VALUE* argv, VALUE self) {
 	rb_str_concat(str, rb_funcall(rb_iv_get(self, "@data"), rb_intern("pack"), 1, rb_str_times(rb_str_new2("S"), INT2NUM(items))));
     return str;
 }
-static VALUE argss_table_load(VALUE self, VALUE str) {
+VALUE ARGSS::ATable::rload(VALUE self, VALUE str) {
 	VALUE arr = rb_funcall(str, rb_intern("unpack"), 1, rb_str_new2("L5"));
 	int dim = NUM2INT(rb_ary_entry(arr, 0));
 	unsigned long items = NUM2INT(rb_ary_entry(arr, 4));
@@ -179,15 +178,15 @@ static VALUE argss_table_load(VALUE self, VALUE str) {
 void ARGSS::ATable::Init() {
     typedef VALUE (*rubyfunc)(...);
     id = rb_define_class("Table", rb_cObject);
-    rb_define_method(id, "initialize", (rubyfunc)argss_table_initialize, -1);
-	rb_define_method(id, "resize", (rubyfunc)argss_table_resize, -1);
-	rb_define_method(id, "xsize", (rubyfunc)argss_table_xsize, 0);
-	rb_define_method(id, "ysize", (rubyfunc)argss_table_ysize, 0);
-	rb_define_method(id, "zsize", (rubyfunc)argss_table_zsize, 0);
-	rb_define_method(id, "[]", (rubyfunc)argss_table_aref, -1);
-	rb_define_method(id, "[]=", (rubyfunc)argss_table_aset, -1);
-	rb_define_method(id, "_dump", (rubyfunc)argss_table_dump, -1);
-    rb_define_singleton_method(id, "_load", (rubyfunc)argss_table_load, 1);
+    rb_define_method(id, "initialize", (rubyfunc)rinitialize, -1);
+	rb_define_method(id, "resize", (rubyfunc)rresize, -1);
+	rb_define_method(id, "xsize", (rubyfunc)rxsize, 0);
+	rb_define_method(id, "ysize", (rubyfunc)rysize, 0);
+	rb_define_method(id, "zsize", (rubyfunc)rzsize, 0);
+	rb_define_method(id, "[]", (rubyfunc)raref, -1);
+	rb_define_method(id, "[]=", (rubyfunc)raset, -1);
+	rb_define_method(id, "_dump", (rubyfunc)rdump, -1);
+    rb_define_singleton_method(id, "_load", (rubyfunc)rload, 1);
 }
 
 ////////////////////////////////////////////////////////////

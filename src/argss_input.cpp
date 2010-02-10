@@ -37,42 +37,42 @@ VALUE ARGSS::AInput::id;
 ////////////////////////////////////////////////////////////
 /// ARGSS Input ruby functions
 ////////////////////////////////////////////////////////////
-static VALUE argss_input_update(VALUE self) {
+VALUE ARGSS::AInput::rupdate(VALUE self) {
 	Input::Update();
     return Qnil;
 }
-static VALUE argss_input_pressQ(VALUE self, VALUE button) {
+VALUE ARGSS::AInput::rpressQ(VALUE self, VALUE button) {
     Check_Type(button, T_FIXNUM);
 	return INT2BOOL(Input::IsPressed(button));
 }
-static VALUE argss_input_triggerQ(VALUE self, VALUE button) {
+VALUE ARGSS::AInput::rtriggerQ(VALUE self, VALUE button) {
     Check_Type(button, T_FIXNUM);
     return INT2BOOL(Input::IsTriggered(button));
 }
-static VALUE argss_input_repeatQ(VALUE self, VALUE button) {
+VALUE ARGSS::AInput::rrepeatQ(VALUE self, VALUE button) {
     Check_Type(button, T_FIXNUM);
     return INT2BOOL(Input::IsRepeated(button));
 }
-static VALUE argss_input_releaseQ(VALUE self, VALUE button) {
+VALUE ARGSS::AInput::rreleaseQ(VALUE self, VALUE button) {
     Check_Type(button, T_FIXNUM);
     return INT2BOOL(Input::IsReleased(button));
 }
-static VALUE argss_input_dir4(VALUE self) {
+VALUE ARGSS::AInput::rdir4(VALUE self) {
     return INT2NUM(Input::dir4);
 }
-static VALUE argss_input_dir8(VALUE self) {
+VALUE ARGSS::AInput::rdir8(VALUE self) {
     return INT2NUM(Input::dir8);
 }
-static VALUE argss_input_pressed(VALUE self) {
+VALUE ARGSS::AInput::rpressed(VALUE self) {
 	return Input::GetPressed();
 }
-static VALUE argss_input_triggered(VALUE self) {
+VALUE ARGSS::AInput::rtriggered(VALUE self) {
 	return Input::GetTriggered();
 }
-static VALUE argss_input_repeated(VALUE self) {
+VALUE ARGSS::AInput::rrepeated(VALUE self) {
 	return Input::GetRepeated();
 }
-static VALUE argss_input_released(VALUE self) {
+VALUE ARGSS::AInput::rreleased(VALUE self) {
 	return Input::GetReleased();
 }
 
@@ -82,17 +82,17 @@ static VALUE argss_input_released(VALUE self) {
 void ARGSS::AInput::Init() {
     typedef VALUE (*rubyfunc)(...);
     id = rb_define_module("Input");
-    rb_define_singleton_method(id, "update", (rubyfunc)argss_input_update, 0);
-    rb_define_singleton_method(id, "press?", (rubyfunc)argss_input_pressQ, 1);
-    rb_define_singleton_method(id, "trigger?", (rubyfunc)argss_input_triggerQ, 1);
-    rb_define_singleton_method(id, "repeat?", (rubyfunc)argss_input_repeatQ, 1);
-    rb_define_singleton_method(id, "release?", (rubyfunc)argss_input_releaseQ, 1);
-    rb_define_singleton_method(id, "dir4", (rubyfunc)argss_input_dir4, 0);
-    rb_define_singleton_method(id, "dir8", (rubyfunc)argss_input_dir8, 0);
-    rb_define_singleton_method(id, "pressed", (rubyfunc)argss_input_pressed, 0);
-    rb_define_singleton_method(id, "triggered", (rubyfunc)argss_input_triggered, 0);
-    rb_define_singleton_method(id, "repeated", (rubyfunc)argss_input_repeated, 0);
-    rb_define_singleton_method(id, "released", (rubyfunc)argss_input_released, 0);
+    rb_define_singleton_method(id, "update", (rubyfunc)rupdate, 0);
+    rb_define_singleton_method(id, "press?", (rubyfunc)rpressQ, 1);
+    rb_define_singleton_method(id, "trigger?", (rubyfunc)rtriggerQ, 1);
+    rb_define_singleton_method(id, "repeat?", (rubyfunc)rrepeatQ, 1);
+    rb_define_singleton_method(id, "release?", (rubyfunc)rreleaseQ, 1);
+    rb_define_singleton_method(id, "dir4", (rubyfunc)rdir4, 0);
+    rb_define_singleton_method(id, "dir8", (rubyfunc)rdir8, 0);
+    rb_define_singleton_method(id, "pressed", (rubyfunc)rpressed, 0);
+    rb_define_singleton_method(id, "triggered", (rubyfunc)rtriggered, 0);
+    rb_define_singleton_method(id, "repeated", (rubyfunc)rrepeated, 0);
+    rb_define_singleton_method(id, "released", (rubyfunc)rreleased, 0);
     rb_define_const(id, "DOWN", INT2FIX(2));
     rb_define_const(id, "LEFT", INT2FIX(4));
     rb_define_const(id, "RIGHT", INT2FIX(6));

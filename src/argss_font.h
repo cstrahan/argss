@@ -38,6 +38,33 @@ namespace ARGSS {
 		extern VALUE id;
 		void Init();
 		VALUE New();
+
+		VALUE rinitialize(int argc, VALUE *argv, VALUE self);
+		VALUE rexistQ(VALUE self);
+		VALUE rname(VALUE self);
+		VALUE rnameE(VALUE self, VALUE name);
+		VALUE rsize(VALUE self);
+		VALUE rsizeE(VALUE self, VALUE size);
+		VALUE rbold(VALUE self);
+		VALUE rboldE(VALUE self, VALUE bold);
+		VALUE ritalic(VALUE self);
+		VALUE ritalicE(VALUE self, VALUE italic);
+		VALUE rcolor(VALUE self);
+		VALUE rcolorE(VALUE self, VALUE color);
+		VALUE rshadow(VALUE self);
+		VALUE rshadowE(VALUE self, VALUE shadow);
+		VALUE rdefault_name(VALUE self);
+		VALUE rdefault_nameE(VALUE self, VALUE default_name);
+		VALUE rdefault_size(VALUE self);
+		VALUE rdefault_sizeE(VALUE self, VALUE default_size);
+		VALUE rdefault_bold(VALUE self);
+		VALUE rdefault_boldE(VALUE self, VALUE default_bold);
+		VALUE rdefault_italic(VALUE self);
+		VALUE rdefault_italicE(VALUE self, VALUE default_italic);
+		VALUE rdefault_color(VALUE self);
+		VALUE rdefault_colorE(VALUE self, VALUE default_color);
+		VALUE rdefault_shadow(VALUE self);
+		VALUE rdefault_shadowE(VALUE self, VALUE default_shadow);
 	};
 };
 

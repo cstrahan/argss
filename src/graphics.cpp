@@ -29,18 +29,12 @@
 #include "graphics.h"
 #include "argss_ruby.h"
 #include "argss_error.h"
-#include "argss_sprite.h"
-#include "argss_window.h"
-#include "argss_plane.h"
-#include "argss_tilemap.h"
-#include "argss_viewport.h"
-#include "sprite.h"
-#include "window_xp.h"
-#include "plane.h"
-#include "tilemap_xp.h"
-#include "viewport.h"
 #include "system.h"
 #include "player.h"
+#include "output.h"
+#include "sprite.h"
+#include "tilemap.h"
+#include "SDL_ttf.h"
 #include "SDL_opengl.h"
 
 ////////////////////////////////////////////////////////////
@@ -49,7 +43,7 @@
 int Graphics::fps;
 int Graphics::framerate;
 int Graphics::framecount;
-Uint32 Graphics::backcolor;
+Color Graphics::backcolor;
 int Graphics::brightness;
 double Graphics::framerate_interval;
 SDL_Surface* Graphics::screen;
@@ -65,29 +59,76 @@ long Graphics::last_tics_wait;
 /// Initialize
 ////////////////////////////////////////////////////////////
 void Graphics::Init() {
+	if (TTF_Init() == -1) {
+		Output::Error("ARGSS couldn't initialize SDL_ttf library.\n%s\n", TTF_GetError());
+	}
+
 	fps = 0;
 	framerate = 60;
 	framecount = 0;
-	backcolor = Qnil;
-	brightness = 0;
+	backcolor = Color(0, 0, 0, 0);
+	brightness = 255;
 	creation = 0;
 	framerate_interval = 1000.0 / framerate;
 	last_tics = SDL_GetTicks() + (long)framerate_interval;
+
+	InitOpenGL();
 
 	Tilemap::Init();
 }
 
 ////////////////////////////////////////////////////////////
+/// Initialize OpengGL
+////////////////////////////////////////////////////////////
+void Graphics::InitOpenGL() {
+	SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8);
+	SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
+	SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
+	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 8);
+	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+
+	glViewport(0, 0, Player::GetWidth(), Player::GetHeight());
+	glShadeModel(GL_FLAT);
+
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	glOrtho(0, Player::GetWidth(), Player::GetHeight(), 0, -1, 1); 
+
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+
+	glEnable(GL_BLEND);
+
+	glClearColor((GLclampf)(backcolor.red / 255.0f),
+				 (GLclampf)(backcolor.green / 255.0f),
+				 (GLclampf)(backcolor.blue / 255.0f),
+				 (GLclampf)(backcolor.alpha / 255.0f));
+	glClearDepth(1.0);
+	glClear(GL_COLOR_BUFFER_BIT);
+	SDL_GL_SwapBuffers();
+}
+
+////////////////////////////////////////////////////////////
+/// Refresh all graphic objects
+////////////////////////////////////////////////////////////
+void Graphics::RefreshAll() {
+	for (it_drawable_map = drawable_map.begin(); it_drawable_map != drawable_map.end(); it_drawable_map++) {
+		it_drawable_map->second->RefreshBitmaps();
+	}
+	Bitmap::RefreshBitmaps();
+}
+
+////////////////////////////////////////////////////////////
 /// Wait
 ////////////////////////////////////////////////////////////
-void Graphics::Wait(){
+void Graphics::TimerWait(){
 	last_tics_wait = SDL_GetTicks();
 }
 
 ////////////////////////////////////////////////////////////
 /// Continue
 ////////////////////////////////////////////////////////////
-void Graphics::Continue() {
+void Graphics::TimerContinue() {
 	last_tics += SDL_GetTicks() - last_tics_wait;
 }
 
@@ -107,9 +148,9 @@ void Graphics::Update() {
 		return;
 	}*/
 	t = SDL_GetTicks();
-	if((t - last_tics) >= framerate_interval || (framerate_interval - t + last_tics) < 10) {
+	if ((t - last_tics) >= framerate_interval || (framerate_interval - t + last_tics) < 10) {
 		cyclesleftover = waitframes;
-		waitframes = (double)(t - last_tics) / framerate_interval - cyclesleftover;
+		//waitframes = (double)(t - last_tics) / framerate_interval - cyclesleftover;
 		//tl += (t - tl) - cyclesleftover;
 		last_tics = t;
 		DrawFrame();
@@ -140,39 +181,51 @@ void Graphics::Update() {
 /// Draw Frame
 ////////////////////////////////////////////////////////////
 void Graphics::DrawFrame() {
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT);
 
-	zlist.sort(SortZObj);
-    for(it_zlist = zlist.begin(); it_zlist != zlist.end(); it_zlist++) {
+    for (it_zlist = zlist.begin(); it_zlist != zlist.end(); it_zlist++) {
 		Graphics::drawable_map[it_zlist->GetId()]->Draw(it_zlist->GetZ());
 	}
 
+	if (brightness < 255) {
+		glDisable(GL_TEXTURE_2D);
+		glMatrixMode(GL_MODELVIEW);
+		glLoadIdentity();
+		glColor4f(0.0f, 0.0f, 0.0f, (GLfloat)(1.0f - brightness / 255.0f));
+		glBegin(GL_QUADS);
+			glVertex2i(0, 0);
+			glVertex2i(0, Player::GetHeight());
+			glVertex2i(Player::GetWidth(), Player::GetHeight());
+			glVertex2i(Player::GetWidth(), 0);
+		glEnd();
+	}
+	
 	SDL_GL_SwapBuffers();
 }
 
 ////////////////////////////////////////////////////////////
-/// 
+/// Freeze screen
 ////////////////////////////////////////////////////////////
 void Graphics::Freeze() {
 	// TODO
 }
 
 ////////////////////////////////////////////////////////////
-/// 
+/// Transition effect
 ////////////////////////////////////////////////////////////
 void Graphics::Transition(int duration, std::string filename, int vague) {
 	// TODO
 }
 
 ////////////////////////////////////////////////////////////
-/// 
+/// Reset frames
 ////////////////////////////////////////////////////////////
 void Graphics::FrameReset() {
 	last_tics = SDL_GetTicks();
 }
 
 ////////////////////////////////////////////////////////////
-/// 
+/// Wait frames
 ////////////////////////////////////////////////////////////
 void Graphics::Wait(int duration) {
 	for(int i = duration; i > 0; i--) {
@@ -181,31 +234,61 @@ void Graphics::Wait(int duration) {
 }
 
 ////////////////////////////////////////////////////////////
-/// 
+/// Resize screen
 ////////////////////////////////////////////////////////////
 void Graphics::ResizeScreen(int width, int height) {
-	// TODO
+	Player::ResizeWindow(width, height);
+
+	glViewport(0, 0, width, height);
+	glShadeModel(GL_FLAT);
+
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	glOrtho(0, width, height, 0, -1, 1); 
+
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+
+	glClear(GL_COLOR_BUFFER_BIT);
+	SDL_GL_SwapBuffers();
 }
 
 ////////////////////////////////////////////////////////////
-/// 
+/// Snap scree to bitmap
 ////////////////////////////////////////////////////////////
 VALUE Graphics::SnapToBitmap() {
 	return Qnil;
 }
 
 ////////////////////////////////////////////////////////////
-/// 
+/// Fade out
 ////////////////////////////////////////////////////////////
 void Graphics::FadeOut(int duration) {
-	// TODO
+	int n = brightness / duration;
+	for (;duration > 0; duration--) {
+		brightness -= n;
+		Update();
+	}
+	if (brightness > 0) {
+		brightness = 0;
+		Update();
+	}
 }
 
+
 ////////////////////////////////////////////////////////////
-/// 
+/// Fade in
 ////////////////////////////////////////////////////////////
 void Graphics::FadeIn(int duration) {
-	// TODO
+	int n = 255 / duration;
+	for (;duration > 0; duration--) {
+		brightness += n;
+		Update();
+	}
+	if (brightness < 255) {
+		brightness = 255;
+		Update();
+	}
 }
 
 ////////////////////////////////////////////////////////////
@@ -225,10 +308,14 @@ void Graphics::SetFrameCount(int nframecount) {
 	framecount = nframecount;
 }
 VALUE Graphics::GetBackColor() {
-	return Color(backcolor, screen->format).GetARGSS();
+	return backcolor.GetARGSS();
 }
 void Graphics::SetBackColor(VALUE nbackcolor) {
-	backcolor = Color::GetUint32(nbackcolor, screen->format);
+	backcolor = Color(nbackcolor);
+	glClearColor((GLclampf)(backcolor.red / 255.0f),
+				 (GLclampf)(backcolor.green / 255.0f),
+				 (GLclampf)(backcolor.blue / 255.0f),
+				 (GLclampf)(backcolor.alpha / 255.0f));
 }
 int Graphics::GetBrightness() {
 	return brightness;
@@ -259,10 +346,12 @@ void Graphics::RegisterZObj(long z, unsigned long id) {
 	creation += 1;
 	ZObj zobj(z, creation, id);
 	zlist.push_back(zobj);
+	zlist.sort(SortZObj);
 }
 void Graphics::RegisterZObj(long z, unsigned long id, bool multiz) {
 	ZObj zobj(z, 999999, id);
 	zlist.push_back(zobj);
+	zlist.sort(SortZObj);
 }
 
 ////////////////////////////////////////////////////////////
@@ -274,7 +363,7 @@ struct remove_zobj_id : public std::binary_function<ZObj, ZObj, bool> {
 	unsigned long id;
 };
 void Graphics::RemoveZObj(unsigned long id) {
-	zlist.remove_if(remove_zobj_id(id));
+	zlist.remove_if (remove_zobj_id(id));
 }
 
 ////////////////////////////////////////////////////////////
@@ -287,4 +376,5 @@ void Graphics::UpdateZObj(unsigned long id, long z) {
 			break;
 		}
 	}
+	zlist.sort(SortZObj);
 }

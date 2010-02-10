@@ -38,6 +38,14 @@ namespace ARGSS {
 		namespace AWeather {
 			extern VALUE id;
 			void Init();
+
+			VALUE rinitialize(int argc, VALUE* argv, VALUE self);
+			VALUE rdispose(VALUE self);
+			VALUE rtypeE(VALUE self, VALUE type);
+			VALUE roxE(VALUE self, VALUE ox);
+			VALUE royE(VALUE self, VALUE oy);
+			VALUE rmaxE(VALUE self, VALUE max);
+			VALUE rupdate(VALUE self);
 		};
 	};
 };

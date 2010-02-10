@@ -76,9 +76,17 @@ void ARGSS::Init()
 	ARGSS::AError::Init();
 
 	ARGSS::ARPG::Init();
-	ARGSS::ARPG::ACache::Init();
+	/*ARGSS::ARPG::ACache::Init();
 	ARGSS::ARPG::AWeather::Init();
-	ARGSS::ARPG::ASprite::Init();
+	ARGSS::ARPG::ASprite::Init();*/
 
  	ARGSS::ARuby::Run();
+}
+
+////////////////////////////////////////////////////////////
+/// ARGSS Exit
+////////////////////////////////////////////////////////////
+void ARGSS::Exit()
+{
+	rb_exit(1);
 }

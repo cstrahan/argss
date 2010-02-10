@@ -26,50 +26,36 @@
 /// Headers
 ////////////////////////////////////////////////////////////
 #include "player.h"
-#include "graphics.h"
+#include "options.h"
 #include "system.h"
 #include "output.h"
-#include "console.h"
-#include "argss_ruby.h"
-#include "SDL_ttf.h"
-#include "SDL_opengl.h"
+#include "input.h"
+#include "graphics.h"
+#include "audio.h"
+#include "argss.h"
+
+////////////////////////////////////////////////////////////
+/// Global Variables
+////////////////////////////////////////////////////////////
+SDL_Surface* Player::mainwindow;
+bool Player::focus;
+bool Player::alt_pressing;
 
 ////////////////////////////////////////////////////////////
 /// Initialize
 ////////////////////////////////////////////////////////////
 void Player::Init() {
-	if((SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER |SDL_INIT_JOYSTICK | SDL_INIT_TIMER | SDL_INIT_AUDIO) < 0)) { 
+	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) < 0) { 
 		Output::Error("ARGSS couldn't initialize SDL.\n%s\n", SDL_GetError());
     }
-	atexit(SDL_Quit);
 
-	Graphics::SetScreen(SDL_SetVideoMode(System::Width, System::Height, 32, SDL_OPENGL | SDL_HWSURFACE));
-    if (Graphics::GetScreen() == NULL ) {
+	mainwindow = SDL_SetVideoMode(System::Width, System::Height, 32, SDL_OPENGL);
+	if (mainwindow == NULL ) {
 		Output::Error("ARGSS couldn't initialize %dx%dx%d video mode.\n%s\n", System::Width, System::Height, 32, SDL_GetError());
     }
 	
-	glEnable(GL_TEXTURE_2D);
-	glViewport(0, 0, System::Width, System::Height);
-	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-	glClearDepth(1.0);
-	glShadeModel(GL_FLAT);
+	focus = true;
 
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-
-	glOrtho(0, System::Width, System::Height, 0, -1000, 9999); 
-
-	glMatrixMode(GL_MODELVIEW);
-
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	if(TTF_Init() == -1) {
-		Output::Error("ARGSS couldn't initialize SDL_ttf library.\n%s\n", TTF_GetError());
-	}
-	
 	SDL_WM_SetCaption(System::Title.c_str(), NULL);
 }
 
@@ -81,27 +67,43 @@ void Player::Update() {
 
     while (true) {
         int result = SDL_PollEvent(&evnt);
-        if(evnt.type == SDL_QUIT) {
+        if (evnt.type == SDL_QUIT) {
 			Exit();
         }
-        /*else if(evnt.type == SDL_ACTIVEEVENT) {
-			if(evnt.active.type == SDL_APPACTIVE) {
-				if(evnt.active.gain) {
-					Sys_Focus = false;
-					Input_RestartKeys();
-					if(Sys_FocusPauseAudio) {
-						//Audio_Pause();
+		else if (evnt.type == SDL_ACTIVEEVENT && PAUSE_GAME_WHEN_FOCUS_LOST) {
+			if (evnt.active.state & SDL_APPACTIVE || evnt.active.state & SDL_APPINPUTFOCUS) {
+				if (evnt.active.gain && !focus) {
+					focus = true;
+					Graphics::TimerContinue();
+					if (PAUSE_AUDIO_WHEN_FOCUS_LOST) {
+						Audio::Continue();
 					}
 				}
-				else {
-					Sys_Focus = true;
-					if(Sys_FocusPauseAudio) {
-						//Audio_Play();
+				else if (focus) {
+					focus = false;
+					Input::ClearKeys();
+					Graphics::TimerWait();
+					if (PAUSE_AUDIO_WHEN_FOCUS_LOST) {
+						Audio::Pause();
 					}
 				}
 			}
-        }*/
-		if(!result && !(System::FocusPauseGame && !System::Focus)) {
+		}
+		else if (evnt.type == SDL_KEYDOWN) {
+			if (evnt.key.keysym.sym == SDLK_LALT) {
+				alt_pressing = true;
+			}
+			else if (evnt.key.keysym.sym == SDLK_RETURN && alt_pressing) {
+				ToggleFullscreen();
+			}
+        }
+		else if (evnt.type == SDL_KEYUP) {
+			if (evnt.key.keysym.sym == SDLK_LALT) {
+				alt_pressing = false;
+			}
+        }
+
+		if (!result && !(PAUSE_GAME_WHEN_FOCUS_LOST && !focus)) {
             break;
         }
     }
@@ -111,21 +113,56 @@ void Player::Update() {
 /// Exit
 ////////////////////////////////////////////////////////////
 void Player::Exit() {
-	Console::Free();
+	Output::None();
     SDL_Quit();
-	rb_exit(1);
+	ARGSS::Exit();
+}
+
+////////////////////////////////////////////////////////////
+/// Switch fullscreen
+////////////////////////////////////////////////////////////
+void Player::ToggleFullscreen() {
+	Uint32 flags = mainwindow->flags;
+	SDL_FreeSurface(mainwindow);
+	mainwindow = SDL_SetVideoMode(0, 0, 32, flags ^ SDL_FULLSCREEN);
+	if (mainwindow == NULL) {
+		mainwindow = SDL_SetVideoMode(0, 0, 32, flags);
+	}
+	Graphics::InitOpenGL();
+	Graphics::RefreshAll();
+}
+
+////////////////////////////////////////////////////////////
+/// Resize window
+////////////////////////////////////////////////////////////
+void Player::ResizeWindow(int width, int height) {
+	mainwindow = SDL_SetVideoMode(width, height, 0, mainwindow->flags);
+}
+
+////////////////////////////////////////////////////////////
+/// Get window width
+////////////////////////////////////////////////////////////
+int Player::GetWidth() {
+	return mainwindow->w;
+}
+
+////////////////////////////////////////////////////////////
+/// Get window height
+////////////////////////////////////////////////////////////
+int Player::GetHeight() {
+	return mainwindow->h;
 }
 
 ////////////////////////////////////////////////////////////
 /// Wait
 ////////////////////////////////////////////////////////////
 void Player::Wait() {
-	Graphics::Wait();
+	//Graphics::TimerWait();
 }
 
 ////////////////////////////////////////////////////////////
 /// Continue
 ////////////////////////////////////////////////////////////
 void Player::Continue() {
-	Graphics::Continue();
+	//Graphics::TimerContinue();
 }
