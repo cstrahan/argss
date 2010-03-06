@@ -36,6 +36,7 @@
 #include "player.h"
 #include "console.h"
 #include "msgbox.h"
+#include "graphics.h"
 
 ////////////////////////////////////////////////////////////
 /// Global Variables
@@ -121,7 +122,7 @@ void Output::Post(char* fmt, ...) {
 	va_end(args);
 }
 void Output::PostStr(std::string msg) {
-	Player::Wait();
+	Graphics::TimerWait();
 	switch(output_type) {
 	case 1:
 		if (Console::Active()) Console::Write(msg);
@@ -144,7 +145,7 @@ void Output::PostStr(std::string msg) {
 		if (Console::Active()) Console::Write(msg);
 		else MsgBox::OK(msg, System::Title);
 	}
-	Player::Continue();
+	Graphics::TimerContinue();
 }
 
 ////////////////////////////////////////////////////////////

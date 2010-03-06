@@ -63,6 +63,7 @@ namespace ARGSS {
 		VALUE rradial_blur(VALUE self, VALUE angle, VALUE division);
 		VALUE rfont(VALUE self);
 		VALUE rfontE(VALUE self, VALUE font);
+		VALUE rdup(VALUE self);
 	};
 };
 

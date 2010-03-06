@@ -48,6 +48,12 @@
 /// SCREEN_WIDTH SCREEN_HEIGHT
 ///   Screen default width and height.
 ///
+/// ALLOW_FULLSCREEN_TOGGLE
+///   Allows user to change fullscreen state.
+///
+/// RUN_FULLSCREEN
+///   Run game in fullscreen mode.
+///
 /// PAUSE_GAME_WHEN_FOCUS_LOST PAUSE_AUDIO_WHEN_FOCUS_LOST
 ///   Pause the game process and/or audio when the argss window
 ///   looses its focus.
@@ -60,6 +66,8 @@
 #define RTP3 ""
 #define SCREEN_WIDTH 640
 #define SCREEN_HEIGHT 480
+#define ALLOW_FULLSCREEN_TOGGLE true
+#define RUN_FULLSCREEN false
 #define PAUSE_GAME_WHEN_FOCUS_LOST true
 #define PAUSE_AUDIO_WHEN_FOCUS_LOST false
 
@@ -96,8 +104,9 @@
 ///   Update all keys or just the Input default buttons.
 ////////////////////////////////////////////////////////////
 #define DEFAULT_FPS 60
-#define DEFAULT_BACKCOLOR 0x000000
+#define DEFAULT_BACKCOLOR 0x00000000
 #define UPDATE_ALL_KEYS true
+#define JOYSTICK_SUPPORT true
 
 ////////////////////////////////////////////////////////////
 /// DEBUG
@@ -128,3 +137,20 @@
 ////////////////////////////////////////////////////////////
 #define OUTPUT_TYPE 6
 #define OUTPUT_FILE "out.txt"
+
+////////////////////////////////////////////////////////////
+/// Windows options
+///
+/// READ_BUTTON_ASSIGMENT
+///   If true, tries to read from registry the button
+///   assigment options.
+///
+/// READ_BUTTON_ASSIGMENT_KEY
+///   Registry key.
+///
+/// READ_BUTTON_ASSIGMENT_VALUE
+///   Registry entry value.
+////////////////////////////////////////////////////////////
+#define READ_BUTTON_ASSIGMENT true
+#define READ_BUTTON_ASSIGMENT_KEY "SOFTWARE\\Enterbrain\\RGSS"
+#define READ_BUTTON_ASSIGMENT_VALUE "ButtonAssign"

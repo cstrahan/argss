@@ -28,7 +28,6 @@
 ////////////////////////////////////////////////////////////
 /// Headers
 ////////////////////////////////////////////////////////////
-#include "SDL.h"
 
 ////////////////////////////////////////////////////////////
 /// Rect class
@@ -44,7 +43,6 @@ public:
 
 	void Set(int nx, int ny, int nwidth, int nheight);
 
-	SDL_Rect Get();
 	unsigned long GetARGSS();
 	void Adjust(int awidth, int aheight);
 	bool IsOutOfBounds(int awidth, int aheight);
@@ -53,11 +51,6 @@ public:
 	int y;
 	int width;
 	int height;
-
-	static SDL_Rect Get(unsigned long rect);
-	static unsigned long GetARGSS(SDL_Rect rect);
-	static void Adjust(SDL_Rect* rect, int width, int height);
-	static bool IsOutOfBounds(SDL_Rect* rect, int width, int height);
 };
 
 #endif

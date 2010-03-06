@@ -72,14 +72,6 @@ void Rect::Set(int nx, int ny, int nwidth, int nheight) {
 }
 
 ////////////////////////////////////////////////////////////
-/// Get rect
-////////////////////////////////////////////////////////////
-SDL_Rect Rect::Get() {
-	SDL_Rect r = {x, y, width, height};
-	return r;
-}
-
-////////////////////////////////////////////////////////////
 /// Get ARGSS rect
 ////////////////////////////////////////////////////////////
 VALUE Rect::GetARGSS() {
@@ -112,46 +104,5 @@ bool Rect::IsOutOfBounds(int awidth, int aheight) {
 	if (width <= 0 || height <= 0) return true;
 	if (x >= awidth || y >= aheight) return true;
 	if (x + width <= 0 || y + height <= 0) return true;
-	return false;
-}
-
-////////////////////////////////////////////////////////////
-/// Static New rect
-////////////////////////////////////////////////////////////
-SDL_Rect Rect::Get(VALUE rect) {
-	SDL_Rect r = {NUM2INT(rb_iv_get(rect, "@x")),
-					NUM2INT(rb_iv_get(rect, "@y")),
-					NUM2INT(rb_iv_get(rect, "@width")),
-					NUM2INT(rb_iv_get(rect, "@height"))};
-	return r;
-}
-
-////////////////////////////////////////////////////////////
-/// Static Get ARGSS rect
-////////////////////////////////////////////////////////////
-VALUE Rect::GetARGSS(SDL_Rect rect) {
-    VALUE args[4] = {INT2NUM(rect.x), INT2NUM(rect.y), INT2NUM(rect.w), INT2NUM(rect.h)};
-	return rb_class_new_instance(4, args, ARGSS::ARect::id);
-}
-
-////////////////////////////////////////////////////////////
-/// Static Adjust Rect
-////////////////////////////////////////////////////////////
-void Rect::Adjust(SDL_Rect* rect, int width, int height) {
-	if (rect->x < 0) rect->x = 0;
-	if (rect->y < 0) rect->y = 0;
-	if (rect->x < width && rect->y < height) {
-		if (width < (rect->w + rect->x)) rect->w = width - rect->x;
-		if (height < (rect->h + rect->y)) rect->h = height - rect->y;
-	}
-}
-
-////////////////////////////////////////////////////////////
-/// Static Adjust Rect
-////////////////////////////////////////////////////////////
-bool Rect::IsOutOfBounds(SDL_Rect* rect, int width, int height) {
-	if (rect->w <= 0 || rect->h <= 0) return true;
-	if (rect->x >= width || rect->y >= height) return true;
-	if (rect->x + rect->w <= 0 || rect->y + rect->h <= 0) return true;
 	return false;
 }

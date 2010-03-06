@@ -100,9 +100,9 @@ Color HSL2RGB(ColorHSL col) {
     Color ncol(0, 0, 0, 0);
     double v1, v2;
     if (col.s == 0) {
-        ncol.red = (Uint8)(col.l * 255);
-        ncol.green = (Uint8)(col.l * 255);
-        ncol.blue = (Uint8)(col.l * 255);
+        ncol.red = (unsigned char)(col.l * 255);
+        ncol.green = (unsigned char)(col.l * 255);
+        ncol.blue = (unsigned char)(col.l * 255);
     }
     else {
         if (col.l < 0.5) {
@@ -112,9 +112,9 @@ Color HSL2RGB(ColorHSL col) {
             v2 = (col.l + col.s) - (col.s * col.l);
         }
         v1 = 2 * col.l - v2;
-        ncol.red = (Uint8)(255 * Hue_2_RGB(v1, v2, col.h + (1.0 / 3)));
-        ncol.green = (Uint8)(255 * Hue_2_RGB(v1, v2, col.h));
-        ncol.blue = (Uint8)(255 * Hue_2_RGB(v1, v2, col.h - (1.0 / 3)));
+        ncol.red = (unsigned char)(255 * Hue_2_RGB(v1, v2, col.h + (1.0 / 3)));
+        ncol.green = (unsigned char)(255 * Hue_2_RGB(v1, v2, col.h));
+        ncol.blue = (unsigned char)(255 * Hue_2_RGB(v1, v2, col.h - (1.0 / 3)));
     }
     return ncol;
 }

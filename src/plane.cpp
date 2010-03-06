@@ -119,9 +119,6 @@ void Plane::Draw(long z) {
 
 	glEnable(GL_TEXTURE_2D);
 
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
@@ -147,7 +144,7 @@ void Plane::Draw(long z) {
 
 	bmp->Refresh();
 
-	glBindTexture(GL_TEXTURE_2D, bmp->gl_bitmap);
+	bmp->BindBitmap();
 
 	glColor4f(1.0f, 1.0f, 1.0f, opacity / 255.0f);
 	

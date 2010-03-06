@@ -26,6 +26,7 @@
 /// Headers
 ////////////////////////////////////////////////////////////
 #include <string>
+#include "time.h"
 #include "graphics.h"
 #include "argss_ruby.h"
 #include "argss_error.h"
@@ -34,8 +35,8 @@
 #include "output.h"
 #include "sprite.h"
 #include "tilemap.h"
-#include "SDL_ttf.h"
-#include "SDL_opengl.h"
+#include "text.h"
+#include "gl/gl.h"
 
 ////////////////////////////////////////////////////////////
 /// Global Variables
@@ -46,7 +47,6 @@ int Graphics::framecount;
 Color Graphics::backcolor;
 int Graphics::brightness;
 double Graphics::framerate_interval;
-SDL_Surface* Graphics::screen;
 std::map<unsigned long, Drawable*> Graphics::drawable_map;
 std::map<unsigned long, Drawable*>::iterator Graphics::it_drawable_map;
 std::list<ZObj> Graphics::zlist;
@@ -54,26 +54,25 @@ std::list<ZObj>::iterator Graphics::it_zlist;
 long Graphics::creation;
 long Graphics::last_tics;
 long Graphics::last_tics_wait;
+long Graphics::next_tics_fps;
 
 ////////////////////////////////////////////////////////////
 /// Initialize
 ////////////////////////////////////////////////////////////
 void Graphics::Init() {
-	if (TTF_Init() == -1) {
-		Output::Error("ARGSS couldn't initialize SDL_ttf library.\n%s\n", TTF_GetError());
-	}
-
 	fps = 0;
-	framerate = 60;
+	framerate = 40;
 	framecount = 0;
 	backcolor = Color(0, 0, 0, 0);
 	brightness = 255;
 	creation = 0;
 	framerate_interval = 1000.0 / framerate;
-	last_tics = SDL_GetTicks() + (long)framerate_interval;
+	last_tics = Time::GetTime() + (long)framerate_interval;
+	next_tics_fps = Time::GetTime() + 1000;
 
 	InitOpenGL();
 
+	Text::Init();
 	Tilemap::Init();
 }
 
@@ -81,12 +80,6 @@ void Graphics::Init() {
 /// Initialize OpengGL
 ////////////////////////////////////////////////////////////
 void Graphics::InitOpenGL() {
-	SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8);
-	SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
-	SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
-	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 8);
-	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-
 	glViewport(0, 0, Player::GetWidth(), Player::GetHeight());
 	glShadeModel(GL_FLAT);
 
@@ -105,7 +98,7 @@ void Graphics::InitOpenGL() {
 				 (GLclampf)(backcolor.alpha / 255.0f));
 	glClearDepth(1.0);
 	glClear(GL_COLOR_BUFFER_BIT);
-	SDL_GL_SwapBuffers();
+	Player::SwapBuffers();
 }
 
 ////////////////////////////////////////////////////////////
@@ -122,22 +115,23 @@ void Graphics::RefreshAll() {
 /// Wait
 ////////////////////////////////////////////////////////////
 void Graphics::TimerWait(){
-	last_tics_wait = SDL_GetTicks();
+	last_tics_wait = Time::GetTime();
 }
 
 ////////////////////////////////////////////////////////////
 /// Continue
 ////////////////////////////////////////////////////////////
 void Graphics::TimerContinue() {
-	last_tics += SDL_GetTicks() - last_tics_wait;
+	last_tics += Time::GetTime() - last_tics_wait;
+	next_tics_fps += Time::GetTime() - last_tics_wait;
 }
 
 ////////////////////////////////////////////////////////////
 /// Update
 ////////////////////////////////////////////////////////////
 void Graphics::Update() {
-	static long t;
-	static long t_fps = last_tics;
+	static long tics;
+	static long tics_fps = Time::GetTime();
 	static long frames = 0;
 	static double waitframes = 0;
 	static double cyclesleftover;
@@ -147,19 +141,21 @@ void Graphics::Update() {
 		waitframes -= 1;
 		return;
 	}*/
-	t = SDL_GetTicks();
-	if ((t - last_tics) >= framerate_interval || (framerate_interval - t + last_tics) < 10) {
-		cyclesleftover = waitframes;
-		//waitframes = (double)(t - last_tics) / framerate_interval - cyclesleftover;
-		//tl += (t - tl) - cyclesleftover;
-		last_tics = t;
+	tics = Time::GetTime();
+
+    if ((tics - last_tics) >= framerate_interval) {// || (framerate_interval - tics + last_tics) < 12) {
+		//cyclesleftover = waitframes;
+		//waitframes = (double)(tics - last_tics) / framerate_interval - cyclesleftover;
+		//last_tics += (tics - last_tics);
+        last_tics = tics;
+
 		DrawFrame();
 		
 		framecount++;
 		frames++;
 		
-		if (t - t_fps >= 1000) {
-			t_fps += 1000;
+		if (tics >= next_tics_fps) {
+			next_tics_fps += 1000;
 			fps = frames;
 			frames = 0;
 			
@@ -169,11 +165,11 @@ void Graphics::Update() {
 #else
 			sprintf(title, "%s - %d FPS", System::Title.c_str(), fps);
 #endif
-			SDL_WM_SetCaption(title, NULL);
+			Player::main_window->SetTitle(title);
 		}
 	}
 	else {
-		SDL_Delay((long)(framerate_interval) - (t - last_tics));
+		Time::SleepMs((long)(framerate_interval) - (tics - last_tics));
 	}
 }
 
@@ -191,7 +187,7 @@ void Graphics::DrawFrame() {
 		glDisable(GL_TEXTURE_2D);
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
-		glColor4f(0.0f, 0.0f, 0.0f, (GLfloat)(1.0f - brightness / 255.0f));
+		glColor4f(0.0f, 0.0f, 0.0f, (float)(1.0f - brightness / 255.0f));
 		glBegin(GL_QUADS);
 			glVertex2i(0, 0);
 			glVertex2i(0, Player::GetHeight());
@@ -200,7 +196,7 @@ void Graphics::DrawFrame() {
 		glEnd();
 	}
 	
-	SDL_GL_SwapBuffers();
+	Player::SwapBuffers();
 }
 
 ////////////////////////////////////////////////////////////
@@ -221,7 +217,8 @@ void Graphics::Transition(int duration, std::string filename, int vague) {
 /// Reset frames
 ////////////////////////////////////////////////////////////
 void Graphics::FrameReset() {
-	last_tics = SDL_GetTicks();
+	last_tics = Time::GetTime();
+	next_tics_fps = Time::GetTime() + 1000;
 }
 
 ////////////////////////////////////////////////////////////
@@ -250,7 +247,8 @@ void Graphics::ResizeScreen(int width, int height) {
 	glLoadIdentity();
 
 	glClear(GL_COLOR_BUFFER_BIT);
-	SDL_GL_SwapBuffers();
+
+	Player::SwapBuffers();
 }
 
 ////////////////////////////////////////////////////////////
@@ -323,12 +321,6 @@ int Graphics::GetBrightness() {
 void Graphics::SetBrightness(int nbrightness) {
 	brightness = nbrightness;
 }
-SDL_Surface* Graphics::GetScreen() {
-	return screen;
-}
-void Graphics::SetScreen(SDL_Surface* nscreen) {
-	screen = nscreen;
-}
 
 ////////////////////////////////////////////////////////////
 /// Sort ZObj
@@ -345,6 +337,7 @@ bool Graphics::SortZObj(ZObj &first, ZObj &second) {
 void Graphics::RegisterZObj(long z, unsigned long id) {
 	creation += 1;
 	ZObj zobj(z, creation, id);
+
 	zlist.push_back(zobj);
 	zlist.sort(SortZObj);
 }

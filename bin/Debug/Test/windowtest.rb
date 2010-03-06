@@ -50,14 +50,14 @@ loop do
   windows7.y = (Graphics.height - windows7.height) / 2
   
   if Input.press?(Keys::LCTRL)
-    windows7.back_opacity += 10 if Input.repeat?(Keys::KP_PLUS)
-    windows7.back_opacity -= 10 if Input.repeat?(Keys::KP_MINUS)
+    windows7.back_opacity += 10 if Input.repeat?(Keys::ADD)
+    windows7.back_opacity -= 10 if Input.repeat?(Keys::SUBTRACT)
   elsif Input.press?(Keys::LALT)
-    windows7.contents_opacity += 10 if Input.repeat?(Keys::KP_PLUS)
-    windows7.contents_opacity -= 10 if Input.repeat?(Keys::KP_MINUS)
+    windows7.contents_opacity += 10 if Input.repeat?(Keys::ADD)
+    windows7.contents_opacity -= 10 if Input.repeat?(Keys::SUBTRACT)
   else
-    windows7.opacity += 10 if Input.repeat?(Keys::KP_PLUS)
-    windows7.opacity -= 10 if Input.repeat?(Keys::KP_MINUS)
+    windows7.opacity += 10 if Input.repeat?(Keys::ADD)
+    windows7.opacity -= 10 if Input.repeat?(Keys::SUBTRACT)
   end
   
   if Input.press?(Keys::RETURN)

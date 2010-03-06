@@ -33,7 +33,7 @@
 #include "player.h"
 #include "graphics.h"
 #include "system.h"
-#include "SDL_opengl.h"
+#include "gl/gl.h"
 
 ////////////////////////////////////////////////////////////
 /// Defines
@@ -154,7 +154,7 @@ void Sprite::Draw(long z) {
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	
-	glBindTexture(GL_TEXTURE_2D, sprite->gl_bitmap);
+	sprite->BindBitmap();
 
 	glTranslatef((float)x, (float)y, 0.0f);
 
@@ -352,13 +352,7 @@ void Sprite::RefreshFlash() {
 	glPixelTransferf(GL_GREEN_BIAS, 255.0f);
 	glPixelTransferf(GL_BLUE_BIAS, 255.0f);
 
-	int bpp = sprite->bitmap->format->BytesPerPixel;
-	int format;
-
-	if (sprite->bitmap->format->Rmask == 0x00FF0000) format = GL_BGRA;
-	else format = GL_RGBA;
-
-	glTexImage2D(GL_TEXTURE_2D, 0, bpp, sprite->GetWidth(), sprite->GetHeight(), 0, format, GL_UNSIGNED_BYTE, sprite->bitmap->pixels);
+	glTexImage2D(GL_TEXTURE_2D, 0, 4, sprite->GetWidth(), sprite->GetHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, sprite->GetPixels());
 
 	glPixelTransferf(GL_RED_BIAS, 0.0f);
 	glPixelTransferf(GL_GREEN_BIAS, 0.0f);

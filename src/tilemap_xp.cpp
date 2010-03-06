@@ -74,8 +74,6 @@ Tilemap::Tilemap(VALUE iid) {
 	oy = 0;
 	autotile_time = 0;
 	autotile_frame = 0;
-
-
 }
 
 ////////////////////////////////////////////////////////////
@@ -185,7 +183,7 @@ void Tilemap::Draw(long z_level) {
 
 				if (map_x >= width || map_y >= height) continue;
 
-				int tile_id = NUM2INT(rb_ary_entry(map_data_array, x + y * width + z * width * height));
+				int tile_id = NUM2INT(rb_ary_entry(map_data_array, map_x + map_y * width + z * width * height));
 				
 				int priority = NUM2INT(rb_ary_entry(priorities_array, tile_id));
 
@@ -219,7 +217,7 @@ void Tilemap::Draw(long z_level) {
 								}
 								autotiles_cache[bitmap_id][tile_id][frame]->Refresh();
 							}
-							glBindTexture(GL_TEXTURE_2D, autotiles_cache[bitmap_id][tile_id][frame]->gl_bitmap);
+							autotiles_cache[bitmap_id][tile_id][frame]->BindBitmap();
 							
 							glBegin(GL_QUADS);
 								glTexCoord2f(0.0f, 0.0f); glVertex2f(dst_x, dst_y);
@@ -232,16 +230,16 @@ void Tilemap::Draw(long z_level) {
 						float src_x = (float)((tile_id - 384) % 8 * 32);
 						float src_y = (float)((tile_id - 384) / 8 * 32);
 
-						glBindTexture(GL_TEXTURE_2D, Bitmap::Get(tileset)->gl_bitmap);
+						Bitmap::Get(tileset)->BindBitmap();
 
-						float bmpw =(float)Bitmap::Get(tileset)->GetWidth();
-						float bmph =(float)Bitmap::Get(tileset)->GetHeight();
+						float bmpw = (float)Bitmap::Get(tileset)->GetWidth();
+						float bmph = (float)Bitmap::Get(tileset)->GetHeight();
 
 						glBegin(GL_QUADS);
-							glTexCoord2f(src_x / bmpw, src_y / bmph);					  glVertex2f(dst_x, dst_y);
-							glTexCoord2f((src_x + 32.0f) / bmpw, src_y / bmph); 		  glVertex2f(dst_x + 32.0f, dst_y);
+							glTexCoord2f(src_x / bmpw, src_y / bmph);					   glVertex2f(dst_x, dst_y);
+							glTexCoord2f((src_x + 32.0f) / bmpw, src_y / bmph); 		   glVertex2f(dst_x + 32.0f, dst_y);
 							glTexCoord2f((src_x + 32.0f) / bmpw, (src_y + 32.0f) / bmph);  glVertex2f(dst_x + 32.0f, dst_y + 32.0f);
-							glTexCoord2f(src_x / bmpw, (src_y + 32.0f) / bmph);			  glVertex2f(dst_x, dst_y + 32.0f);
+							glTexCoord2f(src_x / bmpw, (src_y + 32.0f) / bmph);			   glVertex2f(dst_x, dst_y + 32.0f);
 						glEnd();
 					}
 				}

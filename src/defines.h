@@ -22,7 +22,11 @@
 /// SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //////////////////////////////////////////////////////////////////////////////////
 
-#define rmask 0xff000000
-#define gmask 0x00ff0000
-#define bmask 0x0000ff00
-#define amask 0x000000ff
+#include <stdint.h>
+
+typedef int8_t		Sint8;
+typedef uint8_t		Uint8;
+typedef int16_t		Sint16;
+typedef uint16_t	Uint16;
+typedef int32_t		Sint32;
+typedef uint32_t	Uint32;

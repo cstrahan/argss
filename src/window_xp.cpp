@@ -163,7 +163,7 @@ void Window::Draw(long z) {
 		float widthf = (float)width;
 		float heightf = (float)height;
 
-		glBindTexture(GL_TEXTURE_2D, bmp->gl_bitmap);
+		bmp->BindBitmap();
 
 		// Background
 		if (width > 4 && height > 4 && (back_opacity * opacity / 255 > 0)) {
@@ -365,7 +365,7 @@ void Window::Draw(long z) {
 
 			bmp->Refresh();
 
-			glBindTexture(GL_TEXTURE_2D, bmp->gl_bitmap);
+			bmp->BindBitmap();
 			
 			Rect dstrect(x + 16, y + 16, width - 32, height - 32);
 
@@ -403,7 +403,7 @@ void Window::Draw(long z) {
 			float widthf = (float)width;
 			float heightf = (float)height;
 
-			glBindTexture(GL_TEXTURE_2D, bmp->gl_bitmap);
+			bmp->BindBitmap();
 
 			glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 

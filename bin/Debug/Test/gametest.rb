@@ -6,6 +6,8 @@ Graphics.backcolor = Color.new(0, 0, 0)
 
 Graphics.frame_rate = 40
 
+$DEBUG = true
+
 require("Test/zlib")
 require("Test/Win32API")
 

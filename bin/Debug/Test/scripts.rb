@@ -1,7 +1,3 @@
-
-# Load Keys module
-require('Test/keys')
-
 Output.console
 
 TESTS = ["tone","bmpsprite", "window", "maumau", "rtp",

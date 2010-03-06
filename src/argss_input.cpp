@@ -113,12 +113,4 @@ void ARGSS::AInput::Init() {
     rb_define_const(id, "F7", INT2FIX(27));
     rb_define_const(id, "F8", INT2FIX(28));
     rb_define_const(id, "F9", INT2FIX(29));
-	rb_cv_set(id, "@@dirkeys1", rb_ary_new3(1, INT2NUM(Input::Keys::KP1)));
-    rb_cv_set(id, "@@dirkeys2", rb_ary_new3(2, INT2NUM(Input::Keys::KP2), INT2NUM(Input::Keys::DOWN)));
-    rb_cv_set(id, "@@dirkeys3", rb_ary_new3(1, INT2NUM(Input::Keys::KP3)));
-    rb_cv_set(id, "@@dirkeys4", rb_ary_new3(2, INT2NUM(Input::Keys::KP4), INT2NUM(Input::Keys::LEFT)));
-    rb_cv_set(id, "@@dirkeys6", rb_ary_new3(2, INT2NUM(Input::Keys::KP6), INT2NUM(Input::Keys::RIGHT)));
-    rb_cv_set(id, "@@dirkeys7", rb_ary_new3(1, INT2NUM(Input::Keys::KP7)));
-    rb_cv_set(id, "@@dirkeys8", rb_ary_new3(2, INT2NUM(Input::Keys::KP8), INT2NUM(Input::Keys::UP)));
-    rb_cv_set(id, "@@dirkeys9", rb_ary_new3(1, INT2NUM(Input::Keys::KP9)));
 }

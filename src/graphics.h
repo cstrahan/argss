@@ -29,9 +29,8 @@
 /// Headers
 ////////////////////////////////////////////////////////////
 #include <string>
-#include <map>
 #include <list>
-#include "SDL.h"
+#include <map>
 #include "drawable.h"
 #include "zobj.h"
 #include "color.h"
@@ -64,8 +63,6 @@ namespace Graphics {
 	void SetBackColor(unsigned long nbackcolor);
 	int GetBrightness();
 	void SetBrightness(int nbrightness);
-	SDL_Surface* GetScreen();
-	void SetScreen(SDL_Surface* nscreen);
 
 	bool SortZObj(ZObj &first, ZObj &second);
 	void RegisterZObj(long z, unsigned long id);
@@ -82,8 +79,7 @@ namespace Graphics {
 	extern long creation;
 	extern long last_tics;
 	extern long last_tics_wait;
-
-	extern SDL_Surface* screen;
+	extern long next_tics_fps;
 
 	extern std::map<unsigned long, Drawable*> drawable_map;
 	extern std::map<unsigned long, Drawable*>::iterator it_drawable_map;

@@ -37,7 +37,7 @@
 ////////////////////////////////////////////////////////////
 /// Global Variables
 ////////////////////////////////////////////////////////////
-SDL_Surface* Player::mainwindow;
+WindowUi* Player::main_window;
 bool Player::focus;
 bool Player::alt_pressing;
 
@@ -45,63 +45,54 @@ bool Player::alt_pressing;
 /// Initialize
 ////////////////////////////////////////////////////////////
 void Player::Init() {
-	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) < 0) { 
-		Output::Error("ARGSS couldn't initialize SDL.\n%s\n", SDL_GetError());
-    }
-
-	mainwindow = SDL_SetVideoMode(System::Width, System::Height, 32, SDL_OPENGL);
-	if (mainwindow == NULL ) {
-		Output::Error("ARGSS couldn't initialize %dx%dx%d video mode.\n%s\n", System::Width, System::Height, 32, SDL_GetError());
-    }
+	main_window = new WindowUi(System::Width, System::Height, System::Title, true, RUN_FULLSCREEN);
 	
 	focus = true;
-
-	SDL_WM_SetCaption(System::Title.c_str(), NULL);
+	alt_pressing = false;
 }
 
 ////////////////////////////////////////////////////////////
 /// Initialize
 ////////////////////////////////////////////////////////////
 void Player::Update() {
-    SDL_Event evnt;
+    Event evnt;
 
     while (true) {
-        int result = SDL_PollEvent(&evnt);
-        if (evnt.type == SDL_QUIT) {
+		bool result = main_window->GetEvent(evnt);
+		if (evnt.type == Event::Quit) {
 			Exit();
+			break;
         }
-		else if (evnt.type == SDL_ACTIVEEVENT && PAUSE_GAME_WHEN_FOCUS_LOST) {
-			if (evnt.active.state & SDL_APPACTIVE || evnt.active.state & SDL_APPINPUTFOCUS) {
-				if (evnt.active.gain && !focus) {
-					focus = true;
-					Graphics::TimerContinue();
-					if (PAUSE_AUDIO_WHEN_FOCUS_LOST) {
-						Audio::Continue();
-					}
-				}
-				else if (focus) {
-					focus = false;
-					Input::ClearKeys();
-					Graphics::TimerWait();
-					if (PAUSE_AUDIO_WHEN_FOCUS_LOST) {
-						Audio::Pause();
-					}
-				}
-			}
-		}
-		else if (evnt.type == SDL_KEYDOWN) {
-			if (evnt.key.keysym.sym == SDLK_LALT) {
+		else if (evnt.type == Event::KeyDown) {
+			if (evnt.param1 == Input::Keys::ALT) {
 				alt_pressing = true;
 			}
-			else if (evnt.key.keysym.sym == SDLK_RETURN && alt_pressing) {
+			else if (evnt.param1 == Input::Keys::RETURN && alt_pressing) {
 				ToggleFullscreen();
 			}
         }
-		else if (evnt.type == SDL_KEYUP) {
-			if (evnt.key.keysym.sym == SDLK_LALT) {
+		else if (evnt.type == Event::KeyUp) {
+			if (evnt.param1 == Input::Keys::ALT) {
 				alt_pressing = false;
 			}
         }
+		else if (PAUSE_GAME_WHEN_FOCUS_LOST) {
+			if (evnt.type == Event::GainFocus && !focus) {
+				focus = true;
+				Graphics::TimerContinue();
+				if (PAUSE_AUDIO_WHEN_FOCUS_LOST) {
+					Audio::Continue();
+				}
+			}
+			else if (evnt.type == Event::LostFocus && focus) {
+				focus = false;
+				Input::ClearKeys();
+				Graphics::TimerWait();
+				if (PAUSE_AUDIO_WHEN_FOCUS_LOST) {
+					Audio::Pause();
+				}
+			}
+		}
 
 		if (!result && !(PAUSE_GAME_WHEN_FOCUS_LOST && !focus)) {
             break;
@@ -114,7 +105,7 @@ void Player::Update() {
 ////////////////////////////////////////////////////////////
 void Player::Exit() {
 	Output::None();
-    SDL_Quit();
+	main_window->Dispose();
 	ARGSS::Exit();
 }
 
@@ -122,12 +113,10 @@ void Player::Exit() {
 /// Switch fullscreen
 ////////////////////////////////////////////////////////////
 void Player::ToggleFullscreen() {
-	Uint32 flags = mainwindow->flags;
-	SDL_FreeSurface(mainwindow);
-	mainwindow = SDL_SetVideoMode(0, 0, 32, flags ^ SDL_FULLSCREEN);
-	if (mainwindow == NULL) {
-		mainwindow = SDL_SetVideoMode(0, 0, 32, flags);
-	}
+	bool toggle = !main_window->IsFullscreen();
+	main_window->Dispose();
+	delete main_window;
+	main_window = new WindowUi(System::Width, System::Height, System::Title, true, toggle);
 	Graphics::InitOpenGL();
 	Graphics::RefreshAll();
 }
@@ -135,34 +124,27 @@ void Player::ToggleFullscreen() {
 ////////////////////////////////////////////////////////////
 /// Resize window
 ////////////////////////////////////////////////////////////
-void Player::ResizeWindow(int width, int height) {
-	mainwindow = SDL_SetVideoMode(width, height, 0, mainwindow->flags);
+void Player::ResizeWindow(long width, long height) {
+	main_window->Resize(width, height);
 }
 
 ////////////////////////////////////////////////////////////
 /// Get window width
 ////////////////////////////////////////////////////////////
 int Player::GetWidth() {
-	return mainwindow->w;
+	return main_window->GetWidth();
 }
 
 ////////////////////////////////////////////////////////////
 /// Get window height
 ////////////////////////////////////////////////////////////
 int Player::GetHeight() {
-	return mainwindow->h;
+	return main_window->GetHeight();
 }
 
 ////////////////////////////////////////////////////////////
-/// Wait
+/// Swap Buffers
 ////////////////////////////////////////////////////////////
-void Player::Wait() {
-	//Graphics::TimerWait();
-}
-
-////////////////////////////////////////////////////////////
-/// Continue
-////////////////////////////////////////////////////////////
-void Player::Continue() {
-	//Graphics::TimerContinue();
+void Player::SwapBuffers() {
+	main_window->SwapBuffers();
 }

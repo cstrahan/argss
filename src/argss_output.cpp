@@ -69,7 +69,7 @@ VALUE ARGSS::AOutput::rstdout_write(VALUE self, VALUE str) {
 VALUE ARGSS::AOutput::rstderr_write(VALUE self, VALUE str) {
 	if (TYPE(str) != T_STRING) str = rb_obj_as_string(str);
 	if (RSTRING(str)->len == 0) return INT2FIX(0);
-	Output::ErrorStr(StringValuePtr(str));
+	//Output::ErrorStr(StringValuePtr(str));
 	return INT2FIX(RSTRING(str)->len);
 }
 VALUE ARGSS::AOutput::stdin_gets(int argc, VALUE *argv, VALUE self) {

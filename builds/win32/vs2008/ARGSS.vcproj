@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="9,00"
 	Name="ARGSS"
-	ProjectGUID="{FFB640A9-8F7E-4A16-97C2-3D794ABC4F56}"
+	ProjectGUID="{9AEBB38A-A482-4B4A-812C-706F6BA16F5B}"
 	RootNamespace="ARGSS"
 	Keyword="Win32Proj"
 	TargetFrameworkVersion="196613"
@@ -18,7 +18,7 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="..\..\..\bin\$(ConfigurationName)"
+			OutputDirectory="..\..\..\bin\$(ConfigurationName)\"
 			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="1"
 			CharacterSet="1"
@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\..\dependencies\msvc\ruby1.8.6\include;..\..\..\dependencies\msvc\sdl\include"
+				AdditionalIncludeDirectories="..\..\..\dependencies;..\..\..\dependencies\win32;..\..\..\dependencies\win32\ruby1.8.6\include;..\..\..\dependencies\win32\soil\include;..\..\..\dependencies\win32\freetype\include"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;MSVC"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -61,10 +61,9 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="opengl32.lib glu32.lib  SDL.lib SDLmain.lib SDL_image.lib SDL_mixer.lib SDL_ttf.lib msvcrt-ruby18.lib"
+				AdditionalDependencies="opengl32.lib freetype2312MT.lib soil.lib msvcrt-ruby18.lib"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="..\..\..\dependencies\msvc\ruby1.8.6\lib;..\..\..\dependencies\msvc\sdl\lib"
-				IgnoreAllDefaultLibraries="false"
+				AdditionalLibraryDirectories="..\..\..\dependencies\win32\ruby1.8.6\lib\msvc;..\..\..\dependencies\win32\soil\lib\msvc;..\..\..\dependencies\win32\freetype\lib\msvc"
 				IgnoreDefaultLibraryNames=""
 				GenerateDebugInformation="true"
 				SubSystem="2"
@@ -94,7 +93,7 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="..\..\..\bin\$(ConfigurationName)"
+			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="1"
 			CharacterSet="1"
@@ -119,7 +118,8 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
-				AdditionalIncludeDirectories="..\..\..\dependencies\msvc\ruby1.8.6\include;..\..\..\dependencies\msvc\sdl\include;..\..\..\dependencies\msvc\zlib\include"
+				FavorSizeOrSpeed="1"
+				AdditionalIncludeDirectories="..\..\..\dependencies;..\..\..\dependencies\win32;..\..\..\dependencies\win32\ruby1.8.6\include;..\..\..\dependencies\win32\soil\include;..\..\..\dependencies\win32\freetype\include"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;MSVC"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
@@ -138,9 +138,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="SDL.lib SDLmain.lib SDL_image.lib SDL_mixer.lib SDL_ttf.lib msvcrt-ruby18.lib rubyzlib.lib"
+				AdditionalDependencies="opengl32.lib freetype2312MT.lib soil.lib msvcrt-ruby18.lib"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="..\..\..\dependencies\msvc\ruby1.8.6\lib;..\..\..\dependencies\msvc\sdl\lib;..\..\..\dependencies\msvc\zlib\lib"
+				AdditionalLibraryDirectories="..\..\..\dependencies\win32\ruby1.8.6\lib\msvc;..\..\..\dependencies\win32\soil\lib\msvc;..\..\..\dependencies\win32\freetype\lib\msvc"
+				IgnoreDefaultLibraryNames=""
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				OptimizeReferences="2"
@@ -175,6 +176,8 @@
 	<Files>
 		<Filter
 			Name="Source Files"
+			Filter="cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx"
+			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
 				RelativePath="..\..\..\src\defines.h"
@@ -182,10 +185,6 @@
 			</File>
 			<File
 				RelativePath="..\..\..\src\main.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\..\src\main.h"
 				>
 			</File>
 			<File
@@ -206,10 +205,6 @@
 			</File>
 			<File
 				RelativePath="..\..\..\src\player.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\..\src\simpleini.h"
 				>
 			</File>
 			<File
@@ -440,40 +435,16 @@
 				Name="multimedia"
 				>
 				<Filter
-					Name="input"
+					Name="audio"
 					>
 					<File
-						RelativePath="..\..\..\src\input.cpp"
+						RelativePath="..\..\..\src\audio.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\..\..\src\input.h"
+						RelativePath="..\..\..\src\audio.h"
 						>
 					</File>
-					<File
-						RelativePath="..\..\..\src\inputbuttons.h"
-						>
-					</File>
-					<File
-						RelativePath="..\..\..\src\inputkeys.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\..\..\src\inputkeys.h"
-						>
-					</File>
-					<Filter
-						Name="win32"
-						>
-						<File
-							RelativePath="..\..\..\src\inputbuttons_win32.cpp"
-							>
-						</File>
-						<File
-							RelativePath="..\..\..\src\inputbuttons_win32.h"
-							>
-						</File>
-					</Filter>
 				</Filter>
 				<Filter
 					Name="graphics"
@@ -539,6 +510,18 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\..\src\text.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\..\src\text.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\..\src\tilemap.h"
+						>
+					</File>
+					<File
 						RelativePath="..\..\..\src\tilemap_xp.cpp"
 						>
 					</File>
@@ -563,6 +546,10 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\..\src\window.h"
+						>
+					</File>
+					<File
 						RelativePath="..\..\..\src\window_xp.cpp"
 						>
 					</File>
@@ -580,16 +567,40 @@
 					</File>
 				</Filter>
 				<Filter
-					Name="audio"
+					Name="input"
 					>
 					<File
-						RelativePath="..\..\..\src\audio.cpp"
+						RelativePath="..\..\..\src\input.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\..\..\src\audio.h"
+						RelativePath="..\..\..\src\input.h"
 						>
 					</File>
+					<File
+						RelativePath="..\..\..\src\inputbuttons.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\..\src\inputkeys.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\..\src\inputkeys.h"
+						>
+					</File>
+					<Filter
+						Name="win32"
+						>
+						<File
+							RelativePath="..\..\..\src\inputbuttons_win32.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\..\..\src\inputbuttons_win32.h"
+							>
+						</File>
+					</Filter>
 				</Filter>
 			</Filter>
 			<Filter
@@ -600,11 +611,23 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\..\src\event.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\..\src\filefinder.h"
 					>
 				</File>
 				<File
 					RelativePath="..\..\..\src\msgbox.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\src\time.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\src\windowui.h"
 					>
 				</File>
 				<Filter
@@ -640,6 +663,22 @@
 					</File>
 					<File
 						RelativePath="..\..\..\src\registry.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\..\src\time_win32.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\..\src\time_win32.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\..\src\windowui_win32.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\..\src\windowui_win32.h"
 						>
 					</File>
 				</Filter>

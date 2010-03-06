@@ -102,6 +102,8 @@
         <File Name="../../../src/drawable.h"/>
         <File Name="../../../src/tilemap.h"/>
         <File Name="../../../src/window.h"/>
+        <File Name="../../../src/text.cpp"/>
+        <File Name="../../../src/text.h"/>
       </VirtualDirectory>
       <VirtualDirectory Name="input">
         <File Name="../../../src/inputkeys.cpp"/>
@@ -135,28 +137,38 @@
         <File Name="../../../src/msgbox_win32.h"/>
         <File Name="../../../src/registry.cpp"/>
         <File Name="../../../src/registry.h"/>
+        <File Name="../../../src/time_win32.cpp"/>
+        <File Name="../../../src/time_win32.h"/>
+        <File Name="../../../src/windowui_win32.cpp"/>
+        <File Name="../../../src/windowui_win32.h"/>
       </VirtualDirectory>
       <File Name="../../../src/console.h"/>
       <File Name="../../../src/filefinder.h"/>
+      <File Name="../../../src/event.h"/>
+      <File Name="../../../src/time.h"/>
+      <File Name="../../../src/windowui.h"/>
     </VirtualDirectory>
   </VirtualDirectory>
   <Dependencies Name="Release"/>
-  <Dependencies Name="Debug"/>
   <Settings Type="Executable">
     <Configuration Name="Debug" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
       <Compiler Options="-g;-W" Required="yes" PreCompiledHeader="">
         <IncludePath Value="."/>
         <IncludePath Value="../../../dependencies"/>
-        <IncludePath Value="../../../dependencies/mingw/ruby1.8.6/include"/>
-        <IncludePath Value="../../../dependencies/mingw/sdl/include"/>
+        <IncludePath Value="../../../dependencies"/>
+        <IncludePath Value="../../../dependencies/win32/ruby1.8.6/include"/>
+        <IncludePath Value="../../../dependencies/win32/soil/include"/>
+        <IncludePath Value="../../../dependencies/win32/freetype/include"/>
         <Preprocessor Value="WIN32"/>
         <Preprocessor Value="_DEBUG"/>
         <Preprocessor Value="_WINDOWS"/>
         <Preprocessor Value="MINGW"/>
+        <Preprocessor Value="MISSING_H"/>
       </Compiler>
-      <Linker Options="-lopengl32 -mwindows -lmingw32  -lSDLmain -lSDL -lSDL_image -lSDL_mixer -lSDL_ttf -lmsvcrt-ruby18" Required="yes">
-        <LibraryPath Value="../../../dependencies/mingw/ruby1.8.6/lib"/>
-        <LibraryPath Value="../../../dependencies/mingw/sdl/lib/"/>
+      <Linker Options="-lopengl32 -mwindows -lmingw32 -lfreetype2312MT -lsoil -msvcrt-ruby18" Required="yes">
+        <LibraryPath Value="../../../dependencies/win32/ruby1.8.6/lib/mingw"/>
+        <LibraryPath Value="../../../dependencies/win32/soil/lib"/>
+        <LibraryPath Value="../../../dependencies/win32/freetype/lib"/>
       </Linker>
       <ResourceCompiler Options="" Required="yes"/>
       <General OutputFile="../../../bin/Debug/$(ProjectName)" IntermediateDirectory="./Debug" Command="./$(ProjectName)" CommandArguments="" WorkingDirectory="../../../bin/Debug" PauseExecWhenProcTerminates="yes"/>
@@ -228,4 +240,5 @@
       <ResourceCompiler Options=""/>
     </GlobalSettings>
   </Settings>
+  <Dependencies Name="Debug"/>
 </CodeLite_Project>

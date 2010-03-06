@@ -220,7 +220,7 @@ VALUE ARGSS::ASprite::rzoom_x(VALUE self) {
 }
 VALUE ARGSS::ASprite::rzoom_xE(VALUE self, VALUE zoom_x) {
     ARGSS::ASprite::Check(self);
-    Sprite::Get(self)->SetZoomX(NUM2DBL(zoom_x));
+    Sprite::Get(self)->SetZoomX((float)NUM2DBL(zoom_x));
     return rb_iv_set(self, "@zoom_x", rb_Float(zoom_x));
 }
 VALUE ARGSS::ASprite::rzoom_y(VALUE self) {
@@ -229,7 +229,7 @@ VALUE ARGSS::ASprite::rzoom_y(VALUE self) {
 }
 VALUE ARGSS::ASprite::rzoom_yE(VALUE self, VALUE zoom_y) {
     ARGSS::ASprite::Check(self);
-	Sprite::Get(self)->SetZoomY(NUM2DBL(zoom_y));
+	Sprite::Get(self)->SetZoomY((float)NUM2DBL(zoom_y));
     return rb_iv_set(self, "@zoom_y", rb_Float(zoom_y));
 }
 VALUE ARGSS::ASprite::rangle(VALUE self) {
@@ -238,7 +238,7 @@ VALUE ARGSS::ASprite::rangle(VALUE self) {
 }
 VALUE ARGSS::ASprite::rangleE(VALUE self, VALUE angle) {
     ARGSS::ASprite::Check(self);
-    Sprite::Get(self)->SetAngle(NUM2DBL(angle));
+    Sprite::Get(self)->SetAngle((float)NUM2DBL(angle));
     return rb_iv_set(self, "@angle", rb_Float(angle));
 }
 VALUE ARGSS::ASprite::rmirror(VALUE self) {

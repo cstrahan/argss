@@ -28,7 +28,7 @@
 ////////////////////////////////////////////////////////////
 /// Headers
 ////////////////////////////////////////////////////////////
-#include "SDL.h"
+#include "defines.h"
 
 ////////////////////////////////////////////////////////////
 /// Color class
@@ -38,23 +38,18 @@ public:
 	Color();
 	Color(unsigned long color);
 	Color(int ired, int igreen, int iblue, int ialpha);
-	Color(Uint32 color, SDL_PixelFormat* format);
 	~Color();
 
 	void Set(unsigned long color);
 	unsigned long GetARGSS();
-	Uint32 GetUint32(SDL_PixelFormat* format);
-	SDL_Color Get();
+	Uint32 GetUint32();
 
-	double red;
-	double green;
-	double blue;
-	double alpha;
+	float red;
+	float green;
+	float blue;
+	float alpha;
 
-	static SDL_Color Get(unsigned long color);
-	static unsigned long GetARGSS(SDL_Color color);
-	static Uint32 GetUint32(unsigned long color, SDL_PixelFormat* format);
-	static Uint32 GetUint32(SDL_Color color, SDL_PixelFormat* format);
+	static Color NewUint32(Uint32 color);
 };
 
 #endif

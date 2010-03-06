@@ -238,6 +238,15 @@ VALUE ARGSS::ABitmap::rfontE(VALUE self, VALUE font) {
 	Check_Class(font, ARGSS::AFont::id);
     return rb_iv_set(self, "@font", font);;
 }
+VALUE ARGSS::ABitmap::rdup(VALUE self) {
+	ARGSS::ABitmap::CheckDisposed(self);
+	int width = Bitmap::Get(self)->GetWidth();
+	int height = Bitmap::Get(self)->GetHeight();
+	VALUE args[2] = {INT2NUM(width), INT2NUM(height)};
+	VALUE bmp = rb_class_new_instance(2, args, id);
+	Bitmap::Get(bmp)->Blit(0, 0, Bitmap::Get(self), Rect(0, 0, width, height), 255);
+    return bmp;
+}
 
 ////////////////////////////////////////////////////////////
 /// ARGSS Bitmap initialize
@@ -269,6 +278,8 @@ void ARGSS::ABitmap::Init() {
 	rb_define_method(id, "radial_blur", (rubyfunc)rradial_blur, 2);
 	rb_define_method(id, "font", (rubyfunc)rfont, 0);
 	rb_define_method(id, "font=", (rubyfunc)rfontE, 1);
+	rb_define_method(id, "clone", (rubyfunc)rdup, 0);
+	rb_define_method(id, "dup", (rubyfunc)rdup, 0);
 }
 
 ////////////////////////////////////////////////////////////
@@ -276,6 +287,6 @@ void ARGSS::ABitmap::Init() {
 ////////////////////////////////////////////////////////////
 void ARGSS::ABitmap::CheckDisposed(VALUE self) {
     if (Bitmap::IsDisposed(self)) {
-		rb_raise(ARGSS::AError::id, "disposed bitmap <%i>", self);
+		rb_raise(ARGSS::AError::id, "disposed bitmap <%i>", self << 1);
     }
 }

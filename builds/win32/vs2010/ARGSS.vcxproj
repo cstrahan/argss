@@ -50,7 +50,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\..\..\dependencies;..\..\..\dependencies\msvc\ruby1.8.6\include;..\..\..\dependencies\msvc\sdl\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\dependencies;..\..\..\dependencies\win32\ruby1.8.6\include;..\..\..\dependencies\win32\soil\include;..\..\..\dependencies\win32\freetype\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;MSVC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -60,39 +60,63 @@
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <CompileAsManaged>false</CompileAsManaged>
+      <ProgramDataBaseFileName>$(IntDir)vc$(PlatformToolsetVersion).pdb</ProgramDataBaseFileName>
+      <PrecompiledHeaderFile>
+      </PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile>
+      </PrecompiledHeaderOutputFile>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>opengl32.lib;SDL.lib;SDLmain.lib;SDL_image.lib;SDL_mixer.lib;SDL_ttf.lib;msvcrt-ruby18.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>..\..\..\dependencies\msvc\ruby1.8.6\lib;..\..\..\dependencies\msvc\sdl\lib\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;soil.lib;freetype2312MT.lib;msvcrt-ruby18.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\..\dependencies\win32\ruby1.8.6\lib\msvc;..\..\..\dependencies\win32\soil\lib\msvc;..\..\..\dependencies\win32\freetype\lib\msvc;..\..\..\dependencies\win32\sfml\lib\msvc;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
       <IgnoreSpecificDefaultLibraries>msvcrt.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <TargetMachine>MachineX86</TargetMachine>
+      <EntryPointSymbol>
+      </EntryPointSymbol>
+      <ForceSymbolReferences>
+      </ForceSymbolReferences>
+      <ProgramDatabaseFile>$(IntDir)$(TargetName).pdb</ProgramDatabaseFile>
+      <ProfileGuidedDatabase>$(TargetDir)$(TargetName).pgd</ProfileGuidedDatabase>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
-      <IntrinsicFunctions>true</IntrinsicFunctions>
-      <AdditionalIncludeDirectories>..\..\..\dependencies\msvc\sdl\include;..\..\..\dependencies\msvc\ruby1.8.6\include;..\..\..\dependencies;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>MSVC;WIN32;_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <IntrinsicFunctions>false</IntrinsicFunctions>
+      <AdditionalIncludeDirectories>..\..\..\dependencies;..\..\..\dependencies\win32\ruby1.8.6\include;..\..\..\dependencies\win32\soil\include;..\..\..\dependencies\win32\freetype\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;MSVC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
-      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <FunctionLevelLinking>
+      </FunctionLevelLinking>
       <PrecompiledHeader>
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <InlineFunctionExpansion>Default</InlineFunctionExpansion>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <CompileAsManaged>false</CompileAsManaged>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>SDL.lib;SDLmain.lib;SDL_image.lib;SDL_mixer.lib;SDL_ttf.lib;msvcrt-ruby18.lib</AdditionalDependencies>
-      <AdditionalLibraryDirectories>..\..\..\dependencies\msvc\ruby1.8.6\lib;..\..\..\dependencies\msvc\sdl\lib\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>opengl32.lib;soil.lib;freetype2312MT.lib;msvcrt-ruby18.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\..\dependencies\win32\ruby1.8.6\lib\msvc;..\..\..\dependencies\win32\soil\lib\msvc;..\..\..\dependencies\win32\freetype\lib\msvc;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
-      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <EnableCOMDATFolding>
+      </EnableCOMDATFolding>
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
+    <Manifest>
+      <OutputManifestFile>$(IntDir)$(TargetName)$(TargetExt).embed.manifest</OutputManifestFile>
+    </Manifest>
+    <Manifest>
+      <OutputResourceManifests>
+      </OutputResourceManifests>
+    </Manifest>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug-sdl1.3|Win32'">
     <ClCompile>
@@ -106,6 +130,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\src\defines.h" />
+    <ClInclude Include="..\..\..\src\event.h" />
     <ClInclude Include="..\..\..\src\options.h" />
     <ClInclude Include="..\..\..\src\output.h" />
     <ClInclude Include="..\..\..\src\player.h" />
@@ -148,11 +173,16 @@
     <ClInclude Include="..\..\..\src\plane.h" />
     <ClInclude Include="..\..\..\src\rect.h" />
     <ClInclude Include="..\..\..\src\sprite.h" />
+    <ClInclude Include="..\..\..\src\text.h" />
     <ClInclude Include="..\..\..\src\tilemap.h" />
     <ClInclude Include="..\..\..\src\tilemap_xp.h" />
+    <ClInclude Include="..\..\..\src\time.h" />
+    <ClInclude Include="..\..\..\src\time_win32.h" />
     <ClInclude Include="..\..\..\src\tone.h" />
     <ClInclude Include="..\..\..\src\viewport.h" />
     <ClInclude Include="..\..\..\src\window.h" />
+    <ClInclude Include="..\..\..\src\windowui.h" />
+    <ClInclude Include="..\..\..\src\windowui_win32.h" />
     <ClInclude Include="..\..\..\src\window_xp.h" />
     <ClInclude Include="..\..\..\src\zobj.h" />
     <ClInclude Include="..\..\..\src\audio.h" />
@@ -203,9 +233,12 @@
     <ClCompile Include="..\..\..\src\plane.cpp" />
     <ClCompile Include="..\..\..\src\rect.cpp" />
     <ClCompile Include="..\..\..\src\sprite.cpp" />
+    <ClCompile Include="..\..\..\src\text.cpp" />
     <ClCompile Include="..\..\..\src\tilemap_xp.cpp" />
+    <ClCompile Include="..\..\..\src\time_win32.cpp" />
     <ClCompile Include="..\..\..\src\tone.cpp" />
     <ClCompile Include="..\..\..\src\viewport.cpp" />
+    <ClCompile Include="..\..\..\src\windowui_win32.cpp" />
     <ClCompile Include="..\..\..\src\window_xp.cpp" />
     <ClCompile Include="..\..\..\src\zobj.cpp" />
     <ClCompile Include="..\..\..\src\audio.cpp" />

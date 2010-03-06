@@ -44,24 +44,38 @@ int Input::dir4;
 int Input::dir8;
 int Input::start_repeat_time;
 int Input::repeat_time;
+std::vector< std::vector<int> > Input::dirkeys;
 
 ////////////////////////////////////////////////////////////
 /// Initialize
 ////////////////////////////////////////////////////////////
 void Input::Init() {
-	if (SDL_InitSubSystem(SDL_INIT_JOYSTICK) < 0) { 
-		Output::Error("ARGSS couldn't initialize audio.\n%s\n", SDL_GetError());
-    }
+	press_time.resize(Keys::KEYS_COUNT, 0);
+	triggered.resize(Keys::KEYS_COUNT, false);
+	repeated.resize(Keys::KEYS_COUNT, false);
+	released.resize(Keys::KEYS_COUNT, false);
 
-	press_time.resize(SDLK_LAST, 0);
-	triggered.resize(SDLK_LAST, false);
-	repeated.resize(SDLK_LAST, false);
-	released.resize(SDLK_LAST, false);
+	dir4 = 0;
+	dir8 = 0;
 
 	start_repeat_time = 20;
 	repeat_time = 10;
 
 	InitButtons();
+
+	dirkeys.resize(10);
+	dirkeys[1].push_back(Keys::KP1);
+    dirkeys[2].push_back(Keys::KP2);
+	dirkeys[2].push_back(Keys::DOWN);
+    dirkeys[3].push_back(Keys::KP3);
+    dirkeys[4].push_back(Keys::KP4);
+	dirkeys[4].push_back(Keys::LEFT);
+    dirkeys[6].push_back(Keys::KP6);
+	dirkeys[6].push_back(Keys::RIGHT);
+    dirkeys[7].push_back(Keys::KP7);
+    dirkeys[8].push_back(Keys::KP8);
+	dirkeys[8].push_back(Keys::UP);
+    dirkeys[9].push_back(Keys::KP9);
 }
 
 ////////////////////////////////////////////////////////////
@@ -70,9 +84,9 @@ void Input::Init() {
 void Input::Update() {
 	Player::Update();
 
-	Uint8 *keystates = SDL_GetKeyState(NULL); 
+	std::vector<bool> keystates = Player::main_window->GetKeyStates(); 
     for (unsigned int i = 0; i < press_time.size(); ++i) {
-        if (keystates[(SDLKey)i]) {
+		if (keystates[i]) {
             press_time[i] += 1;
             released[i] = false;
         }
@@ -105,21 +119,14 @@ void Input::Update() {
             repeated[i] = false;
         }
     }
-    VALUE dirkeys;
-    char keysvar[11];
+
     int dirpress[10];
-    for(int i = 1; i < 10; i++) {
+    for (int i = 1; i < 10; i++) {
 		dirpress[i] = 0;
         if (i != 5) {
-#ifdef MSVC
-            sprintf_s(keysvar, 11, "@@dirkeys%d", i);
-#else
-			sprintf(keysvar, "@@dirkeys%d", i);
-#endif
-			dirkeys = rb_cv_get(ARGSS::AInput::id, keysvar);
             int presstime;
-            for(int e = 0; e < RARRAY(dirkeys)->len; e++) {
-				presstime = press_time[NUM2KEY(rb_ary_entry(dirkeys, e))];
+            for (unsigned int e = 0; e < dirkeys[i].size(); e++) {
+				presstime = press_time[dirkeys[i][e]];
 				if (presstime > dirpress[i]) {
 					dirpress[i] = presstime;
 				}
@@ -146,18 +153,10 @@ void Input::Update() {
 			}
 		}
 		dir8 = dir4;
-		if (dirpress[9] > 0) {
-			dir8 = 9;
-        }
-		else if (dirpress[7] > 0) {
-			dir8 = 7;
-        }
-		else if (dirpress[3] > 0) {
-			dir8 = 3;
-        }
-		else if (dirpress[1] > 0) {
-			dir8 = 1;
-        }
+		if (dirpress[9] > 0) dir8 = 9;
+		else if (dirpress[7] > 0) dir8 = 7;
+		else if (dirpress[3] > 0) dir8 = 3;
+		else if (dirpress[1] > 0) dir8 = 1;
 	}
 }
 
@@ -179,7 +178,7 @@ void Input::ClearKeys() {
 /// Is pressed?
 ////////////////////////////////////////////////////////////
 bool Input::IsPressed(VALUE button) {
-	if (NUM2INT(button) < 300) {
+	if (NUM2INT(button) < 1000) {
 		int key = NUM2INT(button);
 		if (buttons.count(key) == 0) return false;
 		for (unsigned int i = 0; i < buttons[key].size(); i++) {
@@ -194,7 +193,7 @@ bool Input::IsPressed(VALUE button) {
 /// Is triggered?
 ////////////////////////////////////////////////////////////
 bool Input::IsTriggered(VALUE button) {
-	if (NUM2INT(button) < 300) {
+	if (NUM2INT(button) < 1000) {
 		int key = NUM2INT(button);
 		if (buttons.count(key) == 0) return false;
 		for (unsigned int i = 0; i < buttons[key].size(); i++) {
@@ -209,11 +208,10 @@ bool Input::IsTriggered(VALUE button) {
 /// Is repeated?
 ////////////////////////////////////////////////////////////
 bool Input::IsRepeated(VALUE button) {
-	if (NUM2INT(button) < 300) {
+	if (NUM2INT(button) < 1000) {
 		int key = NUM2INT(button);
 		if (buttons.count(key) == 0) return false;
 		std::vector<int> a = buttons[key];
-		int b = SDLK_DOWN;
 		for (unsigned int i = 0; i < buttons[key].size(); i++) {
 			if (repeated[buttons[key][i]]) return true;
 		}
@@ -226,7 +224,7 @@ bool Input::IsRepeated(VALUE button) {
 /// Is released?
 ////////////////////////////////////////////////////////////
 bool Input::IsReleased(VALUE button) {
-	if (NUM2INT(button) < 300) {
+	if (NUM2INT(button) < 1000) {
 		int key = NUM2INT(button);
 		if (buttons.count(key) == 0) return false;
 		for (unsigned int i = 0; i < buttons[key].size(); i++) {

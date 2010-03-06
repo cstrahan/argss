@@ -28,7 +28,7 @@
 ////////////////////////////////////////////////////////////
 /// Headers
 ////////////////////////////////////////////////////////////
-#include "SDL.h"
+#include "windowui.h"
 
 ////////////////////////////////////////////////////////////
 /// Player namespace
@@ -39,14 +39,13 @@ namespace Player {
 	void Exit();
 
 	void ToggleFullscreen();
-	void ResizeWindow(int width, int height);
+	void ResizeWindow(long width, long height);
 	int GetWidth();
 	int GetHeight();
 
-	void Wait();
-	void Continue();
+	void SwapBuffers();
 
-	extern SDL_Surface* mainwindow;
+	extern WindowUi* main_window;
 	extern bool focus;
 	extern bool alt_pressing;
 };

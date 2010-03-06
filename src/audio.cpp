@@ -25,7 +25,6 @@
 ////////////////////////////////////////////////////////////
 /// Headers
 ////////////////////////////////////////////////////////////
-#include "SDL.h"
 #include "audio.h"
 #include "argss_ruby.h"
 #include "argss_error.h"
@@ -35,7 +34,7 @@
 ////////////////////////////////////////////////////////////
 /// Global Variables
 ////////////////////////////////////////////////////////////
-Mix_Music* Audio::bgm;
+/*Mix_Music* Audio::bgm;
 int Audio::bgm_volume;
 Mix_Chunk* Audio::bgs;
 int Audio::bgs_channel;
@@ -43,13 +42,13 @@ Mix_Chunk* Audio::me;
 int Audio::me_channel;
 bool Audio::me_stopped_bgm;
 std::map<int, Mix_Chunk*> Audio::sounds;
-std::map<int, Mix_Chunk*>::iterator Audio::it_sounds;
+std::map<int, Mix_Chunk*>::iterator Audio::it_sounds;*/
 
 ////////////////////////////////////////////////////////////
 /// Initialize
 ////////////////////////////////////////////////////////////
 void Audio::Init() {
-	if (SDL_InitSubSystem(SDL_INIT_AUDIO) < 0) { 
+	/*if (SDL_InitSubSystem(SDL_INIT_AUDIO) < 0) { 
 		char errstr[] = "ARGSS couldn't initialize audio.\n%s\n";
 		Output::Error(errstr, SDL_GetError());
     }
@@ -61,7 +60,7 @@ void Audio::Init() {
 	bgm = NULL;
 	bgs = NULL;
 	me = NULL;
-	me_stopped_bgm = false;
+	me_stopped_bgm = false;*/
 }
 
 ////////////////////////////////////////////////////////////
@@ -82,7 +81,7 @@ void Audio::Continue() {
 /// BGM play
 ////////////////////////////////////////////////////////////
 void Audio::BGM_Play(std::string file, int volume, int pitch) {
-	std::string path = FileFinder::FindMusic(file);
+	/*std::string path = FileFinder::FindMusic(file);
 	if (path == "") {
 		VALUE enoent = rb_const_get(rb_mErrno, rb_intern("ENOENT"));
 		rb_raise(enoent, "No such file or directory - %s", file.c_str());
@@ -98,30 +97,30 @@ void Audio::BGM_Play(std::string file, int volume, int pitch) {
 		if (Mix_PlayMusic(bgm, -1) == -1) {
 			rb_raise(ARGSS::AError::id, "couldn't play %s BGM.\n%s\n", file.c_str(), Mix_GetError());
 		}
-	}
+	}*/
 }
 
 ////////////////////////////////////////////////////////////
 /// BGM stop
 ////////////////////////////////////////////////////////////
 void Audio::BGM_Stop() {
-	Mix_HaltMusic();
-	me_stopped_bgm = false;
+	/*Mix_HaltMusic();
+	me_stopped_bgm = false;*/
 }
 
 ////////////////////////////////////////////////////////////
 /// BGM fade
 ////////////////////////////////////////////////////////////
 void Audio::BGM_Fade(int fade) {
-	Mix_FadeOutMusic(fade);
-	me_stopped_bgm = false;
+	/*Mix_FadeOutMusic(fade);
+	me_stopped_bgm = false;*/
 }
 
 ////////////////////////////////////////////////////////////
 /// BGS play
 ////////////////////////////////////////////////////////////
 void Audio::BGS_Play(std::string file, int volume, int pitch) {
-	std::string path = FileFinder::FindMusic(file);
+	/*std::string path = FileFinder::FindMusic(file);
 	if (path == "") {
 		VALUE enoent = rb_const_get(rb_mErrno, rb_intern("ENOENT"));
 		rb_raise(enoent, "No such file or directory - %s", file.c_str());
@@ -135,37 +134,37 @@ void Audio::BGS_Play(std::string file, int volume, int pitch) {
 	Mix_Volume(bgs_channel, volume * MIX_MAX_VOLUME / 100);
 	if (bgs_channel == -1) {
 		rb_raise(ARGSS::AError::id, "couldn't play %s BGS.\n%s\n", file.c_str(), Mix_GetError());
-	}
+	}*/
 }
 
 ////////////////////////////////////////////////////////////
 /// BGS stop
 ////////////////////////////////////////////////////////////
 void Audio::BGS_Stop() {
-	if (Mix_Playing(bgs_channel)) Mix_HaltChannel(bgs_channel);
+	//if (Mix_Playing(bgs_channel)) Mix_HaltChannel(bgs_channel);
 }
 
 ////////////////////////////////////////////////////////////
 /// BGS fade
 ////////////////////////////////////////////////////////////
 void Audio::BGS_Fade(int fade) {
-	Mix_FadeOutChannel(bgs_channel, fade);
+	//Mix_FadeOutChannel(bgs_channel, fade);
 }
 
 ////////////////////////////////////////////////////////////
 /// ME play
 ////////////////////////////////////////////////////////////
 void me_finish(int channel) {
-	if (Audio::me_channel == channel) {
+	/*if (Audio::me_channel == channel) {
 		if (Audio::me_stopped_bgm) {
 			Mix_VolumeMusic(Audio::bgm_volume);
 			Mix_FadeInMusic(Audio::bgm, -1, 1000);
 			Audio::me_stopped_bgm = false;
 		}
-	}
+	}*/
 }
 void Audio::ME_Play(std::string file, int volume, int pitch) {
-	std::string path = FileFinder::FindMusic(file);
+	/*std::string path = FileFinder::FindMusic(file);
 	if (path == "") {
 		VALUE enoent = rb_const_get(rb_mErrno, rb_intern("ENOENT"));
 		rb_raise(enoent, "No such file or directory - %s", file.c_str());
@@ -181,28 +180,28 @@ void Audio::ME_Play(std::string file, int volume, int pitch) {
 		rb_raise(ARGSS::AError::id, "couldn't play %s ME.\n%s\n", file.c_str(), Mix_GetError());
 	}
 	me_stopped_bgm = Mix_PlayingMusic() == 1;
-	Mix_ChannelFinished(me_finish);
+	Mix_ChannelFinished(me_finish);*/
 }
 
 ////////////////////////////////////////////////////////////
 /// ME stop
 ////////////////////////////////////////////////////////////
 void Audio::ME_Stop() {
-	if (Mix_Playing(me_channel)) Mix_HaltChannel(me_channel);
+	//if (Mix_Playing(me_channel)) Mix_HaltChannel(me_channel);
 }
 
 ////////////////////////////////////////////////////////////
 /// ME fade
 ////////////////////////////////////////////////////////////
 void Audio::ME_Fade(int fade) {
-	Mix_FadeOutChannel(me_channel, fade);
+	//Mix_FadeOutChannel(me_channel, fade);
 }
 
 ////////////////////////////////////////////////////////////
 /// SE play
 ////////////////////////////////////////////////////////////
 void Audio::SE_Play(std::string file, int volume, int pitch) {
-	std::string path = FileFinder::FindMusic(file);
+	/*std::string path = FileFinder::FindMusic(file);
 	if (path == "") {
 		VALUE enoent = rb_const_get(rb_mErrno, rb_intern("ENOENT"));
 		rb_raise(enoent, "No such file or directory - %s", file.c_str());
@@ -216,16 +215,16 @@ void Audio::SE_Play(std::string file, int volume, int pitch) {
 	if (channel == -1) {
 		rb_raise(ARGSS::AError::id, "couldn't play %s SE.\n%s\n", file.c_str(), Mix_GetError());
 	}
-	sounds[channel] = sound;
+	sounds[channel] = sound;*/
 }
 
 ////////////////////////////////////////////////////////////
 /// SE stop
 ////////////////////////////////////////////////////////////
 void Audio::SE_Stop() {
-	for(it_sounds = sounds.begin(); it_sounds != sounds.end(); it_sounds++) {
+	/*for(it_sounds = sounds.begin(); it_sounds != sounds.end(); it_sounds++) {
 		if (Mix_Playing(it_sounds->first)) Mix_HaltChannel(it_sounds->first);
 		Mix_FreeChunk(it_sounds->second);
 	}
-	sounds.clear();
+	sounds.clear();*/
 }

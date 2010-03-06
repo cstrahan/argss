@@ -138,7 +138,7 @@ VALUE ARGSS::APlane::rzoom_x(VALUE self) {
 }
 VALUE ARGSS::APlane::rzoom_xE(VALUE self, VALUE zoom_x) {
     ARGSS::APlane::CheckDisposed(self);
-	Plane::Get(self)->SetZoomX(NUM2DBL(zoom_x));
+	Plane::Get(self)->SetZoomX((float)NUM2DBL(zoom_x));
 	return rb_iv_set(self, "@zoom_x", zoom_x);
 }
 VALUE ARGSS::APlane::rzoom_y(VALUE self) {
@@ -147,7 +147,7 @@ VALUE ARGSS::APlane::rzoom_y(VALUE self) {
 }
 VALUE ARGSS::APlane::rzoom_yE(VALUE self, VALUE zoom_y) {
     ARGSS::APlane::CheckDisposed(self);
-	Plane::Get(self)->SetZoomY(NUM2DBL(zoom_y));
+	Plane::Get(self)->SetZoomY((float)NUM2DBL(zoom_y));
 	return rb_iv_set(self, "@zoom_y", zoom_y);
 }
 VALUE ARGSS::APlane::ropacity(VALUE self) {

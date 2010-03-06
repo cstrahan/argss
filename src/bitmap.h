@@ -30,9 +30,9 @@
 ////////////////////////////////////////////////////////////
 #include <map>
 #include <string>
+#include "defines.h"
 #include "argss_ruby.h"
-#include "SDL.h"
-#include "SDL_opengl.h"
+#include "gl/gl.h"
 #include "rect.h"
 #include "color.h"
 #include "tone.h"
@@ -42,9 +42,9 @@
 ////////////////////////////////////////////////////////////
 class Bitmap {
 public:
-	Bitmap(int width, int height);
+	Bitmap(int iwidth, int iheight);
 	Bitmap(unsigned long iid, std::string filename);
-	Bitmap(unsigned long iid, int width, int height);
+	Bitmap(unsigned long iid, int iwidth, int iheight);
 	Bitmap(Bitmap* source, Rect src_rect);
 	~Bitmap();
 	
@@ -55,12 +55,9 @@ public:
 	static void Dispose(unsigned long id);
 	static void RefreshBitmaps();
 
-	void BlitScreen(int x, int y);
-	void BlitScreen(int x, int y, int opacity);
-	void BlitScreen(int x, int y, Rect src_rect, int opacity = 255);
-	
 	int GetWidth();
 	int GetHeight();
+	void Copy(int x, int y, Bitmap* source, Rect src_rect);
 	void Blit(int x, int y, Bitmap* source, Rect src_rect, int opacity);
 	void StretchBlit(Rect dst_rect, Bitmap* src_bitmap, Rect src_rect, int opacity);
 	void FillRect(Rect rect, Color color);
@@ -94,18 +91,22 @@ public:
 	
 	Rect GetRect();
 
-	SDL_Surface* bitmap;
-	GLuint gl_bitmap;
+	void BindBitmap();
 	void Refresh();
 	void Changed();
+	Uint32* GetPixels();
+
+protected:
+	unsigned long id;
+
+	GLuint gl_bitmap;
+	long width;
+	long height;
+
+	std::vector<Uint32> pixels;
 
 private:
 	static std::map<unsigned long, Bitmap*> bitmaps;
-
-	int MaskGetByte(Uint32 mask);
-
-	unsigned long id;
 };
 
 #endif
-

@@ -32,30 +32,22 @@
 /// Constructor
 ////////////////////////////////////////////////////////////
 Color::Color() {
-	red = 0;
-    green = 0;
-    blue = 0;
-    alpha = 0;
+	red = 0.0f;
+    green = 0.0f;
+    blue = 0.0f;
+    alpha = 0.0f;
 }
 Color::Color(VALUE color) {
-	red = NUM2DBL(rb_iv_get(color, "@red"));
-    green = NUM2DBL(rb_iv_get(color, "@green"));
-    blue = NUM2DBL(rb_iv_get(color, "@blue"));
-    alpha = NUM2DBL(rb_iv_get(color, "@alpha"));
+	red = (float)NUM2DBL(rb_iv_get(color, "@red"));
+    green = (float)NUM2DBL(rb_iv_get(color, "@green"));
+    blue = (float)NUM2DBL(rb_iv_get(color, "@blue"));
+    alpha = (float)NUM2DBL(rb_iv_get(color, "@alpha"));
 }
 Color::Color(int ired, int igreen, int iblue, int ialpha) {
-	red = ired;
-    green = igreen;
-    blue = iblue;
-    alpha = ialpha;
-}
-Color::Color(Uint32 color, SDL_PixelFormat* format) {
-	Uint8 r, g, b, a;
-	SDL_GetRGBA(color, format, &r, &g, &b, &a);
-	red = r;
-    green = g;
-    blue = b;
-    alpha = a;
+	red = (float)ired;
+    green = (float)igreen;
+    blue = (float)iblue;
+    alpha = (float)ialpha;
 }
 
 ////////////////////////////////////////////////////////////
@@ -67,10 +59,10 @@ Color::~Color() { }
 /// Set
 ////////////////////////////////////////////////////////////
 void Color::Set(VALUE color) {
-	red = NUM2DBL(rb_iv_get(color, "@red"));
-    green = NUM2DBL(rb_iv_get(color, "@green"));
-    blue = NUM2DBL(rb_iv_get(color, "@blue"));
-    alpha = NUM2DBL(rb_iv_get(color, "@alpha"));
+	red = (float)NUM2DBL(rb_iv_get(color, "@red"));
+    green = (float)NUM2DBL(rb_iv_get(color, "@green"));
+    blue = (float)NUM2DBL(rb_iv_get(color, "@blue"));
+    alpha = (float)NUM2DBL(rb_iv_get(color, "@alpha"));
 }
 
 ////////////////////////////////////////////////////////////
@@ -84,47 +76,17 @@ unsigned long Color::GetARGSS() {
 ////////////////////////////////////////////////////////////
 /// Get Uint32
 ////////////////////////////////////////////////////////////
-Uint32 Color::GetUint32(SDL_PixelFormat* format) {
-	return SDL_MapRGBA(format, (Uint8)red, (Uint8)green, (Uint8)blue, (Uint8)alpha);
+Uint32 Color::GetUint32() {
+	return ((Uint8)red) + (((Uint8)green) << 8) + (((Uint8)blue) << 16) + (((Uint8)alpha) << 24); 
 }
 
 ////////////////////////////////////////////////////////////
-/// Static Get color
+/// Static create Color from Uint32
 ////////////////////////////////////////////////////////////
-SDL_Color Color::Get() {
-	SDL_Color c = {(int)red, (int)green, (int)blue, (int)alpha};
-	return c;
-}
-
-////////////////////////////////////////////////////////////
-/// Static Get color
-////////////////////////////////////////////////////////////
-SDL_Color Color::Get(VALUE color) {
-	SDL_Color c = {NUM2INT(rb_iv_get(color, "@red")),
-					NUM2INT(rb_iv_get(color, "@green")),
-					NUM2INT(rb_iv_get(color, "@blue")),
-					NUM2INT(rb_iv_get(color, "@alpha"))};
-	return c;
-}
-
-////////////////////////////////////////////////////////////
-/// Static Get ARGSS color
-////////////////////////////////////////////////////////////
-VALUE Color::GetARGSS(SDL_Color color) {
-    VALUE args[4] = {rb_float_new(color.r), rb_float_new(color.g), rb_float_new(color.b), rb_float_new(color.unused)};
-	return rb_class_new_instance(4, args, ARGSS::AColor::id);
-}
-
-////////////////////////////////////////////////////////////
-/// Static Get Uint32 color
-////////////////////////////////////////////////////////////
-Uint32 Color::GetUint32(VALUE color, SDL_PixelFormat* format) {
-	return SDL_MapRGBA(format,
-						NUM2INT(rb_iv_get(color, "@red")),
-						NUM2INT(rb_iv_get(color, "@green")),
-						NUM2INT(rb_iv_get(color, "@blue")),
-						NUM2INT(rb_iv_get(color, "@alpha")));
-}
-Uint32 Color::GetUint32(SDL_Color color, SDL_PixelFormat* format) {
-	return SDL_MapRGBA(format, color.r, color.g, color.b, color.unused);
+Color Color::NewUint32(Uint32 color) {
+	int r = (color & 0x000000ff);
+	int g = (color & 0x0000ff00) >> 8;
+	int b = (color & 0x00ff0000) >> 16;
+	int a = (color & 0xff000000) >> 24;
+	return Color(r, g, b, a);
 }
