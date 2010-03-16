@@ -162,15 +162,19 @@ void Plane::Draw(long z) {
 
 	float bmpw = bmp->GetWidth() * zoom_x;
 	float bmph = bmp->GetHeight() * zoom_y;
-	float tilesx = ceil(rectw / bmpw);
-	float tilesy = ceil(recth / bmph);
+	int r_ox = -ox % (int)bmpw;
+	int r_oy = -oy % (int)bmph;
+	float tilesx = ceil(rectw / bmpw) + ceil(r_ox / bmpw);
+	float tilesy = ceil(recth / bmph) + ceil(r_oy / bmph);
+	while (r_ox > 0) r_ox -= (int)bmpw;
+	while (r_oy > 0) r_oy -= (int)bmph;
 	glBegin(GL_QUADS);
-		for (float i = 0; i < tilesx; i++) {
-			for (float j = 0; j < tilesy; j++) {
-				glTexCoord2f(0.0f, 0.0f);  glVertex2f(i * bmpw - ox, j * bmph - oy);
-				glTexCoord2f(1.0f, 0.0f);  glVertex2f((i + 1) * bmpw - ox, j * bmph - oy);
-				glTexCoord2f(1.0f, 1.0f);  glVertex2f((i + 1) * bmpw - ox, (j + 1) * bmph - oy);
-				glTexCoord2f(0.0f, 1.0f);  glVertex2f(i * bmpw - ox, (j + 1) * bmph - oy);
+		for (float i = r_ox / bmpw; i < tilesx; i++) {
+			for (float j = r_oy / bmph; j < tilesy; j++) {
+				glTexCoord2f(0.0f, 0.0f);  glVertex2f(i * bmpw, j * bmph);
+				glTexCoord2f(1.0f, 0.0f);  glVertex2f((i + 1) * bmpw, j * bmph);
+				glTexCoord2f(1.0f, 1.0f);  glVertex2f((i + 1) * bmpw, (j + 1) * bmph);
+				glTexCoord2f(0.0f, 1.0f);  glVertex2f(i * bmpw, (j + 1) * bmph);
 			}
 		}
 	glEnd();
