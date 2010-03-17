@@ -117,6 +117,10 @@ void Plane::Draw(long z) {
 	if (!visible) return;
 	if (bitmap == Qnil) return;
 
+	Bitmap* bmp = Bitmap::Get(bitmap);
+	bmp->Refresh();
+	bmp->BindBitmap();
+
 	glEnable(GL_TEXTURE_2D);
 
 	glMatrixMode(GL_MODELVIEW);
@@ -139,12 +143,6 @@ void Plane::Draw(long z) {
 		rectw = (float)Player::GetWidth();
 		recth = (float)Player::GetHeight();
 	}
-
-	Bitmap* bmp = Bitmap::Get(bitmap);
-
-	bmp->Refresh();
-
-	bmp->BindBitmap();
 
 	glColor4f(1.0f, 1.0f, 1.0f, opacity / 255.0f);
 	

@@ -156,14 +156,18 @@ void Window::Draw(long z) {
 	if (windowskin != Qnil) {
 		Bitmap* bmp = Bitmap::Get(windowskin);
 
+		glPushMatrix();
+						
 		bmp->Refresh();
+		bmp->BindBitmap();
+
+		glMatrixMode(GL_MODELVIEW);
+		glPopMatrix();
 
 		float bmpw = (float)bmp->GetWidth();
 		float bmph = (float)bmp->GetHeight();
 		float widthf = (float)width;
 		float heightf = (float)height;
-
-		bmp->BindBitmap();
 
 		// Background
 		if (width > 4 && height > 4 && (back_opacity * opacity / 255 > 0)) {
@@ -363,9 +367,13 @@ void Window::Draw(long z) {
 		if (width > 32 && height > 32 && -ox < width - 32 && -oy < height - 32 && contents_opacity > 0) {
 			Bitmap* bmp = Bitmap::Get(contents);
 
+			glPushMatrix();
+						
 			bmp->Refresh();
-
 			bmp->BindBitmap();
+
+			glMatrixMode(GL_MODELVIEW);
+			glPopMatrix();
 			
 			Rect dstrect(x + 16, y + 16, width - 32, height - 32);
 

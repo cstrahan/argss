@@ -212,10 +212,15 @@ void Tilemap::Draw(long z_level) {
 								autotiles_cache[bitmap_id][tile_id][frame] = new Bitmap(32, 32);
 								int* tiles = autotiles_id[tile_id >> 3][tile_id & 7];
 								for (int i = 0; i < 4; i++) {
-									Rect rect((tiles[i] % 6 << 4) + frame * 96, tiles[i] / 6 << 4, 16, 16);
-									autotiles_cache[bitmap_id][tile_id][frame]->Blit(i % 2 << 4, i / 2 << 4, autotile_bitmap, rect, 255);
+									Rect rect(((tiles[i] % 6) << 4) + frame * 96, (tiles[i] / 6) << 4, 16, 16);
+									autotiles_cache[bitmap_id][tile_id][frame]->Blit((i % 2) << 4, (i / 2) << 4, autotile_bitmap, rect, 255);
 								}
+								glPushMatrix();
+
 								autotiles_cache[bitmap_id][tile_id][frame]->Refresh();
+
+								glMatrixMode(GL_MODELVIEW);
+								glPopMatrix();
 							}
 							autotiles_cache[bitmap_id][tile_id][frame]->BindBitmap();
 							
