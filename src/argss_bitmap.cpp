@@ -56,10 +56,11 @@ VALUE ARGSS::ABitmap::rinitialize(int argc, VALUE *argv, VALUE self) {
     return self;
 }
 VALUE ARGSS::ABitmap::rdispose(VALUE self) {
-    ARGSS::ABitmap::CheckDisposed(self);
-	Bitmap::Dispose(self);
-	ARGSS::ARuby::RemoveObject(self);
-	rb_gc_start();
+	if (!Bitmap::IsDisposed(self)) {
+		Bitmap::Dispose(self);
+		ARGSS::ARuby::RemoveObject(self);
+		rb_gc_start();
+	}
     return self;
 }
 VALUE ARGSS::ABitmap::rdisposedQ(VALUE self) {
@@ -170,14 +171,14 @@ VALUE ARGSS::ABitmap::rdraw_text(int argc, VALUE *argv, VALUE self) {
 		if (argc == 3) {
 			align = NUM2INT(argv[2]);
 		}
-		Bitmap::Get(self)->DrawText(Rect(argv[0]), StringValuePtr(argv[1]), align);
+		Bitmap::Get(self)->TextDraw(Rect(argv[0]), StringValuePtr(argv[1]), align);
 	}
 	else if (argc == 4) raise_argn(argc, 3);
 	else if (argc < 7) {
 		if (argc == 6) {
 			align = NUM2INT(argv[5]);
 		}
-		Bitmap::Get(self)->DrawText(Rect(NUM2INT(argv[0]), NUM2INT(argv[1]), NUM2INT(argv[2]), NUM2INT(argv[3])), StringValuePtr(argv[4]), align);
+		Bitmap::Get(self)->TextDraw(Rect(NUM2INT(argv[0]), NUM2INT(argv[1]), NUM2INT(argv[2]), NUM2INT(argv[3])), StringValuePtr(argv[4]), align);
 	}
 	else raise_argn(argc, 6);
     return self;

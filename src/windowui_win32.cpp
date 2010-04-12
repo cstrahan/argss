@@ -150,7 +150,7 @@ WindowUi::WindowUi(long iwidth, long iheight, std::string title, bool center, bo
 	}
 	else {
 		dwExStyle = WS_EX_APPWINDOW | WS_EX_WINDOWEDGE;
-		dwStyle = WS_OVERLAPPEDWINDOW;
+		dwStyle = WS_OVERLAPPEDWINDOW & ~WS_THICKFRAME;
 	}
 
 	long posx = 0;

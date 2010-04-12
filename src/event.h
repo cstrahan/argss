@@ -30,9 +30,6 @@
 ////////////////////////////////////////////////////////////
 class Event {
 public:
-	Event() {};
-	~Event() {};
-
 	enum EventType {
 		None,
 		Quit,
@@ -41,6 +38,13 @@ public:
 		KeyDown,
 		KeyUp
 	};
+
+	Event() {
+		type = None;
+		param1 = 0;
+		param2 = 0;
+	};
+	~Event() {};
 
 	EventType type; 
 

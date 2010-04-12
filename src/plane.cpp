@@ -119,9 +119,10 @@ void Plane::Draw(long z) {
 
 	Bitmap* bmp = Bitmap::Get(bitmap);
 	bmp->Refresh();
-	bmp->BindBitmap();
 
 	glEnable(GL_TEXTURE_2D);
+
+	bmp->BindBitmap();
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();

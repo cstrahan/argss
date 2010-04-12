@@ -64,10 +64,12 @@ VALUE ARGSS::ATilemap::rinitialize(int argc, VALUE *argv, VALUE self) {
 	return self;
 }
 VALUE ARGSS::ATilemap::rdispose(VALUE self) {
-	ARGSS::ATilemap::CheckDisposed(self);
-	Tilemap::Dispose(self);
-	ARGSS::ARuby::RemoveObject(self);
-	rb_gc_start();
+	if (!Tilemap::IsDisposed(self)) {
+		ARGSS::ATilemap::CheckDisposed(self);
+		Tilemap::Dispose(self);
+		ARGSS::ARuby::RemoveObject(self);
+		rb_gc_start();
+	}
     return self;
 }
 VALUE ARGSS::ATilemap::rdisposeQ(VALUE self) {

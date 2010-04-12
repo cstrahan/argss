@@ -57,6 +57,7 @@ VALUE ARGSS::ATable::rinitialize(int argc, VALUE *argv, VALUE self) {
 	rb_iv_set(self, "@zsize", INT2NUM(zsize));
 	VALUE arr = rb_ary_new3(xsize * ysize * zsize, INT2NUM(0));
 	rb_iv_set(self, "@data", arr);
+	rb_iv_set(self, "@modified", Qtrue);
 	return self;
 }
 VALUE ARGSS::ATable::rresize(int argc, VALUE *argv, VALUE self) {
@@ -86,6 +87,7 @@ VALUE ARGSS::ATable::rresize(int argc, VALUE *argv, VALUE self) {
 			slice_argv[1] = INT2NUM(osize);
 			rb_funcall2(rb_iv_get(self, "@data"), rb_intern("slice!"), 2, slice_argv);
 		}
+		rb_iv_set(self, "@modified", Qtrue);
 	}
 	return self;
 }
@@ -145,6 +147,9 @@ VALUE ARGSS::ATable::raset(int argc, VALUE *argv, VALUE self) {
 	int ysize = NUM2INT(rb_iv_get(self, "@ysize"));
 	int zsize = NUM2INT(rb_iv_get(self, "@zsize"));
 	if (x < xsize && y < ysize && z < zsize) {
+		if (INT2NUM(val) != rb_ary_entry(data, x + y * xsize + z * xsize * ysize)) {
+			rb_iv_set(self, "@modified", Qtrue);
+		}
 		rb_ary_store(data, x + y * xsize + z * xsize * ysize, INT2NUM(val));
 	}
 	return argv[argc - 1];

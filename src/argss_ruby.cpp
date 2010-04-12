@@ -116,6 +116,7 @@ void ARGSS::ARuby::Run() {
 				}
 			}
 			Output::ErrorStr(report);
+			return;
 		}
 	}
 	Player::Exit();
@@ -161,9 +162,9 @@ static struct types {
 void Check_Types2(VALUE x, VALUE t1, VALUE t2) {
     struct types *type = builtin_types;
     if (x == Qundef) rb_bug("undef leaked to the Ruby space");
-    if (TYPE(x) != t1 && TYPE(x) != t2) {
+    if ((unsigned long)TYPE(x) != t1 && (unsigned long)TYPE(x) != t2) {
         while (type->type >= 0) {
-            if (type->type == t1) {
+            if ((unsigned long)type->type == t1) {
                 char *etype;
                 if (NIL_P(x)) etype = (char*)"nil";
                 else if (FIXNUM_P(x)) etype = (char*)"Fixnum";

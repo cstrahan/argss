@@ -42,6 +42,7 @@
 ////////////////////////////////////////////////////////////
 class Bitmap {
 public:
+	Bitmap();
 	Bitmap(int iwidth, int iheight);
 	Bitmap(unsigned long iid, std::string filename);
 	Bitmap(unsigned long iid, int iwidth, int iheight);
@@ -54,6 +55,7 @@ public:
 	static Bitmap* Get(unsigned long id);
 	static void Dispose(unsigned long id);
 	static void RefreshBitmaps();
+	static void DisposeBitmaps();
 
 	int GetWidth();
 	int GetHeight();
@@ -70,12 +72,7 @@ public:
 	void LumChange(double luminance);
 	void HSLChange(double h, double s, double l);
 	void HSLChange(double h, double s, double l, Rect rect);
-#ifdef MSVC
-	void DrawTextW(Rect rect, std::string text, int align);
-#endif
-#ifdef MINGW
-	void DrawTextA(Rect rect, std::string text, int align);
-#endif
+	void TextDraw(Rect rect, std::string text, int align);
 	Rect GetTextSize(std::string text);
 	void GradientFillRect(Rect rect, Color color1, Color color2, bool vertical);
 	void ClearRect(Rect rect);
@@ -91,9 +88,9 @@ public:
 	
 	Rect GetRect();
 
-	void BindBitmap();
-	void Refresh();
 	void Changed();
+	void Refresh();
+	void BindBitmap();
 	Uint32* GetPixels();
 
 protected:

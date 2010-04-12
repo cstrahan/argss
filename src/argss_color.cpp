@@ -99,12 +99,12 @@ VALUE ARGSS::AColor::rinspect(VALUE self) {
     char str[255];
     long n;
 #ifdef MSVC
-    n = sprintf_s(str, 255, "(%f, %f, %f, %f)\0",  NUM2DBL(rb_iv_get(self, "@red")),
+    n = sprintf_s(str, 255, "(%f, %f, %f, %f)",  NUM2DBL(rb_iv_get(self, "@red")),
                                             NUM2DBL(rb_iv_get(self, "@green")),
                                             NUM2DBL(rb_iv_get(self, "@blue")),
                                             NUM2DBL(rb_iv_get(self, "@alpha")));
 #else
-	n = sprintf(str, "(%f, %f, %f, %f)\0",  NUM2DBL(rb_iv_get(self, "@red")),
+	n = sprintf(str, "(%f, %f, %f, %f)",  NUM2DBL(rb_iv_get(self, "@red")),
                                             NUM2DBL(rb_iv_get(self, "@green")),
                                             NUM2DBL(rb_iv_get(self, "@blue")),
                                             NUM2DBL(rb_iv_get(self, "@alpha")));

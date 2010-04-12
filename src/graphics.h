@@ -41,10 +41,11 @@
 namespace Graphics {
 	void Init();
 	void InitOpenGL();
+	void Exit();
+	void RefreshAll();
 	void TimerWait();
 	void TimerContinue();
 	void DrawFrame();
-	void RefreshAll();
 
 	void Update();
 	void Freeze();

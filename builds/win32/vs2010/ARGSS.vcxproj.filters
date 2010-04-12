@@ -128,7 +128,7 @@
       <Filter>Source Files\multimedia\graphics</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\system.cpp">
-      <Filter>Source Files\multimedia\graphics</Filter>
+      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\text.cpp">
       <Filter>Source Files\multimedia\graphics</Filter>
@@ -310,7 +310,7 @@
       <Filter>Source Files\multimedia\graphics</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\system.h">
-      <Filter>Source Files\multimedia\graphics</Filter>
+      <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\text.h">
       <Filter>Source Files\multimedia\graphics</Filter>

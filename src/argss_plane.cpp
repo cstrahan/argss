@@ -67,10 +67,12 @@ VALUE ARGSS::APlane::rinitialize(int argc, VALUE *argv, VALUE self) {
 	return self;
 }
 VALUE ARGSS::APlane::rdispose(VALUE self) {
-	ARGSS::APlane::CheckDisposed(self);
-	Plane::Dispose(self);
-	ARGSS::ARuby::RemoveObject(self);
-	rb_gc_start();
+	if (!Plane::IsDisposed(self)) {
+		ARGSS::APlane::CheckDisposed(self);
+		Plane::Dispose(self);
+		ARGSS::ARuby::RemoveObject(self);
+		rb_gc_start();
+	}
     return self;
 }
 VALUE ARGSS::APlane::rdisposedQ(VALUE self) {

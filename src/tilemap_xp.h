@@ -29,6 +29,8 @@
 /// Headers
 ////////////////////////////////////////////////////////////
 #include <string>
+#include <map>
+#include <vector>
 #include "bitmap.h"
 #include "drawable.h"
 
@@ -49,6 +51,7 @@ public:
 	void RefreshBitmaps();
 	void Draw(long z);
 	void Draw(long z, Bitmap* dst_bitmap);
+	void RefreshData();
 
     void Update();
 	unsigned long GetViewport();
@@ -83,8 +86,13 @@ private:
 	int autotile_time;
 
 	std::map<unsigned long, std::map<int, std::map<int, Bitmap*> > > autotiles_cache;
-
 	static int autotiles_id[6][8][4];
+
+	struct TileData {
+		int id;
+		int priority;
+	};
+	std::vector<std::vector<std::vector<TileData> > > data_cache;
 };
 
 #endif

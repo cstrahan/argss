@@ -55,7 +55,7 @@ void Output::Init(){
 ////////////////////////////////////////////////////////////
 /// Output Error
 ////////////////////////////////////////////////////////////
-void Output::Error(char* fmt, ...) {
+void Output::Error(const char* fmt, ...) {
 	va_list args;
 	va_start(args, fmt);
 
@@ -86,7 +86,7 @@ void Output::ErrorStr(std::string err){
 ////////////////////////////////////////////////////////////
 /// Output Warning
 ////////////////////////////////////////////////////////////
-void Output::Warning(char* fmt, ...) {
+void Output::Warning(const char* fmt, ...) {
 	va_list args;
 	va_start(args, fmt);
 
@@ -107,7 +107,7 @@ void Output::WarningStr(std::string warn) {
 ////////////////////////////////////////////////////////////
 /// Output Post message 
 ////////////////////////////////////////////////////////////
-void Output::Post(char* fmt, ...) {
+void Output::Post(const char* fmt, ...) {
 	va_list args;
 	va_start(args, fmt);
 

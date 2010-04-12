@@ -57,10 +57,12 @@ VALUE ARGSS::AViewport::rinitialize(int argc, VALUE *argv, VALUE self) {
 	return self;
 }
 VALUE ARGSS::AViewport::rdispose(VALUE self) {
-	ARGSS::AViewport::CheckDisposed(self);
-	Viewport::Dispose(self);
-	ARGSS::ARuby::RemoveObject(self);
-	rb_gc_start();
+	if (!Viewport::IsDisposed(self)) {
+		ARGSS::AViewport::CheckDisposed(self);
+		Viewport::Dispose(self);
+		ARGSS::ARuby::RemoveObject(self);
+		rb_gc_start();
+	}
     return self;
 }
 VALUE ARGSS::AViewport::rdisposedQ(VALUE self) {

@@ -40,18 +40,18 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
     <_ProjectFileVersion>10.0.21006.1</_ProjectFileVersion>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\..\bin\$(Configuration)\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\..\bin\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Configuration)\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\..\bin\$(Configuration)\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\..\bin\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Configuration)\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\..\..\dependencies;..\..\..\dependencies\win32\ruby1.8.6\include;..\..\..\dependencies\win32\soil\include;..\..\..\dependencies\win32\freetype\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;MSVC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\..\dependencies;..\..\..\dependencies\win32\ruby1.8.6-p287\include;..\..\..\dependencies\win32\soil\include;..\..\..\dependencies\win32\freetype\include;..\..\..\dependencies\win32\sdl\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_DEBUG;WIN32;_WINDOWS;MSVC</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -67,8 +67,8 @@
       </PrecompiledHeaderOutputFile>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>opengl32.lib;soil.lib;freetype2312MT.lib;msvcrt-ruby18.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>..\..\..\dependencies\win32\ruby1.8.6\lib\msvc;..\..\..\dependencies\win32\soil\lib\msvc;..\..\..\dependencies\win32\freetype\lib\msvc;..\..\..\dependencies\win32\sfml\lib\msvc;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;soil.lib;freetype2312MT.lib; msvcrt-ruby18.lib;SDL.lib;SDLmain.lib;SDL_mixer.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\..\dependencies\win32\ruby1.8.6-p287\lib\msvc;..\..\..\dependencies\win32\soil\lib\msvc;..\..\..\dependencies\win32\freetype\lib\msvc;..\..\..\dependencies\win32\sdl\lib\msvc;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
       <IgnoreSpecificDefaultLibraries>msvcrt.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -81,13 +81,24 @@
       <ProgramDatabaseFile>$(IntDir)$(TargetName).pdb</ProgramDatabaseFile>
       <ProfileGuidedDatabase>$(TargetDir)$(TargetName).pgd</ProfileGuidedDatabase>
     </Link>
+    <PostBuildEvent>
+      <Command>copy "..\..\..\dependencies\win32\ruby1.8.6-p287\bin\msvcrt-ruby18-msvc.dll" "..\..\..\bin\msvcrt-ruby18.dll"
+copy "..\..\..\dependencies\win32\sdl\bin\SDL-msvc.dll" "..\..\..\bin\SDL.dll"
+copy "..\..\..\dependencies\win32\sdl\bin\SDL_mixer.dll" "..\..\..\bin\SDL_mixer.dll"
+copy "..\..\..\dependencies\win32\sdl\bin\libogg-0.dll" "..\..\..\bin\libogg-0.dll"
+copy "..\..\..\dependencies\win32\sdl\bin\libvorbis-0.dll" "..\..\..\bin\libvorbis-0.dll"
+copy "..\..\..\dependencies\win32\sdl\bin\libvorbisfile-3.dll" "..\..\..\bin\libvorbisfile-3.dll"
+copy "..\..\..\dependencies\win32\sdl\bin\mikmod.dll" "..\..\..\bin\mikmod.dll"
+copy "..\..\..\dependencies\win32\sdl\bin\smpeg.dll" "..\..\..\bin\smpeg.dll"
+del "..\..\..\bin\libgcc_s_dw2-1.dll"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
       <IntrinsicFunctions>false</IntrinsicFunctions>
-      <AdditionalIncludeDirectories>..\..\..\dependencies;..\..\..\dependencies\win32\ruby1.8.6\include;..\..\..\dependencies\win32\soil\include;..\..\..\dependencies\win32\freetype\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_WINDOWS;MSVC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\..\dependencies;..\..\..\dependencies\win32\ruby1.8.6-p287\include;..\..\..\dependencies\win32\soil\include;..\..\..\dependencies\win32\freetype\include;..\..\..\dependencies\win32\sdl\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;MSVC</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <FunctionLevelLinking>
       </FunctionLevelLinking>
@@ -101,14 +112,17 @@
       <WholeProgramOptimization>false</WholeProgramOptimization>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>opengl32.lib;soil.lib;freetype2312MT.lib;msvcrt-ruby18.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>..\..\..\dependencies\win32\ruby1.8.6\lib\msvc;..\..\..\dependencies\win32\soil\lib\msvc;..\..\..\dependencies\win32\freetype\lib\msvc;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;soil.lib;freetype2312MT.lib; msvcrt-ruby18.lib;SDL.lib;SDLmain.lib;SDL_mixer.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\..\dependencies\win32\ruby1.8.6-p287\lib\msvc;..\..\..\dependencies\win32\soil\lib\msvc;..\..\..\dependencies\win32\freetype\lib\msvc;..\..\..\dependencies\win32\sdl\lib\msvc;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>
       </EnableCOMDATFolding>
       <TargetMachine>MachineX86</TargetMachine>
+      <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
+      <IgnoreSpecificDefaultLibraries>
+      </IgnoreSpecificDefaultLibraries>
     </Link>
     <Manifest>
       <OutputManifestFile>$(IntDir)$(TargetName)$(TargetExt).embed.manifest</OutputManifestFile>
@@ -117,6 +131,17 @@
       <OutputResourceManifests>
       </OutputResourceManifests>
     </Manifest>
+    <PostBuildEvent>
+      <Command>copy "..\..\..\dependencies\win32\ruby1.8.6-p287\bin\msvcrt-ruby18-msvc.dll" "..\..\..\bin\msvcrt-ruby18.dll"
+copy "..\..\..\dependencies\win32\sdl\bin\SDL-msvc.dll" "..\..\..\bin\SDL.dll"
+copy "..\..\..\dependencies\win32\sdl\bin\SDL_mixer.dll" "..\..\..\bin\SDL_mixer.dll"
+copy "..\..\..\dependencies\win32\sdl\bin\libogg-0.dll" "..\..\..\bin\libogg-0.dll"
+copy "..\..\..\dependencies\win32\sdl\bin\libvorbis-0.dll" "..\..\..\bin\libvorbis-0.dll"
+copy "..\..\..\dependencies\win32\sdl\bin\libvorbisfile-3.dll" "..\..\..\bin\libvorbisfile-3.dll"
+copy "..\..\..\dependencies\win32\sdl\bin\mikmod.dll" "..\..\..\bin\mikmod.dll"
+copy "..\..\..\dependencies\win32\sdl\bin\smpeg.dll" "..\..\..\bin\smpeg.dll"
+del "..\..\..\bin\libgcc_s_dw2-1.dll"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug-sdl1.3|Win32'">
     <ClCompile>

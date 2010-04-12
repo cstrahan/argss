@@ -60,7 +60,7 @@ void Player::Update() {
     while (true) {
 		bool result = main_window->GetEvent(evnt);
 		if (evnt.type == Event::Quit) {
-			Exit();
+			ARGSS::Exit();
 			break;
         }
 		else if (evnt.type == Event::KeyDown) {
@@ -69,6 +69,7 @@ void Player::Update() {
 			}
 			else if (evnt.param1 == Input::Keys::RETURN && alt_pressing) {
 				ToggleFullscreen();
+				alt_pressing = false;
 			}
         }
 		else if (evnt.type == Event::KeyUp) {
@@ -104,9 +105,9 @@ void Player::Update() {
 /// Exit
 ////////////////////////////////////////////////////////////
 void Player::Exit() {
+	Graphics::Exit();
 	Output::None();
 	main_window->Dispose();
-	ARGSS::Exit();
 }
 
 ////////////////////////////////////////////////////////////

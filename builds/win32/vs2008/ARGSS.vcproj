@@ -18,7 +18,7 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="..\..\..\bin\$(ConfigurationName)\"
+			OutputDirectory="..\..\..\bin\"
 			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="1"
 			CharacterSet="1"
@@ -41,8 +41,8 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\..\dependencies;..\..\..\dependencies\win32;..\..\..\dependencies\win32\ruby1.8.6\include;..\..\..\dependencies\win32\soil\include;..\..\..\dependencies\win32\freetype\include"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;MSVC"
+				AdditionalIncludeDirectories="..\..\..\dependencies;&quot;..\..\..\dependencies\win32\ruby1.8.6-p287\include&quot;;..\..\..\dependencies\win32\soil\include;..\..\..\dependencies\win32\freetype\include;..\..\..\dependencies\win32\sdl\include;..\..\..\dependencies\win32\missing"
+				PreprocessorDefinitions="_DEBUG;"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -61,10 +61,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="opengl32.lib freetype2312MT.lib soil.lib msvcrt-ruby18.lib"
+				AdditionalDependencies="opengl32.lib soil.lib freetype2312MT.lib msvcrt-ruby18.lib SDL.lib SDLmain.lib SDL_mixer.lib"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="..\..\..\dependencies\win32\ruby1.8.6\lib\msvc;..\..\..\dependencies\win32\soil\lib\msvc;..\..\..\dependencies\win32\freetype\lib\msvc"
-				IgnoreDefaultLibraryNames=""
+				AdditionalLibraryDirectories="..\..\..\dependencies\win32\ruby1.8.6-p287\lib\msvc;..\..\..\dependencies\win32\soil\lib\msvc;..\..\..\dependencies\win32\freetype\lib\msvc;..\..\..\dependencies\win32\sdl\lib\msvc;"
+				IgnoreDefaultLibraryNames="msvcrt.lib;"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				TargetMachine="1"
@@ -89,11 +89,12 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
+				CommandLine="copy &quot;..\..\..\dependencies\win32\ruby1.8.6-p287\bin\msvcrt-ruby18-msvc.dll&quot; &quot;..\..\..\bin\msvcrt-ruby18.dll&quot;&#x0D;&#x0A;copy &quot;..\..\..\dependencies\win32\sdl\bin\SDL-msvc.dll&quot; &quot;..\..\..\bin\SDL.dll&quot;&#x0D;&#x0A;copy &quot;..\..\..\dependencies\win32\sdl\bin\SDL_mixer.dll&quot; &quot;..\..\..\bin\SDL_mixer.dll&quot;&#x0D;&#x0A;copy &quot;..\..\..\dependencies\win32\sdl\bin\libogg-0.dll&quot; &quot;..\..\..\bin\libogg-0.dll&quot;&#x0D;&#x0A;copy &quot;..\..\..\dependencies\win32\sdl\bin\libvorbis-0.dll&quot; &quot;..\..\..\bin\libvorbis-0.dll&quot;&#x0D;&#x0A;copy &quot;..\..\..\dependencies\win32\sdl\bin\libvorbisfile-3.dll&quot; &quot;..\..\..\bin\libvorbisfile-3.dll&quot;&#x0D;&#x0A;copy &quot;..\..\..\dependencies\win32\sdl\bin\mikmod.dll&quot; &quot;..\..\..\bin\mikmod.dll&quot;&#x0D;&#x0A;copy &quot;..\..\..\dependencies\win32\sdl\bin\smpeg.dll&quot; &quot;..\..\..\bin\smpeg.dll&quot;&#x0D;&#x0A;del &quot;..\..\..\bin\libgcc_s_dw2-1.dll&quot;"
 			/>
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
+			OutputDirectory="..\..\..\bin\"
 			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="1"
 			CharacterSet="1"
@@ -119,8 +120,8 @@
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
 				FavorSizeOrSpeed="1"
-				AdditionalIncludeDirectories="..\..\..\dependencies;..\..\..\dependencies\win32;..\..\..\dependencies\win32\ruby1.8.6\include;..\..\..\dependencies\win32\soil\include;..\..\..\dependencies\win32\freetype\include"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;MSVC"
+				AdditionalIncludeDirectories="..\..\..\dependencies;&quot;..\..\..\dependencies\win32\ruby1.8.6-p287\include&quot;;..\..\..\dependencies\win32\soil\include;..\..\..\dependencies\win32\freetype\include;..\..\..\dependencies\win32\sdl\include;..\..\..\dependencies\win32\missing"
+				PreprocessorDefinitions="WIN32;_WINDOWS;MSVC"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
@@ -138,9 +139,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="opengl32.lib freetype2312MT.lib soil.lib msvcrt-ruby18.lib"
+				PerUserRedirection="true"
+				AdditionalDependencies="opengl32.lib soil.lib freetype2312MT.lib msvcrt-ruby18.lib SDL.lib SDLmain.lib SDL_mixer.lib"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="..\..\..\dependencies\win32\ruby1.8.6\lib\msvc;..\..\..\dependencies\win32\soil\lib\msvc;..\..\..\dependencies\win32\freetype\lib\msvc"
+				AdditionalLibraryDirectories="..\..\..\dependencies\win32\ruby1.8.6-p287\lib\msvc;..\..\..\dependencies\win32\soil\lib\msvc;..\..\..\dependencies\win32\freetype\lib\msvc;..\..\..\dependencies\win32\sdl\lib\msvc;"
 				IgnoreDefaultLibraryNames=""
 				GenerateDebugInformation="true"
 				SubSystem="2"
@@ -168,6 +170,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
+				CommandLine="copy &quot;..\..\..\dependencies\win32\ruby1.8.6-p287\bin\msvcrt-ruby18-msvc.dll&quot; &quot;..\..\..\bin\msvcrt-ruby18.dll&quot;&#x0D;&#x0A;copy &quot;..\..\..\dependencies\win32\sdl\bin\SDL-msvc.dll&quot; &quot;..\..\..\bin\SDL.dll&quot;&#x0D;&#x0A;copy &quot;..\..\..\dependencies\win32\sdl\bin\SDL_mixer.dll&quot; &quot;..\..\..\bin\SDL_mixer.dll&quot;&#x0D;&#x0A;copy &quot;..\..\..\dependencies\win32\sdl\bin\libogg-0.dll&quot; &quot;..\..\..\bin\libogg-0.dll&quot;&#x0D;&#x0A;copy &quot;..\..\..\dependencies\win32\sdl\bin\libvorbis-0.dll&quot; &quot;..\..\..\bin\libvorbis-0.dll&quot;&#x0D;&#x0A;copy &quot;..\..\..\dependencies\win32\sdl\bin\libvorbisfile-3.dll&quot; &quot;..\..\..\bin\libvorbisfile-3.dll&quot;&#x0D;&#x0A;copy &quot;..\..\..\dependencies\win32\sdl\bin\mikmod.dll&quot; &quot;..\..\..\bin\mikmod.dll&quot;&#x0D;&#x0A;copy &quot;..\..\..\dependencies\win32\sdl\bin\smpeg.dll&quot; &quot;..\..\..\bin\smpeg.dll&quot;&#x0D;&#x0A;del &quot;..\..\..\bin\libgcc_s_dw2-1.dll&quot;"
 			/>
 		</Configuration>
 	</Configurations>
@@ -189,14 +192,6 @@
 			</File>
 			<File
 				RelativePath="..\..\..\src\options.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\..\src\output.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\..\src\output.h"
 				>
 			</File>
 			<File
@@ -620,6 +615,14 @@
 				</File>
 				<File
 					RelativePath="..\..\..\src\msgbox.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\src\output.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\src\output.h"
 					>
 				</File>
 				<File

@@ -99,8 +99,8 @@ Bitmap::Bitmap(Bitmap* source, Rect src_rect) {
 	width = (long)src_rect.width;
 	height = (long)src_rect.height;
 	pixels.resize(width * height, 0);
-	Copy(0, 0, source, src_rect);
 	gl_bitmap = 0;
+	Copy(0, 0, source, src_rect);
 }
 
 ////////////////////////////////////////////////////////////
@@ -156,12 +156,30 @@ void Bitmap::RefreshBitmaps() {
 }
 
 ////////////////////////////////////////////////////////////
+/// Class Dispose Bitmaps
+////////////////////////////////////////////////////////////
+void Bitmap::DisposeBitmaps() {
+	std::map<unsigned long, Bitmap*>::iterator it_bitmaps;
+	for (it_bitmaps = bitmaps.begin(); it_bitmaps != bitmaps.end(); it_bitmaps++) {
+		delete it_bitmaps->second;
+	}
+	bitmaps.clear();
+}
+
+////////////////////////////////////////////////////////////
 /// Changed
 ////////////////////////////////////////////////////////////
 void Bitmap::Changed() {
-	if (gl_bitmap > 0)  {
-		glDeleteTextures(1, &gl_bitmap);
-		gl_bitmap = 0;
+	if (gl_bitmap > 0) {
+		glEnable(GL_TEXTURE_2D);
+
+		glMatrixMode(GL_TEXTURE);
+		glLoadIdentity();
+
+		glBindTexture(GL_TEXTURE_2D, gl_bitmap);
+		glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, &pixels[0]);
+		//glDeleteTextures(1, &gl_bitmap);
+		//gl_bitmap = 0;
 	}
 }
 
@@ -173,12 +191,14 @@ void Bitmap::Refresh() {
 
 	glEnable(GL_TEXTURE_2D);
 
-	glMatrixMode(GL_COLOR);
+	glMatrixMode(GL_TEXTURE);
 	glLoadIdentity();
 
 	glGenTextures(1, &gl_bitmap);
 	glBindTexture(GL_TEXTURE_2D, gl_bitmap);
 
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+  	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
@@ -446,7 +466,7 @@ void Bitmap::HSLChange(double h, double s, double l, Rect rect) {
 ////////////////////////////////////////////////////////////
 /// Draw text
 ////////////////////////////////////////////////////////////
-void Bitmap::DrawText(Rect rect, std::string text, int align) {
+void Bitmap::TextDraw(Rect rect, std::string text, int align) {
 	if (text.length() == 0) return;
 	if (rect.IsOutOfBounds(GetWidth(), GetHeight())) return;
 	

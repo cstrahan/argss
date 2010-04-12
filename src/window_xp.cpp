@@ -332,8 +332,8 @@ void Window::Draw(long z) {
 			float dsty = (float)max(height - 16, 0);
 			float w = (float)min(16, width);
 			float h = (float)min(16, height);
-			float srcx;
-			float srcy;
+			float srcx = 176.0f;
+			float srcy = 64.0f;
 			switch (pause_id) {
 				case 0:
 					glColor4f(1.0f, 1.0f, 1.0f, (255.0f / 8.0f) * pause_frame / 255.0f);

@@ -80,10 +80,12 @@ VALUE ARGSS::AWindow::rinitialize(int argc, VALUE *argv, VALUE self) {
 	return self;
 }
 VALUE ARGSS::AWindow::rdispose(VALUE self) {
-    ARGSS::AWindow::CheckDisposed(self);
-    Window::Dispose(self);
-	ARGSS::ARuby::RemoveObject(self);
-	rb_gc_start();
+	if (!Window::IsDisposed(self)) {
+	    ARGSS::AWindow::CheckDisposed(self);
+	    Window::Dispose(self);
+		ARGSS::ARuby::RemoveObject(self);
+		rb_gc_start();
+	}
     return self;
 }
 VALUE ARGSS::AWindow::rdisposedQ(VALUE self) {

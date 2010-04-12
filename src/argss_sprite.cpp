@@ -76,10 +76,12 @@ VALUE ARGSS::ASprite::rinitialize(int argc, VALUE *argv, VALUE self) {
     return self;
 }
 VALUE ARGSS::ASprite::rdispose(VALUE self) {
-    ARGSS::ASprite::Check(self);
-	Sprite::Dispose(self);
-	ARGSS::ARuby::RemoveObject(self);
-	rb_gc_start();
+	if (!Sprite::IsDisposed(self)) {
+	    ARGSS::ASprite::Check(self);
+		Sprite::Dispose(self);
+		ARGSS::ARuby::RemoveObject(self);
+		rb_gc_start();
+	}
     return self;
 }
 VALUE ARGSS::ASprite::rdisposedQ(VALUE self) {
