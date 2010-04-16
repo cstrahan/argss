@@ -51,7 +51,7 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>..\..\..\dependencies;..\..\..\dependencies\win32\ruby1.8.6-p287\include;..\..\..\dependencies\win32\soil\include;..\..\..\dependencies\win32\freetype\include;..\..\..\dependencies\win32\sdl\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_DEBUG;WIN32;_WINDOWS;MSVC</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;WIN32;_WINDOWS;MSVC;UNICODE</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -98,7 +98,7 @@ del "..\..\..\bin\libgcc_s_dw2-1.dll"</Command>
       <Optimization>MaxSpeed</Optimization>
       <IntrinsicFunctions>false</IntrinsicFunctions>
       <AdditionalIncludeDirectories>..\..\..\dependencies;..\..\..\dependencies\win32\ruby1.8.6-p287\include;..\..\..\dependencies\win32\soil\include;..\..\..\dependencies\win32\freetype\include;..\..\..\dependencies\win32\sdl\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_WINDOWS;MSVC</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;MSVC;UNICODE</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <FunctionLevelLinking>
       </FunctionLevelLinking>

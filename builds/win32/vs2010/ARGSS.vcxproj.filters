@@ -383,6 +383,9 @@
     <Filter Include="Source Files\multimedia\input\win32">
       <UniqueIdentifier>{ed0108eb-a96d-4cf1-8c5b-ed2a1a184893}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\multimedia\network">
+      <UniqueIdentifier>{25f999dc-7b67-4bac-bb1d-e6e8b2d118b7}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Source Files\tools">
       <UniqueIdentifier>{f3f06d97-a856-4373-9088-61d962b2ccca}</UniqueIdentifier>
     </Filter>

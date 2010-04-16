@@ -32,7 +32,7 @@
 ////////////////////////////////////////////////////////////
 /// Definitions
 ////////////////////////////////////////////////////////////
-#ifdef MSVC
+#ifdef UNICODE
 	#ifndef _T
 		#define _T(x) L ## x
 	#endif
@@ -46,9 +46,7 @@
 		delete[] buf;
 		return r;
 	}
-#endif
-
-#ifdef MINGW
+#else
 	#ifdef _T
 		#undef _T
 	#endif
@@ -101,10 +99,10 @@ WindowUi::WindowUi(long iwidth, long iheight, std::string title, bool center, bo
 	
 	hinstance = GetModuleHandle(NULL);
 	
-#ifdef MINGW
-	WNDCLASSEXA wc;
-#else 
+#ifdef UNICODE
 	WNDCLASSEXW wc;
+#else 
+	WNDCLASSEXA wc;
 #endif
 	wc.cbSize = sizeof(WNDCLASSEX);
 	wc.style			= CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
@@ -119,10 +117,10 @@ WindowUi::WindowUi(long iwidth, long iheight, std::string title, bool center, bo
 	wc.lpszClassName	= _T("ARGSS Player");
 	wc.hIconSm = NULL;
 
-#ifdef MINGW
-	if (!RegisterClassExA(&wc)) {
+#ifdef UNICODE
+	if (!RegisterClassExW(&wc)) {
 #else
-	if (!RegisterClassEx(&wc)) {
+	if (!RegisterClassExA(&wc)) {
 #endif
 		Output::ErrorStr("Failed to register the window class.");
 	}
@@ -179,26 +177,15 @@ WindowUi::WindowUi(long iwidth, long iheight, std::string title, bool center, bo
 		Output::ErrorStr("Failed to create the window.");
 	}
 
-	static PIXELFORMATDESCRIPTOR pfd =
-	{
-		sizeof(PIXELFORMATDESCRIPTOR),				// Size Of This Pixel Format Descriptor
-		1,											// Version Number
-		PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL |
-		PFD_DOUBLEBUFFER,							// Format
-		PFD_TYPE_RGBA,								// Request An RGBA Format
-		32,											// Select Our Color Depth
-		0, 0, 0, 0, 0, 0,							// Color Bits Ignored
-		0,											// No Alpha Buffer
-		0,											// Shift Bit Ignored
-		0,											// No Accumulation Buffer
-		0, 0, 0, 0,									// Accumulation Bits Ignored
-		8,											// Z-Buffer (Depth Buffer)  
-		0,											// No Stencil Buffer
-		0,											// No Auxiliary Buffer
-		PFD_MAIN_PLANE,								// Main Drawing Layer
-		0,											// Reserved
-		0, 0, 0										// Layer Masks Ignored
-	};
+	PIXELFORMATDESCRIPTOR pfd;
+	ZeroMemory(&pfd, sizeof(pfd));
+	pfd.nSize = sizeof(pfd);
+	pfd.nVersion = 1;
+	pfd.dwFlags = PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER;
+	pfd.iPixelType = PFD_TYPE_RGBA;
+	pfd.cColorBits = 32;
+	pfd.cDepthBits = 16;
+	pfd.iLayerType = PFD_MAIN_PLANE;
 	
 	if (!(hdc = GetDC(hwnd)))	{
 		Dispose();

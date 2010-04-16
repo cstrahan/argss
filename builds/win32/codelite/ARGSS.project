@@ -191,7 +191,9 @@
       </AdditionalRules>
     </Configuration>
     <Configuration Name="Release" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-O3;-W;-Wall;-Wextra;-ffast-math" Required="yes" PreCompiledHeader=""/>
+      <Compiler Options="-O3;-W;-Wall;-Wextra;-ffast-math" Required="yes" PreCompiledHeader="">
+        <Preprocessor Value="UNICODE"/>
+      </Compiler>
       <Linker Options="" Required="yes"/>
       <ResourceCompiler Options="" Required="no"/>
       <General OutputFile="../../../bin/$(ProjectName)" IntermediateDirectory="./Release" Command="./$(ProjectName)" CommandArguments="" WorkingDirectory="../../../bin/" PauseExecWhenProcTerminates="yes"/>
