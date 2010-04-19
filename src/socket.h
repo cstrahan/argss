@@ -1,4 +1,3 @@
-//////////////////////////////////////////////////////////////////////////////////
 /// ARGSS - Copyright (c) 2009 - 2010, Alejandro Marzini (vgvgf)
 ///         All rights reserved.
 ///
@@ -22,28 +21,29 @@
 /// SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //////////////////////////////////////////////////////////////////////////////////
 
-#ifndef _ARGSS_SOCKET_H_
-#define _ARGSS_SOCKET_H_
+#ifndef NETWORK_H
+#define NETWORK_H
 
-////////////////////////////////////////////////////////////
-/// Headers
-////////////////////////////////////////////////////////////
-#include "argss_ruby.h"
-#include "socket.h"
+#include "buffer.h"
+#ifdef WIN32
+#define WIN32_LEAN_AND_MEAN
+#include <Windows.h>
+#include <WinSock2.h>
+#include <WS2tcpip.h>
+#endif
+#include <string>
 
-////////////////////////////////////////////////////////////
-/// ARGSS Socket Class namespace
-////////////////////////////////////////////////////////////
-namespace ARGSS {
-    namespace ASocket {
-        extern VALUE id;
-        void Init();
-
-        VALUE rinitialize(VALUE self);
-        VALUE rshutdown(VALUE self);
-        VALUE rconnect(VALUE self, VALUE host, VALUE port);
-		VALUE rlisten(VALUE self, VALUE port);
-    };
+class Socket {
+public:
+	Socket();
+	void Connect(const std::string& host, unsigned short port);
+	void Listen(unsigned short port, int maxclients = SOMAXCONN);
+	Buffer Receive();
+	void Send(Buffer buffer);
+	void Shutdown();
+	~Socket();
+private:
+	int m_Socket;
 };
 
 #endif
