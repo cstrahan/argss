@@ -67,7 +67,7 @@
       </PrecompiledHeaderOutputFile>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>opengl32.lib;soil.lib;freetype2312MT.lib; msvcrt-ruby18.lib;SDL.lib;SDLmain.lib;SDL_mixer.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opengl32.lib;soil.lib;freetype2312MT.lib;msvcrt-ruby18.lib;SDL.lib;SDLmain.lib;SDL_mixer.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>..\..\..\dependencies\win32\ruby1.8.6-p287\lib\msvc;..\..\..\dependencies\win32\soil\lib\msvc;..\..\..\dependencies\win32\freetype\lib\msvc;..\..\..\dependencies\win32\sdl\lib\msvc;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
       <IgnoreSpecificDefaultLibraries>msvcrt.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
@@ -154,8 +154,10 @@ del "..\..\..\bin\libgcc_s_dw2-1.dll"</Command>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\src\buffer.h" />
     <ClInclude Include="..\..\..\src\defines.h" />
     <ClInclude Include="..\..\..\src\event.h" />
+    <ClInclude Include="..\..\..\src\socket.h" />
     <ClInclude Include="..\..\..\src\options.h" />
     <ClInclude Include="..\..\..\src\output.h" />
     <ClInclude Include="..\..\..\src\player.h" />
@@ -220,7 +222,9 @@ del "..\..\..\bin\libgcc_s_dw2-1.dll"</Command>
     <ClInclude Include="..\..\..\src\registry.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\src\buffer.cpp" />
     <ClCompile Include="..\..\..\src\main.cpp" />
+    <ClCompile Include="..\..\..\src\socket.cpp" />
     <ClCompile Include="..\..\..\src\output.cpp" />
     <ClCompile Include="..\..\..\src\player.cpp" />
     <ClCompile Include="..\..\..\src\system.cpp" />
