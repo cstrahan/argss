@@ -30,6 +30,8 @@
 ////////////////////////////////////////////////////////////
 #ifdef WIN32
 	#include "filefinder_win32.h"
+#elif MACOSX
+	#include "filefinder_osx.h"
 #endif
 
 #endif

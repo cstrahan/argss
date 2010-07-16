@@ -30,6 +30,8 @@
 ////////////////////////////////////////////////////////////
 #ifdef WIN32
 	#include "console_win32.h"
+#elif MACOSX
+	#include "console_osx.h"
 #endif
 
 #endif

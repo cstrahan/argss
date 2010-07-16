@@ -28,7 +28,9 @@
 #include <iostream>
 #include <fstream>
 #include <cstdlib>
+#ifdef WIN32
 #include <conio.h>
+#endif
 #include <stdarg.h>
 #include "output.h"
 #include "options.h"
@@ -73,10 +75,12 @@ void Output::ErrorStr(std::string err){
 	PostStr(err);
 	if (Console::Active()) {
 		Post("\nARGSS will close now. Press any key...");
+#ifdef WIN32
 #ifdef MSVC
 		_getch();
 #else
 		getch();
+#endif
 #endif
 	}
 	Player::Exit();
@@ -212,10 +216,12 @@ std::string Output::Gets() {
 std::string Output::Getc() {
 	std::string chr = "";
 	if (Console::Active()) {
+#ifdef WIN32
 #ifdef MSVC
 		chr += _getch();
 #else
 		chr += getch();
+#endif
 #endif
 	}
 	return chr;

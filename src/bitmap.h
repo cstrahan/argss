@@ -32,7 +32,11 @@
 #include <string>
 #include "defines.h"
 #include "argss_ruby.h"
+#ifdef MACOSX
+#include "gl.h"
+#else
 #include "gl/gl.h"
+#endif
 #include "rect.h"
 #include "color.h"
 #include "tone.h"

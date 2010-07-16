@@ -27,6 +27,7 @@
 ////////////////////////////////////////////////////////////
 #include <string>
 #include <map>
+#include <math.h>
 #include "tilemap_xp.h"
 #include "argss_ruby.h"
 #include "argss_tilemap.h"

@@ -36,7 +36,11 @@
 #include "sprite.h"
 #include "tilemap.h"
 #include "text.h"
+#ifdef MACOSX
+#include "gl.h"
+#else
 #include "gl/gl.h"
+#endif
 
 ////////////////////////////////////////////////////////////
 /// Global Variables

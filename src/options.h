@@ -87,7 +87,11 @@
 /// READ_INI_SCREEN_SIZE
 ///   Read screen size from ini file.
 ////////////////////////////////////////////////////////////
+#ifdef WIN32
 #define INI_NAME ".\\ARGSS.ini"
+#else
+#define INI_NAME "ARGSS.ini"
+#endif
 #define READ_INI_GAME_TITLE true
 #define READ_INI_SCRIPTS_PATH true
 #define READ_INI_RTPS true
@@ -154,3 +158,20 @@
 #define READ_BUTTON_ASSIGMENT true
 #define READ_BUTTON_ASSIGMENT_KEY "SOFTWARE\\Enterbrain\\RGSS"
 #define READ_BUTTON_ASSIGMENT_VALUE "ButtonAssign"
+
+////////////////////////////////////////////////////////////
+/// OSX options
+///
+/// OSX_CONFIG_FILE
+/// Path to the OSX configuration file; you can use the
+/// tilde (~) so that it looks it up from the current user's
+/// home directory. It has to be a ini file too.
+/// 
+////////////////////////////////////////////////////////////
+#define OSX_CONFIG_FILE "/Users/npepinpe/argss/config.ini"
+#define OSX_DEF_RPGXP_RTP "rpgxp/rtp"
+#define OSX_DEF_RPGVX_RTP "rpgvx/rtp"
+#define OSX_CONFIG_RPGXP_SECTION_NAME "RPGXP"
+#define OSX_CONFIG_RPGVX_SECTION_NAME "RPGVX"
+#define OSX_CONFIG_RTPPATH_KEY_NAME "RTP_PATH"
+#define OSX_CONFIG_RGSS_SECTION_NAME "RGSS"

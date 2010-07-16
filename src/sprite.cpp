@@ -33,7 +33,11 @@
 #include "player.h"
 #include "graphics.h"
 #include "system.h"
+#ifdef MACOSX
+#include "gl.h"
+#else
 #include "gl/gl.h"
+#endif
 
 ////////////////////////////////////////////////////////////
 /// Defines

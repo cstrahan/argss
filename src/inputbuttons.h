@@ -30,6 +30,8 @@
 ////////////////////////////////////////////////////////////
 #ifdef WIN32
 	#include "inputbuttons_win32.h"
+#elif MACOSX
+	#include "inputbuttons_osx.h"
 #endif
 
 #endif

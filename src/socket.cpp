@@ -39,7 +39,11 @@ Socket::Socket() {
 void Socket::Connect(const std::string& host, unsigned short port) {
 	struct sockaddr_in hostAddr;
 	hostAddr.sin_family = AF_INET;
+#ifdef WIN32
 	hostAddr.sin_addr.s_addr = inet_addr(host.c_str());
+#else
+	(void)inet_pton(AF_INET, host.c_str(), &(hostAddr.sin_addr));
+#endif
 	hostAddr.sin_port = htons(port);
 
 	if (connect(m_Socket, (struct sockaddr*)&hostAddr, sizeof(hostAddr))) {

@@ -165,7 +165,7 @@ void Check_Types2(VALUE x, VALUE t1, VALUE t2) {
     if ((unsigned long)TYPE(x) != t1 && (unsigned long)TYPE(x) != t2) {
         while (type->type >= 0) {
             if ((unsigned long)type->type == t1) {
-                char *etype;
+                const char *etype;
                 if (NIL_P(x)) etype = (char*)"nil";
                 else if (FIXNUM_P(x)) etype = (char*)"Fixnum";
                 else if (SYMBOL_P(x)) etype = (char*)"Symbol";
@@ -185,7 +185,7 @@ void Check_Types2(VALUE x, VALUE t1, VALUE t2) {
 void Check_Bool(VALUE x) {
     if (x == Qundef) rb_bug("undef leaked to the Ruby space");
     if (TYPE(x) != T_TRUE && TYPE(x) != T_FALSE) {
-        char *etype;
+        const char *etype;
         if (NIL_P(x)) etype = (char*)"nil";
         else if (FIXNUM_P(x)) etype = (char*)"Fixnum";
         else if (SYMBOL_P(x)) etype = (char*)"Symbol";
@@ -204,7 +204,7 @@ void Check_Class(VALUE x, VALUE c) {
         struct types *type = builtin_types;
         while (type->type >= 0) {
             if (type->type == TYPE(c)) {
-                char *etype;
+                const char *etype;
                 if (NIL_P(x)) etype = (char*)"nil";
                 else if (FIXNUM_P(x)) etype = (char*)"Fixnum";
                 else if (SYMBOL_P(x)) etype = (char*)"Symbol";

@@ -26,6 +26,7 @@
 /// Headers
 ////////////////////////////////////////////////////////////
 #include <string>
+#include <math.h>
 #include "plane.h"
 #include "argss_ruby.h"
 #include "argss_plane.h"

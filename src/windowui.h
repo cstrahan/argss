@@ -30,6 +30,8 @@
 ////////////////////////////////////////////////////////////
 #ifdef WIN32
 	#include "windowui_win32.h"
+#elif MACOSX
+	#include "windowui_osx.h"
 #endif
 
 #endif

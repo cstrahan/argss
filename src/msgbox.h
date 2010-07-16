@@ -30,6 +30,8 @@
 ////////////////////////////////////////////////////////////
 #ifdef WIN32
 	#include "msgbox_win32.h"
+#elif MACOSX
+	#include "msgbox_osx.h"
 #endif
 
 #endif
