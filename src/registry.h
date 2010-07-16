@@ -22,6 +22,8 @@
 /// SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //////////////////////////////////////////////////////////////////////////////////
 
+#ifdef WIN32
+
 #ifndef _REGISTRY_H_
 #define _REGISTRY_H_
 
@@ -29,6 +31,7 @@
 /// Headers
 ////////////////////////////////////////////////////////////
 #include <string>
+#include <windows.h>
 
 ////////////////////////////////////////////////////////////
 /// Registry namespace
@@ -37,5 +40,7 @@ namespace Registry {
 	std::string ReadStrValue(HKEY hkey, std::string key, std::string val);
 	int ReadBinValue(HKEY hkey, std::string key, std::string val, unsigned char* bin);
 };
+
+#endif
 
 #endif
