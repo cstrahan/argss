@@ -33,14 +33,14 @@
 #include "audio.h"
 #include "input.h"
 #include "argss.h"
+
 ////////////////////////////////////////////////////////////
 /// Main
 ////////////////////////////////////////////////////////////
-#define MACOSX 1
 #ifdef WIN32
-	int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
+int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /*lpCmdLine*/, int /*nCmdShow*/) {
 #else
-	int main(int argc, char **argv) {
+int main(int argc, char **argv) {
 #endif
 	
 	// Common code
@@ -52,8 +52,6 @@
 	Input::Init();
 	Audio::Init();
 	ARGSS::Init();
-		
-		printf("test");
 
 	return 0;
 }

@@ -122,7 +122,7 @@
 /// DEBUG_ONLY_FPS
 ///   Restrict FPS on title bar only for DEBUG.
 ////////////////////////////////////////////////////////////
-#define DEBUG true
+#define RUBY_DEBUG true
 #define DEBUG_VARIABLE "$DEBUG"
 #define DEBUG_ONLY_FPS false
 

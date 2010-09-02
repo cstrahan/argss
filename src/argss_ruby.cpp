@@ -32,6 +32,7 @@
 #include "system.h"
 #include "player.h"
 #include "output.h"
+#include "rubylibs.h"
 
 ////////////////////////////////////////////////////////////
 /// Global variables
@@ -67,6 +68,9 @@ void ARGSS::ARuby::Init() {
 	typedef VALUE (*rubyfunc)(...);
 	rb_define_global_function("load_data", (rubyfunc)rload_data, 1);
 	rb_define_global_function("save_data", (rubyfunc)rsave_data, 2);
+
+	Init_zlib();
+	Init_Win32API();
 }
 
 ////////////////////////////////////////////////////////////

@@ -8,8 +8,6 @@ Graphics.frame_rate = 40
 
 $DEBUG = true
 
-require("Test/zlib")
-require("Test/Win32API")
 require("Test/rpgcache")
 require("Test/rpgsprite")
 require("Test/rpgweather")
