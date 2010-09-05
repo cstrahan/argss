@@ -50,26 +50,26 @@ void System::Init() {
 	RTPS[2] = RTP3;
 	Width = SCREEN_WIDTH;
 	Height = SCREEN_HEIGHT;
-	if (READ_INI_GAME_TITLE || READ_INI_SCRIPTS_PATH || READ_INI_SCREEN_SIZE || READ_INI_RTPS) {
+	#if (READ_INI_GAME_TITLE || READ_INI_SCRIPTS_PATH || READ_INI_SCREEN_SIZE || READ_INI_RTPS)
 		CSimpleIniA ini(true, false, false);
 		SI_Error rc = ini.LoadFile(INI_NAME);
 		if (rc < 0) {
 			Output::Warning("ARGSS could not open %s file.", INI_NAME);
 		}
-		if (READ_INI_SCRIPTS_PATH) {
+		#if (READ_INI_SCRIPTS_PATH)
 			ScriptsPath = ini.GetValue("Game", "Scripts", SCRIPTS_PATH);
-		}
-		if (READ_INI_GAME_TITLE) {
+		#endif
+		#if (READ_INI_GAME_TITLE)
 			Title = ini.GetValue("Game", "Title", GAME_TITLE);
-		}
-		if (READ_INI_RTPS) {
+		#endif
+		#if (READ_INI_RTPS)
 			RTPS[0] = ini.GetValue("Game", "RTP1", RTP1);
 			RTPS[1] = ini.GetValue("Game", "RTP2", RTP2);
 			RTPS[2] = ini.GetValue("Game", "RTP3", RTP3);
-		}
-		if (READ_INI_SCREEN_SIZE) {
+		#endif
+		#if (READ_INI_SCREEN_SIZE)
 			Width = ini.GetLongValue("Game", "Width", Width);
 			Height = ini.GetLongValue("Game", "Height", Height);
-		}
-	}
+		#endif
+	#endif
 }
