@@ -1,29 +1,31 @@
-//////////////////////////////////////////////////////////////////////////////////
-/// ARGSS - Copyright (c) 2009 - 2010, Alejandro Marzini (vgvgf)
-///         All rights reserved.
-///
-/// Redistribution and use in source and binary forms, with or without
-/// modification, are permitted provided that the following conditions are met:
-///     * Redistributions of source code must retain the above copyright
-///       notice, this list of conditions and the following disclaimer.
-///     * Redistributions in binary form must reproduce the above copyright
-///       notice, this list of conditions and the following disclaimer in the
-///       documentation and/or other materials provided with the distribution.
-///
-/// THIS SOFTWARE IS PROVIDED BY THE AUTHOR ''AS IS'' AND ANY
-/// EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-/// WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-/// DISCLAIMED. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY
-/// DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-/// (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-/// LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-/// ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-/// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-/// SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-//////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
+// ARGSS - Copyright (c) 2009 - 2010, Alejandro Marzini (vgvgf)
+// All rights reserved.
+//
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions
+// are met:
+//
+//	* Redistributions of source code must retain the above copyright notice,
+//	this list of conditions and the following disclaimer.
+//	* Redistributions in binary form must reproduce the above copyright
+//	notice, this list of conditions and the following disclaimer in the
+//	documentation and/or other materials provided with the distribution.
+//
+// THIS SOFTWARE IS PROVIDED BY THE AUTHOR ''AS IS'' AND ANY EXPRESS OR
+// IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+// OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+// IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
+// INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+// NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+// DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+// THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+// THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+/////////////////////////////////////////////////////////////////////////////
 
 ////////////////////////////////////////////////////////////
-/// Headers
+// Headers
 ////////////////////////////////////////////////////////////
 #include <string>
 #include "sprite.h"
@@ -75,8 +77,7 @@ Sprite::Sprite(VALUE iid) {
 
 	if (viewport != Qnil) {
 		Viewport::Get(viewport)->RegisterZObj(0, id);
-	}
-	else {
+	} else {
 		Graphics::RegisterZObj(0, id);
 	}
 }
@@ -119,8 +120,7 @@ Sprite* Sprite::Get(VALUE id) {
 void Sprite::Dispose(unsigned long id) {
 	if (Sprite::Get(id)->viewport != Qnil) {
 		Viewport::Get(Sprite::Get(id)->viewport)->RemoveZObj(id);
-	}
-	else {
+	} else {
 		Graphics::RemoveZObj(id);
 	}
 	delete Graphics::drawable_map[id];
@@ -156,7 +156,7 @@ void Sprite::Draw(long z) {
 	glEnable(GL_TEXTURE_2D);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	
+
 	sprite->BindBitmap();
 
 	glTranslatef((float)x, (float)y, 0.0f);
@@ -181,24 +181,22 @@ void Sprite::Draw(long z) {
 		float ry = (float)src_rect_sprite.y / (float)sprite->GetHeight();
 		float rw = (float)src_rect_sprite.width / (float)sprite->GetWidth();
 		float rh = (float)src_rect_sprite.height / (float)sprite->GetHeight();
-		corners[0][0] = rx; 		corners[0][1] = ry;
-		corners[1][0] = rx + rw; 	corners[1][1] = ry;
-		corners[2][0] = rx + rw; 	corners[2][1] = ry + rh;
-		corners[3][0] = rx; 		corners[3][1] = ry + rh;
+		corners[0][0] = rx;			corners[0][1] = ry;
+		corners[1][0] = rx + rw;	corners[1][1] = ry;
+		corners[2][0] = rx + rw;	corners[2][1] = ry + rh;
+		corners[3][0] = rx;			corners[3][1] = ry + rh;
 	}
 	if (flipx && flipy) {
 		corners[0][0] = 1.0f - corners[0][0]; corners[0][1] = 1.0f - corners[0][1];
 		corners[1][0] = 1.0f - corners[1][0]; corners[1][1] = 1.0f - corners[1][1];
 		corners[2][0] = 1.0f - corners[2][0]; corners[2][1] = 1.0f - corners[2][1];
 		corners[3][0] = 1.0f - corners[3][0]; corners[3][1] = 1.0f - corners[3][1];
-	}
-	else if (flipx) {
+	} else if (flipx) {
 		corners[0][0] = 1.0f - corners[0][0];
 		corners[1][0] = 1.0f - corners[1][0];
 		corners[2][0] = 1.0f - corners[2][0];
 		corners[3][0] = 1.0f - corners[3][0];
-	}
-	else if (flipy) {
+	} else if (flipy) {
 		corners[0][1] = 1.0f - corners[0][1];
 		corners[1][1] = 1.0f - corners[1][1];
 		corners[2][1] = 1.0f - corners[2][1];
@@ -206,15 +204,15 @@ void Sprite::Draw(long z) {
 	}
 
 	glEnable(GL_BLEND);
-	switch(blend_type) {
-		case 1:
-			glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-			break;
-		case 2:
-			glBlendFunc(GL_SRC_ALPHA_SATURATE, GL_ONE_MINUS_SRC_COLOR);
-			break;
-		default:
-			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	switch (blend_type) {
+	case 1:
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+		break;
+	case 2:
+		glBlendFunc(GL_SRC_ALPHA_SATURATE, GL_ONE_MINUS_SRC_COLOR);
+		break;
+	default:
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	}
 
 	if (bush_depth == 0) {
@@ -224,38 +222,36 @@ void Sprite::Draw(long z) {
 			glTexCoord2f(corners[2][0], corners[2][1]); glVertex2f(width * zoom_x, height * zoom_y);
 			glTexCoord2f(corners[3][0], corners[3][1]); glVertex2f(0.0f, height * zoom_y);
 		glEnd();
-	}
-	else {
+	} else {
 		if (flipy) {
 			glBegin(GL_QUADS);
-				glTexCoord2f(corners[0][0], corners[0][1] - bush_depth / (float)sprite->GetHeight()); 	glVertex2f(0.0f, bush_depth * zoom_y);
-				glTexCoord2f(corners[1][0], corners[1][1] - bush_depth / (float)sprite->GetHeight()); 	glVertex2f(width * zoom_x, bush_depth * zoom_y);
-				glTexCoord2f(corners[2][0], corners[2][1]); 											glVertex2f(width * zoom_x, height * zoom_y);
-				glTexCoord2f(corners[3][0], corners[3][1]); 											glVertex2f(0.0f, height * zoom_y);
-			glEnd();
-
-			glColor4f(1.0f, 1.0f, 1.0f, 0.5f * (opacity / 255.0f));
-			glBegin(GL_QUADS);
-				glTexCoord2f(corners[0][0], corners[0][1]); 											glVertex2f(0.0f, 0.0f);
-				glTexCoord2f(corners[1][0], corners[1][1]); 											glVertex2f(width * zoom_x, 0.0f);
-				glTexCoord2f(corners[2][0], corners[0][1] - bush_depth / (float)sprite->GetHeight()); 	glVertex2f(width * zoom_x, bush_depth * zoom_y);
-				glTexCoord2f(corners[3][0], corners[1][1] - bush_depth / (float)sprite->GetHeight()); 	glVertex2f(0.0f, bush_depth * zoom_y);
-			glEnd();
-		}
-		else {
-			glBegin(GL_QUADS);
-				glTexCoord2f(corners[0][0], corners[0][1]); 											glVertex2f(0.0f, 0.0f);
-				glTexCoord2f(corners[1][0], corners[1][1]); 											glVertex2f(width * zoom_x, 0.0f);
-				glTexCoord2f(corners[2][0], corners[2][1] - bush_depth / (float)sprite->GetHeight()); 	glVertex2f(width * zoom_x, (height - bush_depth) * zoom_y);
-				glTexCoord2f(corners[3][0], corners[3][1] - bush_depth / (float)sprite->GetHeight()); 	glVertex2f(0.0f, (height - bush_depth) * zoom_y);
-			glEnd();
-
-			glColor4f(1.0f, 1.0f, 1.0f, 0.5f * (opacity / 255.0f));
-			glBegin(GL_QUADS);
-				glTexCoord2f(corners[0][0], corners[2][1] - bush_depth / (float)sprite->GetHeight()); 	glVertex2f(0.0f, (height - bush_depth) * zoom_y);
-				glTexCoord2f(corners[1][0], corners[3][1] - bush_depth / (float)sprite->GetHeight()); 	glVertex2f(width * zoom_x, (height - bush_depth) * zoom_y);
+				glTexCoord2f(corners[0][0], corners[0][1] - bush_depth / (float)sprite->GetHeight());	glVertex2f(0.0f, bush_depth * zoom_y);
+				glTexCoord2f(corners[1][0], corners[1][1] - bush_depth / (float)sprite->GetHeight());	glVertex2f(width * zoom_x, bush_depth * zoom_y);
 				glTexCoord2f(corners[2][0], corners[2][1]);												glVertex2f(width * zoom_x, height * zoom_y);
-				glTexCoord2f(corners[3][0], corners[3][1]); 											glVertex2f(0.0f, height * zoom_y);
+				glTexCoord2f(corners[3][0], corners[3][1]);												glVertex2f(0.0f, height * zoom_y);
+			glEnd();
+
+			glColor4f(1.0f, 1.0f, 1.0f, 0.5f * (opacity / 255.0f));
+			glBegin(GL_QUADS);
+				glTexCoord2f(corners[0][0], corners[0][1]);												glVertex2f(0.0f, 0.0f);
+				glTexCoord2f(corners[1][0], corners[1][1]);												glVertex2f(width * zoom_x, 0.0f);
+				glTexCoord2f(corners[2][0], corners[0][1] - bush_depth / (float)sprite->GetHeight());	glVertex2f(width * zoom_x, bush_depth * zoom_y);
+				glTexCoord2f(corners[3][0], corners[1][1] - bush_depth / (float)sprite->GetHeight());	glVertex2f(0.0f, bush_depth * zoom_y);
+			glEnd();
+		} else {
+			glBegin(GL_QUADS);
+				glTexCoord2f(corners[0][0], corners[0][1]);												glVertex2f(0.0f, 0.0f);
+				glTexCoord2f(corners[1][0], corners[1][1]);												glVertex2f(width * zoom_x, 0.0f);
+				glTexCoord2f(corners[2][0], corners[2][1] - bush_depth / (float)sprite->GetHeight());	glVertex2f(width * zoom_x, (height - bush_depth) * zoom_y);
+				glTexCoord2f(corners[3][0], corners[3][1] - bush_depth / (float)sprite->GetHeight());	glVertex2f(0.0f, (height - bush_depth) * zoom_y);
+			glEnd();
+
+			glColor4f(1.0f, 1.0f, 1.0f, 0.5f * (opacity / 255.0f));
+			glBegin(GL_QUADS);
+				glTexCoord2f(corners[0][0], corners[2][1] - bush_depth / (float)sprite->GetHeight());	glVertex2f(0.0f, (height - bush_depth) * zoom_y);
+				glTexCoord2f(corners[1][0], corners[3][1] - bush_depth / (float)sprite->GetHeight());	glVertex2f(width * zoom_x, (height - bush_depth) * zoom_y);
+				glTexCoord2f(corners[2][0], corners[2][1]);												glVertex2f(width * zoom_x, height * zoom_y);
+				glTexCoord2f(corners[3][0], corners[3][1]);												glVertex2f(0.0f, height * zoom_y);
 			glEnd();
 		}
 	}
@@ -267,7 +263,7 @@ void Sprite::Draw(long z) {
 		glBegin(GL_QUADS);
 			glTexCoord2f(corners[0][0], corners[0][1]); glVertex2f(0.0f, 0.0f);
 			glTexCoord2f(corners[1][0], corners[1][1]); glVertex2f(width * zoom_x, 0.0f);
-			glTexCoord2f(corners[2][0], corners[2][1]); glVertex2f(width * zoom_x, height  * zoom_y);
+			glTexCoord2f(corners[2][0], corners[2][1]); glVertex2f(width * zoom_x, height * zoom_y);
 			glTexCoord2f(corners[3][0], corners[3][1]); glVertex2f(0.0f, height * zoom_y);
 		glEnd();
 	}
@@ -291,7 +287,7 @@ void Sprite::Draw(long z) {
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	
+
 	sprite->BindBitmap();
 
 	glTranslatef((float)x, (float)y, 0.0f);
@@ -316,14 +312,12 @@ void Sprite::Draw(long z) {
 		corners[1][0] = 0.0f; corners[1][1] = 1.0f;
 		corners[2][0] = 0.0f; corners[2][1] = 0.0f;
 		corners[3][0] = 1.0f; corners[3][1] = 0.0f;
-	}
-	else if (flipx) {
+	} else if (flipx) {
 		corners[0][0] = 1.0f; corners[0][1] = 0.0f;
 		corners[1][0] = 0.0f; corners[1][1] = 0.0f;
 		corners[2][0] = 0.0f; corners[2][1] = 1.0f;
 		corners[3][0] = 1.0f; corners[3][1] = 1.0f;
-	}
-	else if (flipy) {
+	} else if (flipy) {
 		corners[0][0] = 0.0f; corners[0][1] = 1.0f;
 		corners[1][0] = 1.0f; corners[1][1] = 1.0f;
 		corners[2][0] = 1.0f; corners[2][1] = 0.0f;
@@ -331,39 +325,38 @@ void Sprite::Draw(long z) {
 	}
 
 	glEnable(GL_BLEND);
-	switch(blend_type) {
-		case 1:
-			glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-			break;
-		case 2:
-			glBlendFunc(GL_SRC_ALPHA_SATURATE, GL_ONE_MINUS_SRC_COLOR);
-			break;
-		default:
-			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	switch (blend_type) {
+	case 1:
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+		break;
+	case 2:
+		glBlendFunc(GL_SRC_ALPHA_SATURATE, GL_ONE_MINUS_SRC_COLOR);
+		break;
+	default:
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	}
 
 	if (bush_depth == 0) {
 		glBegin(GL_QUADS);
 			glTexCoord2f(corners[0][0], corners[0][1]); glVertex2f(0.0f, 0.0f);
 			glTexCoord2f(corners[1][0], corners[1][1]); glVertex2f(width * zoom_x, 0.0f);
-			glTexCoord2f(corners[2][0], corners[2][1]); glVertex2f(width * zoom_x, height  * zoom_y);
+			glTexCoord2f(corners[2][0], corners[2][1]); glVertex2f(width * zoom_x, height * zoom_y);
 			glTexCoord2f(corners[3][0], corners[3][1]); glVertex2f(0.0f, height * zoom_y);
 		glEnd();
-	}
-	else {
+	} else {
 		glBegin(GL_QUADS);
-			glTexCoord2f(0.0f, 0.0f); 								glVertex2f(0.0f, 0.0f);
-			glTexCoord2f(1.0f, 0.0f); 								glVertex2f(width * zoom_x, 0.0f);
-			glTexCoord2f(1.0f, 1.0f - bush_depth / (float)height);	glVertex2f(width * zoom_x, (height - bush_depth)  * zoom_y);
-			glTexCoord2f(0.0f, 1.0f - bush_depth / (float)height);  glVertex2f(0.0f, (height - bush_depth) * zoom_y);
+			glTexCoord2f(0.0f, 0.0f);								glVertex2f(0.0f, 0.0f);
+			glTexCoord2f(1.0f, 0.0f);								glVertex2f(width * zoom_x, 0.0f);
+			glTexCoord2f(1.0f, 1.0f - bush_depth / (float)height);	glVertex2f(width * zoom_x, (height - bush_depth) * zoom_y);
+			glTexCoord2f(0.0f, 1.0f - bush_depth / (float)height);	glVertex2f(0.0f, (height - bush_depth) * zoom_y);
 		glEnd();
 
 		glColor4f(1.0f, 1.0f, 1.0f, 0.5f * (opacity / 255.0f));
 		glBegin(GL_QUADS);
-			glTexCoord2f(0.0f, (1.0f - bush_depth / (float)height)); glVertex2f(0.0f, (height - bush_depth)  * zoom_y);
-			glTexCoord2f(1.0f, (1.0f - bush_depth / (float)height)); glVertex2f(width * zoom_x, (height - bush_depth)  * zoom_y);
-			glTexCoord2f(1.0f, 1.0f);								 glVertex2f(width * zoom_x, height  * zoom_y);
-			glTexCoord2f(0.0f, 1.0f);								 glVertex2f(0.0f, height * zoom_y);
+			glTexCoord2f(0.0f, (1.0f - bush_depth / (float)height));	glVertex2f(0.0f, (height - bush_depth) * zoom_y);
+			glTexCoord2f(1.0f, (1.0f - bush_depth / (float)height));	glVertex2f(width * zoom_x, (height - bush_depth) * zoom_y);
+			glTexCoord2f(1.0f, 1.0f);									glVertex2f(width * zoom_x, height * zoom_y);
+			glTexCoord2f(0.0f, 1.0f);									glVertex2f(0.0f, height * zoom_y);
 		glEnd();
 	}
 
@@ -374,7 +367,7 @@ void Sprite::Draw(long z) {
 		glBegin(GL_QUADS);
 			glTexCoord2f(corners[0][0], corners[0][1]); glVertex2f(0.0f, 0.0f);
 			glTexCoord2f(corners[1][0], corners[1][1]); glVertex2f(width * zoom_x, 0.0f);
-			glTexCoord2f(corners[2][0], corners[2][1]); glVertex2f(width * zoom_x, height  * zoom_y);
+			glTexCoord2f(corners[2][0], corners[2][1]); glVertex2f(width * zoom_x, height * zoom_y);
 			glTexCoord2f(corners[3][0], corners[3][1]); glVertex2f(0.0f, height * zoom_y);
 		glEnd();
 	}
@@ -386,15 +379,15 @@ void Sprite::Draw(long z, Bitmap* dst_bitmap) {
 	if (GetWidth() <= 0 || GetHeight() <= 0) return;
 	if (x < -GetWidth() || x > dst_bitmap->GetWidth() || y < -GetHeight() || y > dst_bitmap->GetHeight()) return;
 	if (!bitmap) return;
-	
+
 	src_rect_sprite = Rect(src_rect);
 	if (src_rect_sprite != src_rect_last) {
 		src_rect_last = src_rect_sprite;
 		needs_refresh = true;
 	}
-	
+
 	if (needs_refresh) Refresh();
-	
+
 	dst_bitmap->Blit(x - ox, y - oy, sprite, sprite->GetRect(), 255);*/
 }
 
@@ -496,7 +489,7 @@ void Sprite::RefreshFlash() {
 	glBindTexture(GL_TEXTURE_2D, flash_texture);
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-  	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
@@ -522,8 +515,7 @@ void Sprite::SetViewport(VALUE nviewport) {
 		if (nviewport != Qnil) {
 			Graphics::RemoveZObj(id);
 			Viewport::Get(nviewport)->RegisterZObj(0, id);
-		}
-		else {
+		} else {
 			if (viewport != Qnil) Viewport::Get(viewport)->RemoveZObj(id);
 			Graphics::RegisterZObj(0, id);
 		}
@@ -571,8 +563,7 @@ void Sprite::SetZ(int nz) {
 	if (z != nz) {
 		if (viewport != Qnil) {
 			Viewport::Get(viewport)->UpdateZObj(id, nz);
-		}
-		else {
+		} else {
 			Graphics::UpdateZObj(id, nz);
 		}
 	}

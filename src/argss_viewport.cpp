@@ -1,29 +1,31 @@
-//////////////////////////////////////////////////////////////////////////////////
-/// ARGSS - Copyright (c) 2009 - 2010, Alejandro Marzini (vgvgf)
-///         All rights reserved.
-///
-/// Redistribution and use in source and binary forms, with or without
-/// modification, are permitted provided that the following conditions are met:
-///     * Redistributions of source code must retain the above copyright
-///       notice, this list of conditions and the following disclaimer.
-///     * Redistributions in binary form must reproduce the above copyright
-///       notice, this list of conditions and the following disclaimer in the
-///       documentation and/or other materials provided with the distribution.
-///
-/// THIS SOFTWARE IS PROVIDED BY THE AUTHOR ''AS IS'' AND ANY
-/// EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-/// WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-/// DISCLAIMED. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY
-/// DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-/// (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-/// LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-/// ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-/// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-/// SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-//////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
+// ARGSS - Copyright (c) 2009 - 2010, Alejandro Marzini (vgvgf)
+// All rights reserved.
+//
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions
+// are met:
+//
+//	* Redistributions of source code must retain the above copyright notice,
+//	this list of conditions and the following disclaimer.
+//	* Redistributions in binary form must reproduce the above copyright
+//	notice, this list of conditions and the following disclaimer in the
+//	documentation and/or other materials provided with the distribution.
+//
+// THIS SOFTWARE IS PROVIDED BY THE AUTHOR ''AS IS'' AND ANY EXPRESS OR
+// IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+// OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+// IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
+// INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+// NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+// DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+// THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+// THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+/////////////////////////////////////////////////////////////////////////////
 
 ////////////////////////////////////////////////////////////
-/// Headers
+// Headers
 ////////////////////////////////////////////////////////////
 #include <string>
 #include "argss_viewport.h"
@@ -34,7 +36,7 @@
 #include "viewport.h"
 
 ////////////////////////////////////////////////////////////
-/// Global Variables
+// Global Variables
 ////////////////////////////////////////////////////////////
 VALUE ARGSS::AViewport::id;
 
@@ -63,88 +65,87 @@ VALUE ARGSS::AViewport::rdispose(VALUE self) {
 		ARGSS::ARuby::RemoveObject(self);
 		rb_gc_start();
 	}
-    return self;
+	return self;
 }
 VALUE ARGSS::AViewport::rdisposedQ(VALUE self) {
 	return INT2BOOL(Viewport::IsDisposed(self));
 }
 VALUE ARGSS::AViewport::rflash(VALUE self, VALUE color, VALUE duration) {
-    ARGSS::AViewport::CheckDisposed(self);
+	ARGSS::AViewport::CheckDisposed(self);
 	if (color == Qnil) {
 		Viewport::Get(self)->Flash(NUM2INT(duration));
-	}
-	else {
+	} else {
 		Viewport::Get(self)->Flash(Color(color), NUM2INT(duration));
 	}
-    return Qnil;
+	return Qnil;
 }
 VALUE ARGSS::AViewport::rupdate(VALUE self) {
-    ARGSS::AViewport::CheckDisposed(self);
-    Viewport::Get(self)->Update();
-    return Qnil;
+	ARGSS::AViewport::CheckDisposed(self);
+	Viewport::Get(self)->Update();
+	return Qnil;
 }
 VALUE ARGSS::AViewport::rrect(VALUE self) {
-    ARGSS::AViewport::CheckDisposed(self);
-    return rb_iv_get(self, "@rect");
+	ARGSS::AViewport::CheckDisposed(self);
+	return rb_iv_get(self, "@rect");
 }
 VALUE ARGSS::AViewport::rrectE(VALUE self, VALUE rect) {
-    ARGSS::AViewport::CheckDisposed(self);
+	ARGSS::AViewport::CheckDisposed(self);
 	Check_Class(rect, ARGSS::ARect::id);
-    Viewport::Get(self)->SetRect(rect);
-    return rb_iv_set(self, "@rect", rect);
+	Viewport::Get(self)->SetRect(rect);
+	return rb_iv_set(self, "@rect", rect);
 }
 VALUE ARGSS::AViewport::rvisible(VALUE self) {
-    ARGSS::AViewport::CheckDisposed(self);
+	ARGSS::AViewport::CheckDisposed(self);
 	return rb_iv_get(self, "@visible");
 }
 VALUE ARGSS::AViewport::rvisibleE(VALUE self, VALUE visible) {
-    ARGSS::AViewport::CheckDisposed(self);
+	ARGSS::AViewport::CheckDisposed(self);
 	Viewport::Get(self)->SetVisible(NUM2BOOL(visible));
 	return rb_iv_set(self, "@visible", visible);
 }
 VALUE ARGSS::AViewport::rz(VALUE self) {
-    ARGSS::AViewport::CheckDisposed(self);
+	ARGSS::AViewport::CheckDisposed(self);
 	return rb_iv_get(self, "@z");
 }
 VALUE ARGSS::AViewport::rzE(VALUE self, VALUE z) {
-    ARGSS::AViewport::CheckDisposed(self);
+	ARGSS::AViewport::CheckDisposed(self);
 	Viewport::Get(self)->SetZ(NUM2INT(z));
 	return rb_iv_set(self, "@z", z);
 }
 VALUE ARGSS::AViewport::rox(VALUE self) {
-    ARGSS::AViewport::CheckDisposed(self);
+	ARGSS::AViewport::CheckDisposed(self);
 	return rb_iv_get(self, "@ox");
 }
 VALUE ARGSS::AViewport::roxE(VALUE self, VALUE ox) {
-    ARGSS::AViewport::CheckDisposed(self);
+	ARGSS::AViewport::CheckDisposed(self);
 	Viewport::Get(self)->SetOx(NUM2INT(ox));
 	return rb_iv_set(self, "@ox", ox);
 }
 VALUE ARGSS::AViewport::roy(VALUE self) {
-    ARGSS::AViewport::CheckDisposed(self);
+	ARGSS::AViewport::CheckDisposed(self);
 	return rb_iv_get(self, "@oy");
 }
 VALUE ARGSS::AViewport::royE(VALUE self, VALUE oy) {
-    ARGSS::AViewport::CheckDisposed(self);
+	ARGSS::AViewport::CheckDisposed(self);
 	Viewport::Get(self)->SetOy(NUM2INT(oy));
 	return rb_iv_set(self, "@oy", oy);
 }
 VALUE ARGSS::AViewport::rcolor(VALUE self) {
-    ARGSS::AViewport::CheckDisposed(self);
+	ARGSS::AViewport::CheckDisposed(self);
 	return rb_iv_get(self, "@color");
 }
 VALUE ARGSS::AViewport::rcolorE(VALUE self, VALUE color) {
-    ARGSS::AViewport::CheckDisposed(self);
+	ARGSS::AViewport::CheckDisposed(self);
 	Check_Class(color, ARGSS::AColor::id);
 	Viewport::Get(self)->SetColor(color);
 	return rb_iv_set(self, "@color", color);
 }
 VALUE ARGSS::AViewport::rtone(VALUE self) {
-    ARGSS::AViewport::CheckDisposed(self);
+	ARGSS::AViewport::CheckDisposed(self);
 	return rb_iv_get(self, "@tone");
 }
 VALUE ARGSS::AViewport::rtoneE(VALUE self, VALUE tone) {
-    ARGSS::AViewport::CheckDisposed(self);
+	ARGSS::AViewport::CheckDisposed(self);
 	Check_Class(tone, ARGSS::ATone::id);
 	Viewport::Get(self)->SetTone(tone);
 	return rb_iv_set(self, "@tone", tone);
@@ -154,8 +155,8 @@ VALUE ARGSS::AViewport::rtoneE(VALUE self, VALUE tone) {
 /// ARGSS Viewport initialize
 ////////////////////////////////////////////////////////////
 void ARGSS::AViewport::Init() {
-    typedef VALUE (*rubyfunc)(...);
-    id = rb_define_class("Viewport", rb_cObject);
+	typedef VALUE (*rubyfunc)(...);
+	id = rb_define_class("Viewport", rb_cObject);
 	rb_define_method(id, "initialize", (rubyfunc)rinitialize, -1);
 	rb_define_method(id, "dispose", (rubyfunc)rdispose, 0);
 	rb_define_method(id, "disposed?", (rubyfunc)rdisposedQ, 0);
@@ -181,7 +182,7 @@ void ARGSS::AViewport::Init() {
 /// Check if plane isn't disposed
 ////////////////////////////////////////////////////////////
 void ARGSS::AViewport::CheckDisposed(VALUE self) {
-    if (Viewport::IsDisposed(self)) {
+	if (Viewport::IsDisposed(self)) {
 		rb_raise(ARGSS::AError::id, "disposed viewport <%i>", self);
-    }
+	}
 }

@@ -1,29 +1,31 @@
-//////////////////////////////////////////////////////////////////////////////////
-/// ARGSS - Copyright (c) 2009 - 2010, Alejandro Marzini (vgvgf)
-///         All rights reserved.
-///
-/// Redistribution and use in source and binary forms, with or without
-/// modification, are permitted provided that the following conditions are met:
-///     * Redistributions of source code must retain the above copyright
-///       notice, this list of conditions and the following disclaimer.
-///     * Redistributions in binary form must reproduce the above copyright
-///       notice, this list of conditions and the following disclaimer in the
-///       documentation and/or other materials provided with the distribution.
-///
-/// THIS SOFTWARE IS PROVIDED BY THE AUTHOR ''AS IS'' AND ANY
-/// EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-/// WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-/// DISCLAIMED. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY
-/// DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-/// (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-/// LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-/// ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-/// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-/// SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-//////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
+// ARGSS - Copyright (c) 2009 - 2010, Alejandro Marzini (vgvgf)
+// All rights reserved.
+//
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions
+// are met:
+//
+//	* Redistributions of source code must retain the above copyright notice,
+//	this list of conditions and the following disclaimer.
+//	* Redistributions in binary form must reproduce the above copyright
+//	notice, this list of conditions and the following disclaimer in the
+//	documentation and/or other materials provided with the distribution.
+//
+// THIS SOFTWARE IS PROVIDED BY THE AUTHOR ''AS IS'' AND ANY EXPRESS OR
+// IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+// OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+// IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
+// INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+// NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+// DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+// THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+// THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+/////////////////////////////////////////////////////////////////////////////
 
 ////////////////////////////////////////////////////////////
-/// Headers
+// Headers
 ////////////////////////////////////////////////////////////
 #include "argss_rpg.h"
 #include "argss_rpg_weather.h"
@@ -33,7 +35,7 @@
 #include "argss_sprite.h"
 
 ////////////////////////////////////////////////////////////
-/// Global Variables
+// Global Variables
 ////////////////////////////////////////////////////////////
 VALUE ARGSS::ARPG::AWeather::id;
 
@@ -104,14 +106,11 @@ VALUE ARGSS::ARPG::AWeather::rtypeE(VALUE self, VALUE type) {
 	VALUE bitmap;
 	if (type == INT2NUM(1)) {
 		bitmap = rb_iv_get(self, "@rain_bitmap");
-	}
-	else if (type == INT2NUM(2)) {
+	} else if (type == INT2NUM(2)) {
 		bitmap = rb_iv_get(self, "@storm_bitmap");
-	}
-	else if (type == INT2NUM(3)) {
+	} else if (type == INT2NUM(3)) {
 		bitmap = rb_iv_get(self, "@snow_bitmap");
-	}
-	else {
+	} else {
 		bitmap = Qnil;
 	}
 	int val_max = NUM2INT(rb_iv_get(self, "@max"));
@@ -177,13 +176,11 @@ VALUE ARGSS::ARPG::AWeather::rupdate(VALUE self) {
 			val_x -= 2;
 			val_y += 16;
 			val_opacity -= 8;
-		}
-		else if (val_type == 2) {
+		} else if (val_type == 2) {
 			val_x -= 8;
 			val_y += 16;
 			val_opacity -= 12;
-		}
-		else if (val_type == 3) {
+		} else if (val_type == 3) {
 			val_x -= 2;
 			val_y += 8;
 			val_opacity -= 8;
@@ -191,9 +188,9 @@ VALUE ARGSS::ARPG::AWeather::rupdate(VALUE self) {
 		int x = val_x - NUM2INT(rb_iv_get(self, "@ox"));
 		int y = val_y - NUM2INT(rb_iv_get(self, "@oy"));
 		if (val_opacity < 64 || x < -50 || x > 750 || y < -300 || y > 500) {
-		  val_x = rand() % 800 - 50 + NUM2INT(rb_iv_get(self, "@ox"));
-		  val_y = rand() % 800 - 200 + NUM2INT(rb_iv_get(self, "@oy"));
-		  val_opacity = 255;
+			val_x = rand() % 800 - 50 + NUM2INT(rb_iv_get(self, "@ox"));
+			val_y = rand() % 800 - 200 + NUM2INT(rb_iv_get(self, "@oy"));
+			val_opacity = 255;
 		}
 		ARGSS::ASprite::rxE(sprite, INT2NUM(val_x));
 		ARGSS::ASprite::ryE(sprite, INT2NUM(val_y));
@@ -206,7 +203,7 @@ VALUE ARGSS::ARPG::AWeather::rupdate(VALUE self) {
 /// ARGSS RPG::Weather initialize
 ////////////////////////////////////////////////////////////
 void ARGSS::ARPG::AWeather::Init() {
-    typedef VALUE (*rubyfunc)(...);
+	typedef VALUE (*rubyfunc)(...);
 	id = rb_define_class_under(ARGSS::ARPG::id, "Weather", rb_cObject);
 	rb_define_method(id, "initialize", (rubyfunc)rinitialize, -1);
 	rb_define_method(id, "dispose", (rubyfunc)rdispose, 0);

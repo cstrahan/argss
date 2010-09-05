@@ -1,36 +1,38 @@
-//////////////////////////////////////////////////////////////////////////////////
-/// ARGSS - Copyright (c) 2009 - 2010, Alejandro Marzini (vgvgf)
-///         All rights reserved.
-///
-/// Redistribution and use in source and binary forms, with or without
-/// modification, are permitted provided that the following conditions are met:
-///     * Redistributions of source code must retain the above copyright
-///       notice, this list of conditions and the following disclaimer.
-///     * Redistributions in binary form must reproduce the above copyright
-///       notice, this list of conditions and the following disclaimer in the
-///       documentation and/or other materials provided with the distribution.
-///
-/// THIS SOFTWARE IS PROVIDED BY THE AUTHOR ''AS IS'' AND ANY
-/// EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-/// WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-/// DISCLAIMED. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY
-/// DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-/// (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-/// LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-/// ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-/// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-/// SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-//////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
+// ARGSS - Copyright (c) 2009 - 2010, Alejandro Marzini (vgvgf)
+// All rights reserved.
+//
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions
+// are met:
+//
+//	* Redistributions of source code must retain the above copyright notice,
+//	this list of conditions and the following disclaimer.
+//	* Redistributions in binary form must reproduce the above copyright
+//	notice, this list of conditions and the following disclaimer in the
+//	documentation and/or other materials provided with the distribution.
+//
+// THIS SOFTWARE IS PROVIDED BY THE AUTHOR ''AS IS'' AND ANY EXPRESS OR
+// IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+// OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+// IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
+// INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+// NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+// DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+// THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+// THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+/////////////////////////////////////////////////////////////////////////////
 
 ////////////////////////////////////////////////////////////
-/// Headers
+// Headers
 ////////////////////////////////////////////////////////////
 #include <string>
 #include "argss_table.h"
 #include "output.h"
 
 ////////////////////////////////////////////////////////////
-/// Global Variables
+// Global Variables
 ////////////////////////////////////////////////////////////
 VALUE ARGSS::ATable::id;
 
@@ -39,18 +41,18 @@ VALUE ARGSS::ATable::id;
 ////////////////////////////////////////////////////////////
 VALUE ARGSS::ATable::rinitialize(int argc, VALUE *argv, VALUE self) {
 	if (argc < 1) raise_argn(argc, 1);
-    else if (argc > 3) raise_argn(argc, 3);
+	else if (argc > 3) raise_argn(argc, 3);
 	rb_iv_set(self, "@dim", INT2NUM(argc));
 	int xsize = 1;
 	int ysize = 1;
 	int zsize = 1;
-	switch(argc) {
-		case 3:
-			zsize = NUM2INT(argv[2]);
-		case 2:
-			ysize = NUM2INT(argv[1]);
-		case 1:
-			xsize = NUM2INT(argv[0]);
+	switch (argc) {
+	case 3:
+		zsize = NUM2INT(argv[2]);
+	case 2:
+		ysize = NUM2INT(argv[1]);
+	case 1:
+		xsize = NUM2INT(argv[0]);
 	}
 	rb_iv_set(self, "@xsize", INT2NUM(xsize));
 	rb_iv_set(self, "@ysize", INT2NUM(ysize));
@@ -64,13 +66,13 @@ VALUE ARGSS::ATable::rresize(int argc, VALUE *argv, VALUE self) {
 	int xsize = 1;
 	int ysize = 1;
 	int zsize = 1;
-	switch(argc) {
-		case 3:
-			zsize = NUM2INT(argv[2]);
-		case 2:
-			ysize = NUM2INT(argv[1]);
-		case 1:
-			xsize = NUM2INT(argv[0]);
+	switch (argc) {
+	case 3:
+		zsize = NUM2INT(argv[2]);
+	case 2:
+		ysize = NUM2INT(argv[1]);
+	case 1:
+		xsize = NUM2INT(argv[0]);
 	}
 	int nsize = xsize * ysize * zsize;
 	int osize;
@@ -80,8 +82,7 @@ VALUE ARGSS::ATable::rresize(int argc, VALUE *argv, VALUE self) {
 		if (nsize > osize) {
 			VALUE arr = rb_ary_new3(nsize - osize, INT2NUM(0));
 			rb_ary_concat(rb_iv_get(self, "@data"), arr);
-		}
-		else {
+		} else {
 			VALUE slice_argv[2];
 			slice_argv[0] = INT2NUM(nsize);
 			slice_argv[1] = INT2NUM(osize);
@@ -106,13 +107,13 @@ VALUE ARGSS::ATable::raref(int argc, VALUE *argv, VALUE self) {
 	int x = 0;
 	int y = 0;
 	int z = 0;
-	switch(argc) {
-		case 3:
-			z = NUM2INT(argv[2]);
-		case 2:
-			y = NUM2INT(argv[1]);
-		case 1:
-			x = NUM2INT(argv[0]);
+	switch (argc) {
+	case 3:
+		z = NUM2INT(argv[2]);
+	case 2:
+		y = NUM2INT(argv[1]);
+	case 1:
+		x = NUM2INT(argv[0]);
 	}
 	VALUE data = rb_iv_get(self, "@data");
 	int xsize = NUM2INT(rb_iv_get(self, "@xsize"));
@@ -120,8 +121,7 @@ VALUE ARGSS::ATable::raref(int argc, VALUE *argv, VALUE self) {
 	int zsize = NUM2INT(rb_iv_get(self, "@zsize"));
 	if (x >= xsize || y >= ysize || z >= zsize) {
 		return Qnil;
-	}
-	else {
+	} else {
 		return rb_ary_entry(data, x + y * xsize + z * xsize * ysize);
 	}
 }
@@ -131,13 +131,13 @@ VALUE ARGSS::ATable::raset(int argc, VALUE *argv, VALUE self) {
 	int x = 0;
 	int y = 0;
 	int z = 0;
-	switch(argc) {
-		case 3:
-			z = NUM2INT(argv[2]);
-		case 2:
-			y = NUM2INT(argv[1]);
-		case 1:
-			x = NUM2INT(argv[0]);
+	switch (argc) {
+	case 3:
+		z = NUM2INT(argv[2]);
+	case 2:
+		y = NUM2INT(argv[1]);
+	case 1:
+		x = NUM2INT(argv[0]);
 	}
 	int val = NUM2INT(argv[argc - 1]);
 	if (val > 65535) val = 65535;
@@ -164,7 +164,7 @@ VALUE ARGSS::ATable::rdump(int argc, VALUE* argv, VALUE self) {
 	VALUE arr = rb_ary_new3(5, rb_iv_get(self, "@dim"), xsize, ysize, zsize, INT2NUM(items));
 	rb_str_concat(str, rb_funcall(arr, rb_intern("pack"), 1, rb_str_new2("L5")));
 	rb_str_concat(str, rb_funcall(rb_iv_get(self, "@data"), rb_intern("pack"), 1, rb_str_times(rb_str_new2("S"), INT2NUM(items))));
-    return str;
+	return str;
 }
 VALUE ARGSS::ATable::rload(VALUE self, VALUE str) {
 	VALUE arr = rb_funcall(str, rb_intern("unpack"), 1, rb_str_new2("L5"));
@@ -174,16 +174,16 @@ VALUE ARGSS::ATable::rload(VALUE self, VALUE str) {
 	VALUE table = rb_class_new_instance(dim, args, ARGSS::ATable::id);
 	VALUE data = rb_funcall(rb_str_substr(str, 20, items * 2), rb_intern("unpack"), 1, rb_str_times(rb_str_new2("S"), INT2NUM(items)));
 	rb_iv_set(table, "@data", data);
-    return table;
+	return table;
 }
 
 ////////////////////////////////////////////////////////////
 /// ARGSS Console initialize
 ////////////////////////////////////////////////////////////
 void ARGSS::ATable::Init() {
-    typedef VALUE (*rubyfunc)(...);
-    id = rb_define_class("Table", rb_cObject);
-    rb_define_method(id, "initialize", (rubyfunc)rinitialize, -1);
+	typedef VALUE (*rubyfunc)(...);
+	id = rb_define_class("Table", rb_cObject);
+	rb_define_method(id, "initialize", (rubyfunc)rinitialize, -1);
 	rb_define_method(id, "resize", (rubyfunc)rresize, -1);
 	rb_define_method(id, "xsize", (rubyfunc)rxsize, 0);
 	rb_define_method(id, "ysize", (rubyfunc)rysize, 0);
@@ -191,7 +191,7 @@ void ARGSS::ATable::Init() {
 	rb_define_method(id, "[]", (rubyfunc)raref, -1);
 	rb_define_method(id, "[]=", (rubyfunc)raset, -1);
 	rb_define_method(id, "_dump", (rubyfunc)rdump, -1);
-    rb_define_singleton_method(id, "_load", (rubyfunc)rload, 1);
+	rb_define_singleton_method(id, "_load", (rubyfunc)rload, 1);
 }
 
 ////////////////////////////////////////////////////////////

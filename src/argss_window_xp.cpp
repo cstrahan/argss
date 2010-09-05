@@ -1,29 +1,31 @@
-//////////////////////////////////////////////////////////////////////////////////
-/// ARGSS - Copyright (c) 2009 - 2010, Alejandro Marzini (vgvgf)
-///         All rights reserved.
-///
-/// Redistribution and use in source and binary forms, with or without
-/// modification, are permitted provided that the following conditions are met:
-///     * Redistributions of source code must retain the above copyright
-///       notice, this list of conditions and the following disclaimer.
-///     * Redistributions in binary form must reproduce the above copyright
-///       notice, this list of conditions and the following disclaimer in the
-///       documentation and/or other materials provided with the distribution.
-///
-/// THIS SOFTWARE IS PROVIDED BY THE AUTHOR ''AS IS'' AND ANY
-/// EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-/// WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-/// DISCLAIMED. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY
-/// DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-/// (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-/// LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-/// ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-/// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-/// SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-//////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
+// ARGSS - Copyright (c) 2009 - 2010, Alejandro Marzini (vgvgf)
+// All rights reserved.
+//
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions
+// are met:
+//
+//	* Redistributions of source code must retain the above copyright notice,
+//	this list of conditions and the following disclaimer.
+//	* Redistributions in binary form must reproduce the above copyright
+//	notice, this list of conditions and the following disclaimer in the
+//	documentation and/or other materials provided with the distribution.
+//
+// THIS SOFTWARE IS PROVIDED BY THE AUTHOR ''AS IS'' AND ANY EXPRESS OR
+// IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+// OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+// IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
+// INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+// NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+// DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+// THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+// THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+/////////////////////////////////////////////////////////////////////////////
 
 ////////////////////////////////////////////////////////////
-/// Headers
+// Headers
 ////////////////////////////////////////////////////////////
 #include <string>
 #include "argss_window_xp.h"
@@ -35,7 +37,7 @@
 #include "window_xp.h"
 
 ////////////////////////////////////////////////////////////
-/// Global Variables
+// Global Variables
 ////////////////////////////////////////////////////////////
 VALUE ARGSS::AWindow::id;
 
@@ -43,7 +45,7 @@ VALUE ARGSS::AWindow::id;
 /// Cap opacity value between 0 and 255
 ////////////////////////////////////////////////////////////
 int CapOpacityValue(int v) {
-    return (v > 255) ? 255 : (v < 0) ? 0 : v;
+	return (v > 255) ? 255 : (v < 0) ? 0 : v;
 }
 
 ////////////////////////////////////////////////////////////
@@ -53,11 +55,10 @@ VALUE ARGSS::AWindow::rinitialize(int argc, VALUE *argv, VALUE self) {
 	if (argc == 1) {
 		Check_Classes_N(argv[0], ARGSS::AViewport::id);
 		rb_iv_set(self, "@viewport", argv[0]);
-    }
-    else if (argc == 0) {
-        rb_iv_set(self, "@viewport", Qnil);
-    }
-    else raise_argn(argc, 1);
+	} else if (argc == 0) {
+		rb_iv_set(self, "@viewport", Qnil);
+	}
+	else raise_argn(argc, 1);
 	rb_iv_set(self, "@windowskin", Qnil);
 	rb_iv_set(self, "@contents", Qnil);
 	rb_iv_set(self, "@stretch", Qtrue);
@@ -81,30 +82,30 @@ VALUE ARGSS::AWindow::rinitialize(int argc, VALUE *argv, VALUE self) {
 }
 VALUE ARGSS::AWindow::rdispose(VALUE self) {
 	if (!Window::IsDisposed(self)) {
-	    ARGSS::AWindow::CheckDisposed(self);
-	    Window::Dispose(self);
+		ARGSS::AWindow::CheckDisposed(self);
+		Window::Dispose(self);
 		ARGSS::ARuby::RemoveObject(self);
 		rb_gc_start();
 	}
-    return self;
+	return self;
 }
 VALUE ARGSS::AWindow::rdisposedQ(VALUE self) {
 	return INT2BOOL(Window::IsDisposed(self));
 }
 VALUE ARGSS::AWindow::rupdate(VALUE self) {
-    ARGSS::AWindow::CheckDisposed(self);
-    Window::Get(self)->Update();
-    return Qnil;
+	ARGSS::AWindow::CheckDisposed(self);
+	Window::Get(self)->Update();
+	return Qnil;
 }
 VALUE ARGSS::AWindow::rviewport(VALUE self) {
-    ARGSS::AWindow::CheckDisposed(self);
-    return rb_iv_get(self, "@viewport");
+	ARGSS::AWindow::CheckDisposed(self);
+	return rb_iv_get(self, "@viewport");
 }
 VALUE ARGSS::AWindow::rviewportE(VALUE self, VALUE viewport) {
-    ARGSS::AWindow::CheckDisposed(self);
-    Check_Classes_N(viewport, ARGSS::AViewport::id);
+	ARGSS::AWindow::CheckDisposed(self);
+	Check_Classes_N(viewport, ARGSS::AViewport::id);
 	Window::Get(self)->SetViewport(viewport);
-    return rb_iv_set(self, "@viewport", viewport);
+	return rb_iv_set(self, "@viewport", viewport);
 }
 VALUE ARGSS::AWindow::rwindowskin(VALUE self) {
 	ARGSS::AWindow::CheckDisposed(self);
@@ -114,11 +115,11 @@ VALUE ARGSS::AWindow::rwindowskinE(VALUE self, VALUE windowskin) {
 	ARGSS::AWindow::CheckDisposed(self);
 	Check_Classes_N(windowskin, ARGSS::ABitmap::id);
 	Window::Get(self)->SetWindowskin(windowskin);
-    return rb_iv_set(self, "@windowskin", windowskin);
+	return rb_iv_set(self, "@windowskin", windowskin);
 }
 VALUE ARGSS::AWindow::rcontents(VALUE self) {
-    ARGSS::AWindow::CheckDisposed(self);
-    return rb_iv_get(self, "@contents");
+	ARGSS::AWindow::CheckDisposed(self);
+	return rb_iv_get(self, "@contents");
 }
 VALUE ARGSS::AWindow::rcontentsE(VALUE self, VALUE contents) {
 	ARGSS::AWindow::CheckDisposed(self);
@@ -127,164 +128,164 @@ VALUE ARGSS::AWindow::rcontentsE(VALUE self, VALUE contents) {
 	return rb_iv_set(self, "@contents", contents);
 }
 VALUE ARGSS::AWindow::rstretch(VALUE self) {
-    ARGSS::AWindow::CheckDisposed(self);
-    return rb_iv_get(self, "@stretch");
+	ARGSS::AWindow::CheckDisposed(self);
+	return rb_iv_get(self, "@stretch");
 }
 VALUE ARGSS::AWindow::rstretchE(VALUE self, VALUE stretch) {
-    ARGSS::AWindow::CheckDisposed(self);
-    Window::Get(self)->SetStretch(NUM2BOOL(stretch));
-    return rb_iv_set(self, "@stretch", stretch);
+	ARGSS::AWindow::CheckDisposed(self);
+	Window::Get(self)->SetStretch(NUM2BOOL(stretch));
+	return rb_iv_set(self, "@stretch", stretch);
 }
 VALUE ARGSS::AWindow::rcursor_rect(VALUE self) {
-    ARGSS::AWindow::CheckDisposed(self);
-    return rb_iv_get(self, "@cursor_rect");
+	ARGSS::AWindow::CheckDisposed(self);
+	return rb_iv_get(self, "@cursor_rect");
 }
 VALUE ARGSS::AWindow::rcursor_rectE(VALUE self, VALUE cursor_rect) {
-    ARGSS::AWindow::CheckDisposed(self);
+	ARGSS::AWindow::CheckDisposed(self);
 	Check_Class(cursor_rect, ARGSS::ARect::id);
-    Window::Get(self)->SetCursorRect(cursor_rect);
-    return rb_iv_set(self, "@cursor_rect", cursor_rect);
+	Window::Get(self)->SetCursorRect(cursor_rect);
+	return rb_iv_set(self, "@cursor_rect", cursor_rect);
 }
 VALUE ARGSS::AWindow::ractive(VALUE self) {
-    ARGSS::AWindow::CheckDisposed(self);
-    return rb_iv_get(self, "@active");
+	ARGSS::AWindow::CheckDisposed(self);
+	return rb_iv_get(self, "@active");
 }
 VALUE ARGSS::AWindow::ractiveE(VALUE self, VALUE active) {
-    ARGSS::AWindow::CheckDisposed(self);
-    Window::Get(self)->SetActive(NUM2BOOL(active));
-    return rb_iv_set(self, "@active", active);
+	ARGSS::AWindow::CheckDisposed(self);
+	Window::Get(self)->SetActive(NUM2BOOL(active));
+	return rb_iv_set(self, "@active", active);
 }
 VALUE ARGSS::AWindow::rvisible(VALUE self) {
-    ARGSS::AWindow::CheckDisposed(self);
-    return rb_iv_get(self, "@visible");
+	ARGSS::AWindow::CheckDisposed(self);
+	return rb_iv_get(self, "@visible");
 }
 VALUE ARGSS::AWindow::rvisibleE(VALUE self, VALUE visible) {
-    ARGSS::AWindow::CheckDisposed(self);
-    Window::Get(self)->SetVisible(NUM2BOOL(visible));
-    return rb_iv_set(self, "@visible", visible);
+	ARGSS::AWindow::CheckDisposed(self);
+	Window::Get(self)->SetVisible(NUM2BOOL(visible));
+	return rb_iv_set(self, "@visible", visible);
 }
 VALUE ARGSS::AWindow::rpause(VALUE self) {
-    ARGSS::AWindow::CheckDisposed(self);
-    return rb_iv_get(self, "@pause");
+	ARGSS::AWindow::CheckDisposed(self);
+	return rb_iv_get(self, "@pause");
 }
 VALUE ARGSS::AWindow::rpauseE(VALUE self, VALUE pause) {
-    ARGSS::AWindow::CheckDisposed(self);
-    Window::Get(self)->SetPause(NUM2BOOL(pause));
-    return rb_iv_set(self, "@pause", pause);
+	ARGSS::AWindow::CheckDisposed(self);
+	Window::Get(self)->SetPause(NUM2BOOL(pause));
+	return rb_iv_set(self, "@pause", pause);
 }
 VALUE ARGSS::AWindow::rx(VALUE self) {
-    ARGSS::AWindow::CheckDisposed(self);
+	ARGSS::AWindow::CheckDisposed(self);
 	return rb_to_int(rb_iv_get(self, "@x"));
 }
 VALUE ARGSS::AWindow::rfx(VALUE self) {
-    ARGSS::AWindow::CheckDisposed(self);
-    return rb_Float(rb_iv_get(self, "@x"));
+	ARGSS::AWindow::CheckDisposed(self);
+	return rb_Float(rb_iv_get(self, "@x"));
 }
 VALUE ARGSS::AWindow::rxE(VALUE self, VALUE x) {
-    ARGSS::AWindow::CheckDisposed(self);
+	ARGSS::AWindow::CheckDisposed(self);
 	Window::Get(self)->SetX(NUM2INT(x));
-    return rb_iv_set(self, "@x", x);
+	return rb_iv_set(self, "@x", x);
 }
 VALUE ARGSS::AWindow::ry(VALUE self) {
-    ARGSS::AWindow::CheckDisposed(self);
+	ARGSS::AWindow::CheckDisposed(self);
 	return rb_to_int(rb_iv_get(self, "@y"));
 }
 VALUE ARGSS::AWindow::rfy(VALUE self) {
-    ARGSS::AWindow::CheckDisposed(self);
-    return rb_Float(rb_iv_get(self, "@y"));
+	ARGSS::AWindow::CheckDisposed(self);
+	return rb_Float(rb_iv_get(self, "@y"));
 }
 VALUE ARGSS::AWindow::ryE(VALUE self, VALUE y) {
-    ARGSS::AWindow::CheckDisposed(self);
+	ARGSS::AWindow::CheckDisposed(self);
 	Window::Get(self)->SetY(NUM2INT(y));
-    return rb_iv_set(self, "@y", y);
+	return rb_iv_set(self, "@y", y);
 }
 VALUE ARGSS::AWindow::rwidth(VALUE self) {
-    ARGSS::AWindow::CheckDisposed(self);
-    return rb_iv_get(self, "@width");
+	ARGSS::AWindow::CheckDisposed(self);
+	return rb_iv_get(self, "@width");
 }
 VALUE ARGSS::AWindow::rwidthE(VALUE self, VALUE width) {
-    ARGSS::AWindow::CheckDisposed(self);
+	ARGSS::AWindow::CheckDisposed(self);
 	int w = NUM2INT(width);
 	if (w < 0) w = 0;
 	Window::Get(self)->SetWidth(w);
-    return rb_iv_set(self, "@width", INT2NUM(w));
+	return rb_iv_set(self, "@width", INT2NUM(w));
 }
 VALUE ARGSS::AWindow::rheight(VALUE self) {
-    ARGSS::AWindow::CheckDisposed(self);
-    return rb_iv_get(self, "@height");
+	ARGSS::AWindow::CheckDisposed(self);
+	return rb_iv_get(self, "@height");
 }
 VALUE ARGSS::AWindow::rheightE(VALUE self, VALUE height) {
-    ARGSS::AWindow::CheckDisposed(self);
+	ARGSS::AWindow::CheckDisposed(self);
 	int h = NUM2INT(height);
 	if (h < 0) h = 0;
 	Window::Get(self)->SetHeight(h);
-    return rb_iv_set(self, "@height", INT2NUM(h));
+	return rb_iv_set(self, "@height", INT2NUM(h));
 }
 VALUE ARGSS::AWindow::rz(VALUE self) {
-    ARGSS::AWindow::CheckDisposed(self);
-    return rb_iv_get(self, "@z");
+	ARGSS::AWindow::CheckDisposed(self);
+	return rb_iv_get(self, "@z");
 }
 VALUE ARGSS::AWindow::rzE(VALUE self, VALUE z) {
-    ARGSS::AWindow::CheckDisposed(self);
+	ARGSS::AWindow::CheckDisposed(self);
 	Window::Get(self)->SetZ(NUM2INT(z));
-    return rb_iv_set(self, "@z", z);
+	return rb_iv_set(self, "@z", z);
 }
 VALUE ARGSS::AWindow::rox(VALUE self) {
-    ARGSS::AWindow::CheckDisposed(self);
-    return rb_iv_get(self, "@ox");
+	ARGSS::AWindow::CheckDisposed(self);
+	return rb_iv_get(self, "@ox");
 }
 VALUE ARGSS::AWindow::roxE(VALUE self, VALUE ox) {
-    ARGSS::AWindow::CheckDisposed(self);
+	ARGSS::AWindow::CheckDisposed(self);
 	Window::Get(self)->SetOx(NUM2INT(ox));
-    return rb_iv_set(self, "@ox", ox);
+	return rb_iv_set(self, "@ox", ox);
 }
 VALUE ARGSS::AWindow::roy(VALUE self) {
-    ARGSS::AWindow::CheckDisposed(self);
-    return rb_iv_get(self, "@oy");
+	ARGSS::AWindow::CheckDisposed(self);
+	return rb_iv_get(self, "@oy");
 }
 VALUE ARGSS::AWindow::royE(VALUE self, VALUE oy) {
-    ARGSS::AWindow::CheckDisposed(self);
+	ARGSS::AWindow::CheckDisposed(self);
 	Window::Get(self)->SetOy(NUM2INT(oy));
-    return rb_iv_set(self, "@oy", oy);
+	return rb_iv_set(self, "@oy", oy);
 }
 VALUE ARGSS::AWindow::ropacity(VALUE self) {
-    ARGSS::AWindow::CheckDisposed(self);
-    return rb_iv_get(self, "@opacity");
+	ARGSS::AWindow::CheckDisposed(self);
+	return rb_iv_get(self, "@opacity");
 }
 VALUE ARGSS::AWindow::ropacityE(VALUE self, VALUE opacity) {
-    ARGSS::AWindow::CheckDisposed(self);
+	ARGSS::AWindow::CheckDisposed(self);
 	opacity = CapOpacityValue(NUM2INT(opacity));
 	Window::Get(self)->SetOpacity(opacity);
-    return rb_iv_set(self, "@opacity", INT2NUM(opacity));
+	return rb_iv_set(self, "@opacity", INT2NUM(opacity));
 }
 VALUE ARGSS::AWindow::rback_opacity(VALUE self) {
-    ARGSS::AWindow::CheckDisposed(self);
-    return rb_iv_get(self, "@back_opacity");
+	ARGSS::AWindow::CheckDisposed(self);
+	return rb_iv_get(self, "@back_opacity");
 }
 VALUE ARGSS::AWindow::rback_opacityE(VALUE self, VALUE back_opacity) {
-    ARGSS::AWindow::CheckDisposed(self);
+	ARGSS::AWindow::CheckDisposed(self);
 	back_opacity = CapOpacityValue(NUM2INT(back_opacity));
 	Window::Get(self)->SetBackOpacity(back_opacity);
-    return rb_iv_set(self, "@back_opacity", INT2NUM(back_opacity));
+	return rb_iv_set(self, "@back_opacity", INT2NUM(back_opacity));
 }
 VALUE ARGSS::AWindow::rcontents_opacity(VALUE self) {
-    ARGSS::AWindow::CheckDisposed(self);
-    return rb_iv_get(self, "@contents_opacity");
+	ARGSS::AWindow::CheckDisposed(self);
+	return rb_iv_get(self, "@contents_opacity");
 }
 VALUE ARGSS::AWindow::rcontents_opacityE(VALUE self, VALUE contents_opacity) {
-    ARGSS::AWindow::CheckDisposed(self);
+	ARGSS::AWindow::CheckDisposed(self);
 	contents_opacity = CapOpacityValue(NUM2INT(contents_opacity));
 	Window::Get(self)->SetContentsOpacity(contents_opacity);
-    return rb_iv_set(self, "@contents_opacity", INT2NUM(contents_opacity));
+	return rb_iv_set(self, "@contents_opacity", INT2NUM(contents_opacity));
 }
 
 ////////////////////////////////////////////////////////////
 /// ARGSS Window initialize
 ////////////////////////////////////////////////////////////
 void ARGSS::AWindow::Init() {
-    typedef VALUE (*rubyfunc)(...);
-    id = rb_define_class("Window", rb_cObject);
-    rb_define_method(id, "initialize", (rubyfunc)rinitialize, -1);
+	typedef VALUE (*rubyfunc)(...);
+	id = rb_define_class("Window", rb_cObject);
+	rb_define_method(id, "initialize", (rubyfunc)rinitialize, -1);
 	rb_define_method(id, "dispose", (rubyfunc)rdispose, 0);
 	rb_define_method(id, "disposed?", (rubyfunc)rdisposedQ, 0);
 	rb_define_method(id, "update", (rubyfunc)rupdate, 0);
@@ -332,7 +333,7 @@ void ARGSS::AWindow::Init() {
 /// Check if window isn't disposed
 ////////////////////////////////////////////////////////////
 void ARGSS::AWindow::CheckDisposed(VALUE self) {
-    if (Window::IsDisposed(self)) {
+	if (Window::IsDisposed(self)) {
 		rb_raise(ARGSS::AError::id, "disposed window <%i>", self);
-    }
+	}
 }

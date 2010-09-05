@@ -1,29 +1,31 @@
-//////////////////////////////////////////////////////////////////////////////////
-/// ARGSS - Copyright (c) 2009 - 2010, Alejandro Marzini (vgvgf)
-///         All rights reserved.
-///
-/// Redistribution and use in source and binary forms, with or without
-/// modification, are permitted provided that the following conditions are met:
-///     * Redistributions of source code must retain the above copyright
-///       notice, this list of conditions and the following disclaimer.
-///     * Redistributions in binary form must reproduce the above copyright
-///       notice, this list of conditions and the following disclaimer in the
-///       documentation and/or other materials provided with the distribution.
-///
-/// THIS SOFTWARE IS PROVIDED BY THE AUTHOR ''AS IS'' AND ANY
-/// EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-/// WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-/// DISCLAIMED. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY
-/// DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-/// (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-/// LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-/// ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-/// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-/// SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-//////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
+// ARGSS - Copyright (c) 2009 - 2010, Alejandro Marzini (vgvgf)
+// All rights reserved.
+//
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions
+// are met:
+//
+//	* Redistributions of source code must retain the above copyright notice,
+//	this list of conditions and the following disclaimer.
+//	* Redistributions in binary form must reproduce the above copyright
+//	notice, this list of conditions and the following disclaimer in the
+//	documentation and/or other materials provided with the distribution.
+//
+// THIS SOFTWARE IS PROVIDED BY THE AUTHOR ''AS IS'' AND ANY EXPRESS OR
+// IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+// OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+// IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
+// INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+// NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+// DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+// THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+// THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+/////////////////////////////////////////////////////////////////////////////
 
 ////////////////////////////////////////////////////////////
-/// Headers
+// Headers
 ////////////////////////////////////////////////////////////
 #include "audio.h"
 #include "argss_ruby.h"
@@ -32,7 +34,7 @@
 #include "filefinder.h"
 
 ////////////////////////////////////////////////////////////
-/// Global Variables
+// Global Variables
 ////////////////////////////////////////////////////////////
 Mix_Music* Audio::bgm;
 int Audio::bgm_volume;
@@ -48,10 +50,10 @@ std::map<int, Mix_Chunk*>::iterator Audio::it_sounds;
 /// Initialize
 ////////////////////////////////////////////////////////////
 void Audio::Init() {
-	if (SDL_InitSubSystem(SDL_INIT_AUDIO) < 0) { 
+	if (SDL_InitSubSystem(SDL_INIT_AUDIO) < 0) {
 		char errstr[] = "ARGSS couldn't initialize audio.\n%s\n";
 		Output::Error(errstr, SDL_GetError());
-    }
+	}
 
 	if (Mix_OpenAudio(22050, MIX_DEFAULT_FORMAT, 2, 4096) == -1) {
 		char errstr[] = "ARGSS couldn't initialize audio.\n%s\n";
@@ -106,8 +108,7 @@ void Audio::BGM_Play(std::string file, int volume, int pitch) {
 	bgm_volume = volume * MIX_MAX_VOLUME / 100;
 	if (me_playing) {
 		Mix_HookMusicFinished(me_finish);
-	}
-	else {
+	} else {
 		bgm_playing = true;
 		Mix_VolumeMusic(bgm_volume);
 		if (Mix_PlayMusic(bgm, -1) == -1) {
@@ -224,12 +225,11 @@ void Audio::ME_Fade(int fade) {
 ////////////////////////////////////////////////////////////
 void Audio::SE_Play(std::string file, int volume, int pitch) {
 	it_sounds = sounds.begin();
-	while(it_sounds != sounds.end()) {
+	while (it_sounds != sounds.end()) {
 		if (!Mix_Playing(it_sounds->first)) {
 			Mix_FreeChunk(it_sounds->second);
-	        sounds.erase(it_sounds++);
-		}
-		else {
+			sounds.erase(it_sounds++);
+		} else {
 			it_sounds++;
 		}
 	}

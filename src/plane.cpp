@@ -1,29 +1,31 @@
-//////////////////////////////////////////////////////////////////////////////////
-/// ARGSS - Copyright (c) 2009 - 2010, Alejandro Marzini (vgvgf)
-///         All rights reserved.
-///
-/// Redistribution and use in source and binary forms, with or without
-/// modification, are permitted provided that the following conditions are met:
-///     * Redistributions of source code must retain the above copyright
-///       notice, this list of conditions and the following disclaimer.
-///     * Redistributions in binary form must reproduce the above copyright
-///       notice, this list of conditions and the following disclaimer in the
-///       documentation and/or other materials provided with the distribution.
-///
-/// THIS SOFTWARE IS PROVIDED BY THE AUTHOR ''AS IS'' AND ANY
-/// EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-/// WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-/// DISCLAIMED. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY
-/// DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-/// (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-/// LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-/// ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-/// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-/// SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-//////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
+// ARGSS - Copyright (c) 2009 - 2010, Alejandro Marzini (vgvgf)
+// All rights reserved.
+//
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions
+// are met:
+//
+//	* Redistributions of source code must retain the above copyright notice,
+//	this list of conditions and the following disclaimer.
+//	* Redistributions in binary form must reproduce the above copyright
+//	notice, this list of conditions and the following disclaimer in the
+//	documentation and/or other materials provided with the distribution.
+//
+// THIS SOFTWARE IS PROVIDED BY THE AUTHOR ''AS IS'' AND ANY EXPRESS OR
+// IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+// OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+// IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
+// INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+// NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+// DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+// THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+// THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+/////////////////////////////////////////////////////////////////////////////
 
 ////////////////////////////////////////////////////////////
-/// Headers
+// Headers
 ////////////////////////////////////////////////////////////
 #include <string>
 #include <math.h>
@@ -55,8 +57,7 @@ Plane::Plane(VALUE iid) {
 
 	if (viewport != Qnil) {
 		Viewport::Get(viewport)->RegisterZObj(0, id);
-	}
-	else {
+	} else {
 		Graphics::RegisterZObj(0, id);
 	}
 }
@@ -95,8 +96,7 @@ Plane* Plane::Get(VALUE id) {
 void Plane::Dispose(unsigned long id) {
 	if (Plane::Get(id)->viewport != Qnil) {
 		Viewport::Get(Plane::Get(id)->viewport)->RemoveZObj(id);
-	}
-	else {
+	} else {
 		Graphics::RemoveZObj(id);
 	}
 	delete Graphics::drawable_map[id];
@@ -108,7 +108,7 @@ void Plane::Dispose(unsigned long id) {
 /// Refresh Bitmaps
 ////////////////////////////////////////////////////////////
 void Plane::RefreshBitmaps() {
-	
+
 }
 
 ////////////////////////////////////////////////////////////
@@ -140,24 +140,23 @@ void Plane::Draw(long z) {
 		recth = (float)rect.height;
 
 		glTranslatef((float)rect.x, (float)rect.y, 0.0f);
-	}
-	else {
+	} else {
 		rectw = (float)Player::GetWidth();
 		recth = (float)Player::GetHeight();
 	}
 
 	glColor4f(1.0f, 1.0f, 1.0f, opacity / 255.0f);
-	
+
 	glEnable(GL_BLEND);
-	switch(blend_type) {
-		case 1:
-			glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-			break;
-		case 2:
-			glBlendFunc(GL_SRC_ALPHA_SATURATE, GL_ONE_MINUS_SRC_COLOR);
-			break;
-		default:
-			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	switch (blend_type) {
+	case 1:
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+		break;
+	case 2:
+		glBlendFunc(GL_SRC_ALPHA_SATURATE, GL_ONE_MINUS_SRC_COLOR);
+		break;
+	default:
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	}
 
 	float bmpw = bmp->GetWidth() * zoom_x;
@@ -171,10 +170,10 @@ void Plane::Draw(long z) {
 	glBegin(GL_QUADS);
 		for (float i = r_ox / bmpw; i < tilesx; i++) {
 			for (float j = r_oy / bmph; j < tilesy; j++) {
-				glTexCoord2f(0.0f, 0.0f);  glVertex2f(i * bmpw, j * bmph);
-				glTexCoord2f(1.0f, 0.0f);  glVertex2f((i + 1) * bmpw, j * bmph);
-				glTexCoord2f(1.0f, 1.0f);  glVertex2f((i + 1) * bmpw, (j + 1) * bmph);
-				glTexCoord2f(0.0f, 1.0f);  glVertex2f(i * bmpw, (j + 1) * bmph);
+				glTexCoord2f(0.0f, 0.0f); glVertex2f(i * bmpw, j * bmph);
+				glTexCoord2f(1.0f, 0.0f); glVertex2f((i + 1) * bmpw, j * bmph);
+				glTexCoord2f(1.0f, 1.0f); glVertex2f((i + 1) * bmpw, (j + 1) * bmph);
+				glTexCoord2f(0.0f, 1.0f); glVertex2f(i * bmpw, (j + 1) * bmph);
 			}
 		}
 	glEnd();
@@ -196,8 +195,7 @@ void Plane::SetViewport(VALUE nviewport) {
 		if (nviewport != Qnil) {
 			Graphics::RemoveZObj(id);
 			Viewport::Get(nviewport)->RegisterZObj(0, id);
-		}
-		else {
+		} else {
 			if (viewport != Qnil) Viewport::Get(viewport)->RemoveZObj(id);
 			Graphics::RegisterZObj(0, id);
 		}
@@ -224,8 +222,7 @@ void Plane::SetZ(int nz) {
 	if (z != nz) {
 		if (viewport != Qnil) {
 			Viewport::Get(viewport)->UpdateZObj(id, nz);
-		}
-		else {
+		} else {
 			Graphics::UpdateZObj(id, nz);
 		}
 	}

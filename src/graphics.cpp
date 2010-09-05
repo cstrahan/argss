@@ -1,29 +1,31 @@
-//////////////////////////////////////////////////////////////////////////////////
-/// ARGSS - Copyright (c) 2009 - 2010, Alejandro Marzini (vgvgf)
-///         All rights reserved.
-///
-/// Redistribution and use in source and binary forms, with or without
-/// modification, are permitted provided that the following conditions are met:
-///     * Redistributions of source code must retain the above copyright
-///       notice, this list of conditions and the following disclaimer.
-///     * Redistributions in binary form must reproduce the above copyright
-///       notice, this list of conditions and the following disclaimer in the
-///       documentation and/or other materials provided with the distribution.
-///
-/// THIS SOFTWARE IS PROVIDED BY THE AUTHOR ''AS IS'' AND ANY
-/// EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-/// WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-/// DISCLAIMED. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY
-/// DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-/// (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-/// LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-/// ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-/// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-/// SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-//////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
+// ARGSS - Copyright (c) 2009 - 2010, Alejandro Marzini (vgvgf)
+// All rights reserved.
+//
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions
+// are met:
+//
+//	* Redistributions of source code must retain the above copyright notice,
+//	this list of conditions and the following disclaimer.
+//	* Redistributions in binary form must reproduce the above copyright
+//	notice, this list of conditions and the following disclaimer in the
+//	documentation and/or other materials provided with the distribution.
+//
+// THIS SOFTWARE IS PROVIDED BY THE AUTHOR ''AS IS'' AND ANY EXPRESS OR
+// IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+// OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+// IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
+// INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+// NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+// DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+// THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+// THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+/////////////////////////////////////////////////////////////////////////////
 
 ////////////////////////////////////////////////////////////
-/// Headers
+// Headers
 ////////////////////////////////////////////////////////////
 #include <string>
 #include "time.h"
@@ -43,7 +45,7 @@
 #endif
 
 ////////////////////////////////////////////////////////////
-/// Global Variables
+// Global Variables
 ////////////////////////////////////////////////////////////
 int Graphics::fps;
 int Graphics::framerate;
@@ -89,17 +91,19 @@ void Graphics::InitOpenGL() {
 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	glOrtho(0, Player::GetWidth(), Player::GetHeight(), 0, -1, 1); 
+	glOrtho(0, Player::GetWidth(), Player::GetHeight(), 0, -1, 1);
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
 	glEnable(GL_BLEND);
 
-	glClearColor((GLclampf)(backcolor.red / 255.0f),
-				 (GLclampf)(backcolor.green / 255.0f),
-				 (GLclampf)(backcolor.blue / 255.0f),
-				 (GLclampf)(backcolor.alpha / 255.0f));
+	glClearColor(
+				(GLclampf)(backcolor.red / 255.0f),
+				(GLclampf)(backcolor.green / 255.0f),
+				(GLclampf)(backcolor.blue / 255.0f),
+				(GLclampf)(backcolor.alpha / 255.0f)
+	);
 	glClearDepth(1.0);
 	glClear(GL_COLOR_BUFFER_BIT);
 	Player::SwapBuffers();
@@ -158,22 +162,22 @@ void Graphics::Update() {
 	}*/
 	tics = Time::GetTime();
 
-    if ((tics - last_tics) >= framerate_interval) {// || (framerate_interval - tics + last_tics) < 12) {
+	if ((tics - last_tics) >= framerate_interval) {// || (framerate_interval - tics + last_tics) < 12) {
 		//cyclesleftover = waitframes;
 		//waitframes = (double)(tics - last_tics) / framerate_interval - cyclesleftover;
 		//last_tics += (tics - last_tics);
-        last_tics = tics;
+		last_tics = tics;
 
 		DrawFrame();
-		
+
 		framecount++;
 		frames++;
-		
+
 		if (tics >= next_tics_fps) {
 			next_tics_fps += 1000;
 			fps = frames;
 			frames = 0;
-			
+
 			char title[255];
 #ifdef MSVC
 			sprintf_s(title, 255, "%s - %d FPS", System::Title.c_str(), fps);
@@ -182,8 +186,7 @@ void Graphics::Update() {
 #endif
 			Player::main_window->SetTitle(title);
 		}
-	}
-	else {
+	} else {
 		Time::SleepMs((long)(framerate_interval) - (tics - last_tics));
 	}
 }
@@ -194,7 +197,7 @@ void Graphics::Update() {
 void Graphics::DrawFrame() {
 	glClear(GL_COLOR_BUFFER_BIT);
 
-    for (it_zlist = zlist.begin(); it_zlist != zlist.end(); it_zlist++) {
+	for (it_zlist = zlist.begin(); it_zlist != zlist.end(); it_zlist++) {
 		Graphics::drawable_map[it_zlist->GetId()]->Draw(it_zlist->GetZ());
 	}
 
@@ -210,7 +213,7 @@ void Graphics::DrawFrame() {
 			glVertex2i(Player::GetWidth(), 0);
 		glEnd();
 	}
-	
+
 	Player::SwapBuffers();
 }
 
@@ -240,7 +243,7 @@ void Graphics::FrameReset() {
 /// Wait frames
 ////////////////////////////////////////////////////////////
 void Graphics::Wait(int duration) {
-	for(int i = duration; i > 0; i--) {
+	for (int i = duration; i > 0; i--) {
 		Update();
 	}
 }
@@ -256,7 +259,7 @@ void Graphics::ResizeScreen(int width, int height) {
 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	glOrtho(0, width, height, 0, -1, 1); 
+	glOrtho(0, width, height, 0, -1, 1);
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
@@ -325,10 +328,12 @@ VALUE Graphics::GetBackColor() {
 }
 void Graphics::SetBackColor(VALUE nbackcolor) {
 	backcolor = Color(nbackcolor);
-	glClearColor((GLclampf)(backcolor.red / 255.0f),
-				 (GLclampf)(backcolor.green / 255.0f),
-				 (GLclampf)(backcolor.blue / 255.0f),
-				 (GLclampf)(backcolor.alpha / 255.0f));
+	glClearColor(
+				(GLclampf)(backcolor.red / 255.0f),
+				(GLclampf)(backcolor.green / 255.0f),
+				(GLclampf)(backcolor.blue / 255.0f),
+				(GLclampf)(backcolor.alpha / 255.0f)
+	);
 }
 int Graphics::GetBrightness() {
 	return brightness;
@@ -341,9 +346,9 @@ void Graphics::SetBrightness(int nbrightness) {
 /// Sort ZObj
 ////////////////////////////////////////////////////////////
 bool Graphics::SortZObj(ZObj &first, ZObj &second) {
-    if (first.GetZ() < second.GetZ()) return true;
-    else if (first.GetZ() > second.GetZ()) return false;
-    else return first.GetCreation() < second.GetCreation();
+	if (first.GetZ() < second.GetZ()) return true;
+	else if (first.GetZ() > second.GetZ()) return false;
+	else return first.GetCreation() < second.GetCreation();
 }
 
 ////////////////////////////////////////////////////////////
@@ -378,7 +383,7 @@ void Graphics::RemoveZObj(unsigned long id) {
 /// Update ZObj Z
 ////////////////////////////////////////////////////////////
 void Graphics::UpdateZObj(unsigned long id, long z) {
-	for(it_zlist = zlist.begin(); it_zlist != zlist.end(); it_zlist++) {
+	for (it_zlist = zlist.begin(); it_zlist != zlist.end(); it_zlist++) {
 		if (it_zlist->GetId() == id) {
 			it_zlist->SetZ(z);
 			break;

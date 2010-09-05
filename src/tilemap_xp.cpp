@@ -1,29 +1,31 @@
-//////////////////////////////////////////////////////////////////////////////////
-/// ARGSS - Copyright (c) 2009 - 2010, Alejandro Marzini (vgvgf)
-///         All rights reserved.
-///
-/// Redistribution and use in source and binary forms, with or without
-/// modification, are permitted provided that the following conditions are met:
-///     * Redistributions of source code must retain the above copyright
-///       notice, this list of conditions and the following disclaimer.
-///     * Redistributions in binary form must reproduce the above copyright
-///       notice, this list of conditions and the following disclaimer in the
-///       documentation and/or other materials provided with the distribution.
-///
-/// THIS SOFTWARE IS PROVIDED BY THE AUTHOR ''AS IS'' AND ANY
-/// EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-/// WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-/// DISCLAIMED. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY
-/// DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-/// (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-/// LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-/// ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-/// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-/// SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-//////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
+// ARGSS - Copyright (c) 2009 - 2010, Alejandro Marzini (vgvgf)
+// All rights reserved.
+//
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions
+// are met:
+//
+//	* Redistributions of source code must retain the above copyright notice,
+//	this list of conditions and the following disclaimer.
+//	* Redistributions in binary form must reproduce the above copyright
+//	notice, this list of conditions and the following disclaimer in the
+//	documentation and/or other materials provided with the distribution.
+//
+// THIS SOFTWARE IS PROVIDED BY THE AUTHOR ''AS IS'' AND ANY EXPRESS OR
+// IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+// OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+// IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
+// INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+// NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+// DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+// THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+// THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+/////////////////////////////////////////////////////////////////////////////
 
 ////////////////////////////////////////////////////////////
-/// Headers
+// Headers
 ////////////////////////////////////////////////////////////
 #include <string>
 #include <map>
@@ -44,19 +46,21 @@ int Tilemap::autotiles_id[6][8][4];
 /// Class Init
 ////////////////////////////////////////////////////////////
 void Tilemap::Init() {
-	int temp[192] = { 26, 27, 32, 33,  4, 27, 32, 33, 26,  5, 32, 33,  4,  5, 32, 33,
-					  26, 27, 32, 11,  4, 27, 32, 11, 26,  5, 32, 11,  4,  5, 32, 11,
-					  26, 27, 10, 33,  4, 27, 10, 33, 26,  5, 10, 33,  4,  5, 10, 33,
-					  26, 27, 10, 11,  4, 27, 10, 11, 26,  5, 10, 11,  4,  5, 10, 11,
-					  24, 25, 30, 31, 24,  5, 30, 31, 24, 25, 30, 11, 24,  5, 30, 11,
-					  14, 15, 20, 21, 14, 15, 20, 11, 14, 15, 10, 21, 14, 15, 10, 11,
-					  28, 29, 34, 35, 28, 29, 10, 35,  4, 29, 34, 35,  4, 29, 10, 35,
-					  38, 39, 44, 45,  4, 39, 44, 45, 38,  5, 44, 45,  4,  5, 44, 45,
-					  24, 29, 30, 35, 14, 15, 44, 45, 12, 13, 18, 19, 12, 13, 18, 11,
-					  16, 17, 22, 23, 16, 17, 10, 23, 40, 41, 46, 47,  4, 41, 46, 47,
-					  36, 37, 42, 43, 36,  5, 42, 43, 12, 17, 18, 23, 12, 13, 42, 43,
-					  36, 41, 42, 47, 16, 17, 46, 47, 12, 17, 42, 47,  0,  1,  6,  7};
-	memcpy(autotiles_id, temp, 192 * sizeof(int)); 
+	int temp[192] = {
+		26, 27, 32, 33, 04, 27, 32, 33, 26, 05, 32, 33, 04, 05, 32, 33,
+		26, 27, 32, 11, 04, 27, 32, 11, 26, 05, 32, 11, 04, 05, 32, 11,
+		26, 27, 10, 33, 04, 27, 10, 33, 26, 05, 10, 33, 04, 05, 10, 33,
+		26, 27, 10, 11, 04, 27, 10, 11, 26, 05, 10, 11, 04, 05, 10, 11,
+		24, 25, 30, 31, 24, 05, 30, 31, 24, 25, 30, 11, 24, 05, 30, 11,
+		14, 15, 20, 21, 14, 15, 20, 11, 14, 15, 10, 21, 14, 15, 10, 11,
+		28, 29, 34, 35, 28, 29, 10, 35, 04, 29, 34, 35, 04, 29, 10, 35,
+		38, 39, 44, 45, 04, 39, 44, 45, 38, 05, 44, 45, 04, 05, 44, 45,
+		24, 29, 30, 35, 14, 15, 44, 45, 12, 13, 18, 19, 12, 13, 18, 11,
+		16, 17, 22, 23, 16, 17, 10, 23, 40, 41, 46, 47, 04, 41, 46, 47,
+		36, 37, 42, 43, 36, 05, 42, 43, 12, 17, 18, 23, 12, 13, 42, 43,
+		36, 41, 42, 47, 16, 17, 46, 47, 12, 17, 42, 47, 00, 01, 06, 07
+	};
+	memcpy(autotiles_id, temp, 192 * sizeof(int));
 }
 
 ////////////////////////////////////////////////////////////
@@ -120,8 +124,7 @@ Tilemap* Tilemap::Get(VALUE id) {
 void Tilemap::Dispose(unsigned long id) {
 	if (Tilemap::Get(id)->viewport != Qnil) {
 		Viewport::Get(Tilemap::Get(id)->viewport)->RemoveZObj(id);
-	}
-	else {
+	} else {
 		Graphics::RemoveZObj(id);
 	}
 	delete Graphics::drawable_map[id];
@@ -207,8 +210,7 @@ void Tilemap::Draw(long z_level) {
 				int tile_z;
 				if (tile.priority == 0) {
 					tile_z = 0;
-				}
-				else {
+				} else {
 					tile_z = tile.priority * 32 + y * 32 + z * 32;
 					if (map_y == 0 && tile.priority == 1) tile_z += 32;
 				}
@@ -240,15 +242,14 @@ void Tilemap::Draw(long z_level) {
 								glPopMatrix();
 							}
 							autotiles_cache[bitmap_id][tile_id][frame]->BindBitmap();
-							
+
 							glBegin(GL_QUADS);
 								glTexCoord2f(0.0f, 0.0f); glVertex2f(dst_x, dst_y);
 								glTexCoord2f(1.0f, 0.0f); glVertex2f(dst_x + 32.0f, dst_y);
 								glTexCoord2f(1.0f, 1.0f); glVertex2f(dst_x + 32.0f, dst_y + 32.0f);
 								glTexCoord2f(0.0f, 1.0f); glVertex2f(dst_x, dst_y + 32.0f);
 							glEnd();
-					}
-					else if (tile.id != 0){
+					} else if (tile.id != 0){
 						float src_x = (float)((tile.id - 384) % 8 * 32);
 						float src_y = (float)((tile.id - 384) / 8 * 32);
 
@@ -258,10 +259,10 @@ void Tilemap::Draw(long z_level) {
 						float bmph = (float)Bitmap::Get(tileset)->GetHeight();
 
 						glBegin(GL_QUADS);
-							glTexCoord2f(src_x / bmpw, src_y / bmph);					   glVertex2f(dst_x, dst_y);
-							glTexCoord2f((src_x + 32.0f) / bmpw, src_y / bmph); 		   glVertex2f(dst_x + 32.0f, dst_y);
-							glTexCoord2f((src_x + 32.0f) / bmpw, (src_y + 32.0f) / bmph);  glVertex2f(dst_x + 32.0f, dst_y + 32.0f);
-							glTexCoord2f(src_x / bmpw, (src_y + 32.0f) / bmph);			   glVertex2f(dst_x, dst_y + 32.0f);
+							glTexCoord2f(src_x / bmpw, src_y / bmph);						glVertex2f(dst_x, dst_y);
+							glTexCoord2f((src_x + 32.0f) / bmpw, src_y / bmph);				glVertex2f(dst_x + 32.0f, dst_y);
+							glTexCoord2f((src_x + 32.0f) / bmpw, (src_y + 32.0f) / bmph);	glVertex2f(dst_x + 32.0f, dst_y + 32.0f);
+							glTexCoord2f(src_x / bmpw, (src_y + 32.0f) / bmph);				glVertex2f(dst_x, dst_y + 32.0f);
 						glEnd();
 					}
 				}
@@ -294,7 +295,7 @@ void Tilemap::RefreshData() {
 	int width = NUM2INT(rb_iv_get(map_data, "@xsize"));
 	int height = NUM2INT(rb_iv_get(map_data, "@ysize"));
 	int layers = NUM2INT(rb_iv_get(map_data, "@zsize"));
-	
+
 	VALUE map_data_array = rb_iv_get(map_data, "@data");
 	VALUE priorities_array = rb_iv_get(priorities, "@data");
 
@@ -323,8 +324,7 @@ void Tilemap::SetViewport(VALUE nviewport) {
 	if (viewport != nviewport) {
 		if (viewport != Qnil) {
 			Viewport::Get(viewport)->RemoveZObj(id);
-		}
-		else {
+		} else {
 			Graphics::RemoveZObj(id);
 		}
 		int height = NUM2INT(rb_iv_get(map_data, "@ysize"));
@@ -332,8 +332,7 @@ void Tilemap::SetViewport(VALUE nviewport) {
 			for (int i = 0; i < height + 5; i++) {
 				Viewport::Get(nviewport)->RegisterZObj(i * 32, id, true);
 			}
-		}
-		else {
+		} else {
 			for (int i = 0; i < height + 5; i++) {
 				Graphics::RegisterZObj(i * 32, id, true);
 			}
@@ -354,8 +353,7 @@ void Tilemap::SetMapData(VALUE nmap_data) {
 	if (map_data != nmap_data) {
 		if (viewport != Qnil) {
 			Viewport::Get(viewport)->RemoveZObj(id);
-		}
-		else {
+		} else {
 			Graphics::RemoveZObj(id);
 		}
 		if (nmap_data != Qnil) {
@@ -365,8 +363,7 @@ void Tilemap::SetMapData(VALUE nmap_data) {
 				for (int i = 0; i < height + 8; i++) {
 					Viewport::Get(viewport)->RegisterZObj(i * 32, id, true);
 				}
-			}
-			else {
+			} else {
 				for (int i = 0; i < height + 8; i++) {
 					Graphics::RegisterZObj(i * 32, id, true);
 				}

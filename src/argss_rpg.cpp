@@ -1,36 +1,38 @@
-//////////////////////////////////////////////////////////////////////////////////
-/// ARGSS - Copyright (c) 2009 - 2010, Alejandro Marzini (vgvgf)
-///         All rights reserved.
-///
-/// Redistribution and use in source and binary forms, with or without
-/// modification, are permitted provided that the following conditions are met:
-///     * Redistributions of source code must retain the above copyright
-///       notice, this list of conditions and the following disclaimer.
-///     * Redistributions in binary form must reproduce the above copyright
-///       notice, this list of conditions and the following disclaimer in the
-///       documentation and/or other materials provided with the distribution.
-///
-/// THIS SOFTWARE IS PROVIDED BY THE AUTHOR ''AS IS'' AND ANY
-/// EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-/// WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-/// DISCLAIMED. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY
-/// DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-/// (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-/// LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-/// ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-/// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-/// SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-//////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
+// ARGSS - Copyright (c) 2009 - 2010, Alejandro Marzini (vgvgf)
+// All rights reserved.
+//
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions
+// are met:
+//
+//	* Redistributions of source code must retain the above copyright notice,
+//	this list of conditions and the following disclaimer.
+//	* Redistributions in binary form must reproduce the above copyright
+//	notice, this list of conditions and the following disclaimer in the
+//	documentation and/or other materials provided with the distribution.
+//
+// THIS SOFTWARE IS PROVIDED BY THE AUTHOR ''AS IS'' AND ANY EXPRESS OR
+// IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+// OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+// IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
+// INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+// NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+// DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+// THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+// THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+/////////////////////////////////////////////////////////////////////////////
 
 ////////////////////////////////////////////////////////////
-/// Headers
+// Headers
 ////////////////////////////////////////////////////////////
 #include "argss_rpg.h"
 #include "argss_table.h"
 #include "argss_color.h"
 
 ////////////////////////////////////////////////////////////
-/// Global Variables
+// Global Variables
 ////////////////////////////////////////////////////////////
 VALUE ARGSS::ARPG::id;
 VALUE ARGSS::ARPG::Map_id;
@@ -141,7 +143,7 @@ VALUE ARGSS::ARPG::reventpagegraphic_initialize(VALUE self) {
 }
 VALUE ARGSS::ARPG::reventcommand_initialize(int argc, VALUE* argv, VALUE self) {
 	if (argc > 3) raise_argn(argc, 3);
-	rb_iv_set(self, "@code", argc < 1 ?  INT2NUM(0) : argv[0]);
+	rb_iv_set(self, "@code", argc < 1 ? INT2NUM(0) : argv[0]);
 	rb_iv_set(self, "@indent", argc < 2 ? INT2NUM(0) : argv[1]);
 	rb_iv_set(self, "@parameters", argc < 3 ? rb_ary_new() : argv[2]);
 	return self;
@@ -154,7 +156,7 @@ VALUE ARGSS::ARPG::rmoveroute_initialize(VALUE self) {
 }
 VALUE ARGSS::ARPG::rmovecommand_initialize(int argc, VALUE* argv, VALUE self) {
 	if (argc > 2) raise_argn(argc, 2);
-	rb_iv_set(self, "@code", argc < 1 ?  INT2NUM(0) : argv[0]);
+	rb_iv_set(self, "@code", argc < 1 ? INT2NUM(0) : argv[0]);
 	rb_iv_set(self, "@parameters", argc < 2 ? rb_ary_new() : argv[1]);
 	return self;
 }
@@ -172,7 +174,7 @@ VALUE ARGSS::ARPG::ractor_initialize(VALUE self) {
 	rb_iv_set(self, "@battler_hue", INT2NUM(0));
 	VALUE table = ARGSS::ATable::New(INT2NUM(6), INT2NUM(100));
 	VALUE table_data = rb_ary_new();
-	for(int i = 1; i < 100; i++) {
+	for (int i = 1; i < 100; i++) {
 		rb_ary_push(table_data, INT2NUM(500 + i * 50));
 		rb_ary_push(table_data, INT2NUM(500 + i * 50));
 		rb_ary_push(table_data, INT2NUM(50 + i * 5));
@@ -557,8 +559,8 @@ VALUE ARGSS::ARPG::raudiofile_initialize(int argc, VALUE* argv, VALUE self) {
 /// ARGSS RPG initialize
 ////////////////////////////////////////////////////////////
 void ARGSS::ARPG::Init() {
-    typedef VALUE (*rubyfunc)(...);
-    id = rb_define_module("RPG");
+	typedef VALUE (*rubyfunc)(...);
+	id = rb_define_module("RPG");
 	Map_id = rb_define_class_under(id, "Map", rb_cObject);
 	MapInfo_id = rb_define_class_under(id, "MapInfo", rb_cObject);
 	Event_id = rb_define_class_under(id, "Event", rb_cObject);

@@ -1,29 +1,31 @@
-//////////////////////////////////////////////////////////////////////////////////
-/// ARGSS - Copyright (c) 2009 - 2010, Alejandro Marzini (vgvgf)
-///         All rights reserved.
-///
-/// Redistribution and use in source and binary forms, with or without
-/// modification, are permitted provided that the following conditions are met:
-///     * Redistributions of source code must retain the above copyright
-///       notice, this list of conditions and the following disclaimer.
-///     * Redistributions in binary form must reproduce the above copyright
-///       notice, this list of conditions and the following disclaimer in the
-///       documentation and/or other materials provided with the distribution.
-///
-/// THIS SOFTWARE IS PROVIDED BY THE AUTHOR ''AS IS'' AND ANY
-/// EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-/// WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-/// DISCLAIMED. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY
-/// DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-/// (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-/// LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-/// ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-/// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-/// SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-//////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
+// ARGSS - Copyright (c) 2009 - 2010, Alejandro Marzini (vgvgf)
+// All rights reserved.
+//
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions
+// are met:
+//
+//	* Redistributions of source code must retain the above copyright notice,
+//	this list of conditions and the following disclaimer.
+//	* Redistributions in binary form must reproduce the above copyright
+//	notice, this list of conditions and the following disclaimer in the
+//	documentation and/or other materials provided with the distribution.
+//
+// THIS SOFTWARE IS PROVIDED BY THE AUTHOR ''AS IS'' AND ANY EXPRESS OR
+// IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+// OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+// IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
+// INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+// NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+// DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+// THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+// THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+/////////////////////////////////////////////////////////////////////////////
 
 ////////////////////////////////////////////////////////////
-/// Headers
+// Headers
 ////////////////////////////////////////////////////////////
 #include "text.h"
 #include "output.h"
@@ -32,7 +34,7 @@
 #include FT_GLYPH_H
 
 ////////////////////////////////////////////////////////////
-/// Global variables
+// Global Variables
 ////////////////////////////////////////////////////////////
 FT_Library Text::library;
 std::map<std::string, FT_Face> Text::fonts;
@@ -44,7 +46,7 @@ void Text::Init() {
 	FT_Error err = FT_Init_FreeType(&library);
 	if (err) {
 		Output::Error("ARGSS couldn't initialize freetype library.\n%d\n", err);
-	} 
+	}
 }
 
 ////////////////////////////////////////////////////////////
@@ -66,14 +68,14 @@ Bitmap* Text::Draw(std::string text, std::string font, Color color, int size, bo
 	}
 
 	FT_Matrix matrix;
-    matrix.xx = 0x10000;
-    matrix.xy = 0;
-    matrix.yx = 0;
-    matrix.yy = 0x10000;
+	matrix.xx = 0x10000;
+	matrix.xy = 0;
+	matrix.yx = 0;
+	matrix.yy = 0x10000;
 
 	FT_Vector pen;
 	pen.x = 0;
-    pen.y = 0;
+	pen.y = 0;
 
 	std::vector<FT_BitmapGlyph> glyphs;
 
@@ -86,12 +88,12 @@ Bitmap* Text::Draw(std::string text, std::string font, Color color, int size, bo
 		}
 
 		FT_Glyph glyph;
-        err = FT_Get_Glyph(face->glyph, &glyph);
+		err = FT_Get_Glyph(face->glyph, &glyph);
 		if (err) {
 			rb_raise(ARGSS::AError::id, "couldn't get font(%s) char '%s'.\n%d\n", font.c_str(), text[i], err);
 		}
 
-        FT_Glyph_To_Bitmap(&glyph, FT_RENDER_MODE_NORMAL, 0, 1);
+		FT_Glyph_To_Bitmap(&glyph, FT_RENDER_MODE_NORMAL, 0, 1);
 
 		glyphs.push_back((FT_BitmapGlyph)glyph);
 
@@ -130,8 +132,8 @@ Bitmap* Text::Draw(std::string text, std::string font, Color color, int size, bo
 				long pixel = ((left + x) + (top + y - min_y) * width) * 4;
 				dst_pixels[pixel + 0] = (Uint8)color.red;
 				dst_pixels[pixel + 1] = (Uint8)color.green;
-                dst_pixels[pixel + 2] = (Uint8)color.blue;
-                dst_pixels[pixel + 3] = glyphs[i]->bitmap.buffer[x + y * glyphs[i]->bitmap.width];
+				dst_pixels[pixel + 2] = (Uint8)color.blue;
+				dst_pixels[pixel + 3] = glyphs[i]->bitmap.buffer[x + y * glyphs[i]->bitmap.width];
 			}
 			glyph_pixel += glyphs[i]->bitmap.pitch;
 		}
@@ -172,7 +174,7 @@ Rect Text::RectSize(std::string text, std::string font, int size) {
 		}
 
 		FT_Glyph glyph;
-        err = FT_Get_Glyph(face->glyph, &glyph);
+		err = FT_Get_Glyph(face->glyph, &glyph);
 		if (err) {
 			rb_raise(ARGSS::AError::id, "couldn't get font(%s) char '%s'.\n%d\n", font.c_str(), text[i], err);
 		}
@@ -181,7 +183,7 @@ Rect Text::RectSize(std::string text, std::string font, int size) {
 		FT_Glyph_Get_CBox(glyph, FT_GLYPH_BBOX_PIXELS, &bbox);
 
 		width += bbox.xMax - bbox.xMin;
-  		if (height < bbox.yMax - bbox.yMin) height = bbox.yMax - bbox.yMin;
+		if (height < bbox.yMax - bbox.yMin) height = bbox.yMax - bbox.yMin;
 
 		FT_Done_Glyph(glyph);
 	}
