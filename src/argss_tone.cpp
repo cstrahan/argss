@@ -45,7 +45,7 @@ double CapToneValue(double v) {
 ////////////////////////////////////////////////////////////
 /// ARGSS Tone ruby functions
 ////////////////////////////////////////////////////////////
-VALUE ARGSS::ATone::rinitialize(int argc, VALUE *argv, VALUE self) {
+VALUE ARGSS::ATone::rinitialize(int argc, VALUE* argv, VALUE self) {
 	if (argc < 3) raise_argn(argc, 3);
 	else if (argc > 4) raise_argn(argc, 4);
 	rb_iv_set(self, "@red", rb_float_new(CapToneValue(NUM2DBL(argv[0]))));
@@ -58,7 +58,7 @@ VALUE ARGSS::ATone::rinitialize(int argc, VALUE *argv, VALUE self) {
 	}
 	return self;
 }
-VALUE ARGSS::ATone::rset(int argc, VALUE *argv, VALUE self) {
+VALUE ARGSS::ATone::rset(int argc, VALUE* argv, VALUE self) {
 	if (argc < 3) raise_argn(argc, 3);
 	else if (argc > 4) raise_argn(argc, 4);
 	rb_iv_set(self, "@red", rb_float_new(CapToneValue(NUM2DBL(argv[0]))));
@@ -98,17 +98,10 @@ VALUE ARGSS::ATone::rgrayE(VALUE self, VALUE g) {
 VALUE ARGSS::ATone::rinspect(VALUE self) {
 	char str[255];
 	long n;
-#ifdef MSVC
-	n = sprintf_s(str, 255, "(%f, %f, %f, %f)", NUM2DBL(rb_iv_get(self, "@red")),
-											NUM2DBL(rb_iv_get(self, "@green")),
-											NUM2DBL(rb_iv_get(self, "@blue")),
-											NUM2DBL(rb_iv_get(self, "@gray")));
-#else
 	n = sprintf(str, "(%f, %f, %f, %f)", NUM2DBL(rb_iv_get(self, "@red")),
-											NUM2DBL(rb_iv_get(self, "@green")),
-											NUM2DBL(rb_iv_get(self, "@blue")),
-											NUM2DBL(rb_iv_get(self, "@gray")));
-#endif
+										NUM2DBL(rb_iv_get(self, "@green")),
+										NUM2DBL(rb_iv_get(self, "@blue")),
+										NUM2DBL(rb_iv_get(self, "@gray")));
 	return rb_str_new(str, n);
 }
 VALUE ARGSS::ATone::rdump(int argc, VALUE* argv, VALUE self) {

@@ -179,11 +179,7 @@ void Graphics::Update() {
 			frames = 0;
 
 			char title[255];
-#ifdef MSVC
-			sprintf_s(title, 255, "%s - %d FPS", System::Title.c_str(), fps);
-#else
 			sprintf(title, "%s - %d FPS", System::Title.c_str(), fps);
-#endif
 			Player::main_window->SetTitle(title);
 		}
 	} else {

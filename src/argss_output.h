@@ -49,8 +49,8 @@ namespace ARGSS {
 		VALUE rnone(VALUE self);
 		VALUE rstdout_write(VALUE self, VALUE str);
 		VALUE rstderr_write(VALUE self, VALUE str);
-		VALUE stdin_gets(int argc, VALUE *argv, VALUE self);
-		VALUE stdin_getc(int argc, VALUE *argv, VALUE self);
+		VALUE stdin_gets(int argc, VALUE* argv, VALUE self);
+		VALUE stdin_getc(int argc, VALUE* argv, VALUE self);
 	};
 };
 

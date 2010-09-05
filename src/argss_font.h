@@ -41,7 +41,7 @@ namespace ARGSS {
 		void Init();
 		VALUE New();
 
-		VALUE rinitialize(int argc, VALUE *argv, VALUE self);
+		VALUE rinitialize(int argc, VALUE* argv, VALUE self);
 		VALUE rexistQ(VALUE self);
 		VALUE rname(VALUE self);
 		VALUE rnameE(VALUE self, VALUE name);

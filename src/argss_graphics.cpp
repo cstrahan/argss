@@ -49,7 +49,7 @@ VALUE ARGSS::AGraphics::rfreeze(VALUE self) {
 	Graphics::Freeze();
 	return Qnil;
 }
-VALUE ARGSS::AGraphics::rtransition(int argc, VALUE *argv, VALUE self) {
+VALUE ARGSS::AGraphics::rtransition(int argc, VALUE* argv, VALUE self) {
 	if (argc > 3) raise_argn(argc, 3);
 	int duration = 8;
 	std::string filename = "";

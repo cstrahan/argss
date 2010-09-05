@@ -42,7 +42,7 @@ namespace ARGSS {
 
 		VALUE rupdate(VALUE self);
 		VALUE rfreeze(VALUE self);
-		VALUE rtransition(int argc, VALUE *argv, VALUE self);
+		VALUE rtransition(int argc, VALUE* argv, VALUE self);
 		VALUE rframe_reset(VALUE self);
 		VALUE rframe_rate(VALUE self);
 		VALUE rframe_rateE(VALUE self, VALUE framerate);

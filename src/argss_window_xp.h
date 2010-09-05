@@ -41,7 +41,7 @@ namespace ARGSS {
 		void Init();
 		void CheckDisposed(VALUE self);
 
-		VALUE rinitialize(int argc, VALUE *argv, VALUE self);
+		VALUE rinitialize(int argc, VALUE* argv, VALUE self);
 		VALUE rdispose(VALUE self);
 		VALUE rdisposedQ(VALUE self);
 		VALUE rupdate(VALUE self);

@@ -42,8 +42,8 @@ namespace ARGSS {
 		VALUE New(double r, double g, double b, double gray);
 		VALUE New();
 
-		VALUE rinitialize(int argc, VALUE *argv, VALUE self);
-		VALUE rset(int argc, VALUE *argv, VALUE self);
+		VALUE rinitialize(int argc, VALUE* argv, VALUE self);
+		VALUE rset(int argc, VALUE* argv, VALUE self);
 		VALUE rred(VALUE self);
 		VALUE rredE(VALUE self, VALUE r);
 		VALUE rgreen(VALUE self);

@@ -38,7 +38,7 @@ VALUE ARGSS::AFont::id;
 ////////////////////////////////////////////////////////////
 /// ARGSS Font ruby functions
 ////////////////////////////////////////////////////////////
-VALUE ARGSS::AFont::rinitialize(int argc, VALUE *argv, VALUE self) {
+VALUE ARGSS::AFont::rinitialize(int argc, VALUE* argv, VALUE self) {
 	if (argc > 2) raise_argn(argc, 2);
 	if (argc >= 1) {
 		Check_Types2(argv[0], T_STRING, T_ARRAY);

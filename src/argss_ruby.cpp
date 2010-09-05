@@ -87,7 +87,7 @@ VALUE eval_wrap(VALUE arg) {
 void ARGSS::ARuby::Run() {
 	int error;
 	VALUE result;
-	if (SCRIPTS_ZLIB) {
+	#if (SCRIPTS_ZLIB == YES)
 		VALUE cZlib = rb_const_get(rb_cObject, rb_intern("Zlib"));
 		VALUE cInflate = rb_const_get(cZlib, rb_intern("Inflate"));
 		VALUE file = rb_file_open(System::ScriptsPath.c_str(), "rb");
@@ -101,9 +101,9 @@ void ARGSS::ARuby::Run() {
 			section = rb_funcall3(cInflate, rb_intern("inflate"), 1, &section);
 			result = rb_protect(eval_wrap, rb_ary_new3(2, StringValuePtr(section), rb_ary_entry(section_arr, 1)), &error);
 		}
-	} else {
+	#else
 		result = rb_protect(require_wrap, Qundef, &error);
-	}
+	#endif
 	if (error) {
 		VALUE lasterr = rb_gv_get("$!");
 		VALUE klass = rb_class_path(CLASS_OF(lasterr));
@@ -152,7 +152,7 @@ void Check_Kind(VALUE o, VALUE c) {
 
 static struct types {
 	int type;
-	const char *name;
+	const char* name;
 } builtin_types[] = {
 	{T_NIL, "nil"}, {T_OBJECT, "Object"}, {T_CLASS, "Class"}, {T_ICLASS, "iClass"}, {T_MODULE, "Module"},
 	{T_FLOAT, "Float"}, {T_STRING, "String"}, {T_REGEXP, "Regexp"}, {T_ARRAY, "Array"}, {T_FIXNUM, "Fixnum"},
@@ -165,12 +165,12 @@ static struct types {
 /// Check if object x is type of t1 or t2
 ////////////////////////////////////////////////////////////
 void Check_Types2(VALUE x, VALUE t1, VALUE t2) {
-	struct types *type = builtin_types;
+	struct types* type = builtin_types;
 	if (x == Qundef) rb_bug("undef leaked to the Ruby space");
 	if ((unsigned long)TYPE(x) != t1 && (unsigned long)TYPE(x) != t2) {
 		while (type->type >= 0) {
 			if ((unsigned long)type->type == t1) {
-				const char *etype;
+				const char* etype;
 				if (NIL_P(x)) etype = (char*)"nil";
 				else if (FIXNUM_P(x)) etype = (char*)"Fixnum";
 				else if (SYMBOL_P(x)) etype = (char*)"Symbol";
@@ -190,7 +190,7 @@ void Check_Types2(VALUE x, VALUE t1, VALUE t2) {
 void Check_Bool(VALUE x) {
 	if (x == Qundef) rb_bug("undef leaked to the Ruby space");
 	if (TYPE(x) != T_TRUE && TYPE(x) != T_FALSE) {
-		const char *etype;
+		const char* etype;
 		if (NIL_P(x)) etype = (char*)"nil";
 		else if (FIXNUM_P(x)) etype = (char*)"Fixnum";
 		else if (SYMBOL_P(x)) etype = (char*)"Symbol";
@@ -206,10 +206,10 @@ void Check_Bool(VALUE x) {
 void Check_Class(VALUE x, VALUE c) {
 	if (x == Qundef) {rb_bug("undef leaked to the Ruby space");}
 	if (rb_class_real(CLASS_OF(x)) != c) {
-		struct types *type = builtin_types;
+		struct types* type = builtin_types;
 		while (type->type >= 0) {
 			if (type->type == TYPE(c)) {
-				const char *etype;
+				const char* etype;
 				if (NIL_P(x)) etype = (char*)"nil";
 				else if (FIXNUM_P(x)) etype = (char*)"Fixnum";
 				else if (SYMBOL_P(x)) etype = (char*)"Symbol";

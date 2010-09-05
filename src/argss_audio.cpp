@@ -39,7 +39,7 @@ VALUE ARGSS::AAudio::id;
 ////////////////////////////////////////////////////////////
 /// ARGSS Audio ruby functions
 ////////////////////////////////////////////////////////////
-VALUE ARGSS::AAudio::rbgm_play(int argc, VALUE *argv, VALUE self) {
+VALUE ARGSS::AAudio::rbgm_play(int argc, VALUE* argv, VALUE self) {
 	if (argc == 0) raise_argn(argc, 1);
 	else if (argc > 3) raise_argn(argc, 3);
 	Check_Type(argv[0], T_STRING);
@@ -65,7 +65,7 @@ VALUE ARGSS::AAudio::rbgm_fade(VALUE self, VALUE fade) {
 	Audio::BGM_Fade(NUM2INT(fade));
 	return Qnil;
 }
-VALUE ARGSS::AAudio::rbgs_play(int argc, VALUE *argv, VALUE self) {
+VALUE ARGSS::AAudio::rbgs_play(int argc, VALUE* argv, VALUE self) {
 	if (argc == 0) raise_argn(argc, 1);
 	else if (argc > 3) raise_argn(argc, 3);
 	Check_Type(argv[0], T_STRING);
@@ -91,7 +91,7 @@ VALUE ARGSS::AAudio::rbgs_fade(VALUE self, VALUE fade) {
 	Audio::BGS_Fade(NUM2INT(fade));
 	return Qnil;
 }
-VALUE ARGSS::AAudio::rme_play(int argc, VALUE *argv, VALUE self) {
+VALUE ARGSS::AAudio::rme_play(int argc, VALUE* argv, VALUE self) {
 	if (argc == 0) raise_argn(argc, 1);
 	else if (argc > 3) raise_argn(argc, 3);
 	Check_Type(argv[0], T_STRING);
@@ -117,7 +117,7 @@ VALUE ARGSS::AAudio::rme_fade(VALUE self, VALUE fade) {
 	Audio::ME_Fade(NUM2INT(fade));
 	return Qnil;
 }
-VALUE ARGSS::AAudio::rse_play(int argc, VALUE *argv, VALUE self) {
+VALUE ARGSS::AAudio::rse_play(int argc, VALUE* argv, VALUE self) {
 	if (argc == 0) raise_argn(argc, 1);
 	else if (argc > 3) raise_argn(argc, 3);
 	Check_Type(argv[0], T_STRING);

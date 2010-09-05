@@ -44,7 +44,7 @@ VALUE ARGSS::ABitmap::id;
 ////////////////////////////////////////////////////////////
 /// ARGSS Bitmap ruby functions
 ////////////////////////////////////////////////////////////
-VALUE ARGSS::ABitmap::rinitialize(int argc, VALUE *argv, VALUE self) {
+VALUE ARGSS::ABitmap::rinitialize(int argc, VALUE* argv, VALUE self) {
 	if (argc == 0) raise_argn(argc, 1);
 	else if (argc == 1) {
 		Bitmap::New(self, StringValuePtr(argv[0]));
@@ -79,7 +79,7 @@ VALUE ARGSS::ABitmap::rrect(VALUE self) {
 	ARGSS::ABitmap::CheckDisposed(self);
 	return Bitmap::Get(self)->GetRect().GetARGSS();
 }
-VALUE ARGSS::ABitmap::rblt(int argc, VALUE *argv, VALUE self) {
+VALUE ARGSS::ABitmap::rblt(int argc, VALUE* argv, VALUE self) {
 	ARGSS::ABitmap::CheckDisposed(self);
 	if (argc < 4) raise_argn(argc, 4);
 	else if (argc > 5) raise_argn(argc, 5);
@@ -91,7 +91,7 @@ VALUE ARGSS::ABitmap::rblt(int argc, VALUE *argv, VALUE self) {
 	}
 	return self;
 }
-VALUE ARGSS::ABitmap::rstretch_blt(int argc, VALUE *argv, VALUE self) {
+VALUE ARGSS::ABitmap::rstretch_blt(int argc, VALUE* argv, VALUE self) {
 	ARGSS::ABitmap::CheckDisposed(self);
 	if (argc < 3) raise_argn(argc, 3);
 	else if (argc > 4) raise_argn(argc, 4);
@@ -103,7 +103,7 @@ VALUE ARGSS::ABitmap::rstretch_blt(int argc, VALUE *argv, VALUE self) {
 	}
 	return self;
 }
-VALUE ARGSS::ABitmap::rfill_rect(int argc, VALUE *argv, VALUE self) {
+VALUE ARGSS::ABitmap::rfill_rect(int argc, VALUE* argv, VALUE self) {
 	ARGSS::ABitmap::CheckDisposed(self);
 	if (argc < 2) raise_argn(argc, 2);
 	else if (argc == 2) {
@@ -114,7 +114,7 @@ VALUE ARGSS::ABitmap::rfill_rect(int argc, VALUE *argv, VALUE self) {
 	else raise_argn(argc, 5);
 	return self;
 }
-VALUE ARGSS::ABitmap::rclear(int argc, VALUE *argv, VALUE self) {
+VALUE ARGSS::ABitmap::rclear(int argc, VALUE* argv, VALUE self) {
 	ARGSS::ABitmap::CheckDisposed(self);
 	if (argc > 1) raise_argn(argc, 1);
 	else if (argc == 1) {
@@ -148,7 +148,7 @@ VALUE ARGSS::ABitmap::rluminance_change(VALUE self, VALUE luminance) {
 	Bitmap::Get(self)->LumChange(NUM2DBL(luminance));
 	return self;
 }
-VALUE ARGSS::ABitmap::rhsl_change(int argc, VALUE *argv, VALUE self) {
+VALUE ARGSS::ABitmap::rhsl_change(int argc, VALUE* argv, VALUE self) {
 	ARGSS::ABitmap::CheckDisposed(self);
 	if (argc < 3) raise_argn(argc, 3);
 	else if (argc > 4) raise_argn(argc, 4);
@@ -159,7 +159,7 @@ VALUE ARGSS::ABitmap::rhsl_change(int argc, VALUE *argv, VALUE self) {
 	}
 	return self;
 }
-VALUE ARGSS::ABitmap::rdraw_text(int argc, VALUE *argv, VALUE self) {
+VALUE ARGSS::ABitmap::rdraw_text(int argc, VALUE* argv, VALUE self) {
 	ARGSS::ABitmap::CheckDisposed(self);
 	int align = 0;
 	if (argc < 2) raise_argn(argc, 2);
@@ -182,7 +182,7 @@ VALUE ARGSS::ABitmap::rtext_size(VALUE self, VALUE str) {
 	ARGSS::ABitmap::CheckDisposed(self);
 	return Bitmap::Get(self)->GetTextSize(StringValuePtr(str)).GetARGSS();
 }
-VALUE ARGSS::ABitmap::rgradient_fill_rect(int argc, VALUE *argv, VALUE self) {
+VALUE ARGSS::ABitmap::rgradient_fill_rect(int argc, VALUE* argv, VALUE self) {
 	ARGSS::ABitmap::CheckDisposed(self);
 	if (argc < 3) raise_argn(argc, 3);
 	else if (argc < 5) {
@@ -202,7 +202,7 @@ VALUE ARGSS::ABitmap::rgradient_fill_rect(int argc, VALUE *argv, VALUE self) {
 	else raise_argn(argc, 7);
 	return self;
 }
-VALUE ARGSS::ABitmap::rclear_rect(int argc, VALUE *argv, VALUE self) {
+VALUE ARGSS::ABitmap::rclear_rect(int argc, VALUE* argv, VALUE self) {
 	ARGSS::ABitmap::CheckDisposed(self);
 	if (argc < 1) raise_argn(argc, 1);
 	if (argc == 1) {

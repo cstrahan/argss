@@ -27,6 +27,9 @@
 #define RPGXP 1
 #define RPGVX 2
 
+#define NO 0
+#define YES 1
+
 ////////////////////////////////////////////////////////////
 // RPGMAKER
 //	Defines RPG Maker compability, RPGXP for RPG Maker XP and RPGVX for
@@ -60,18 +63,18 @@
 //		Pause the game process and/or audio when the argss window
 //		looses its focus.
 ////////////////////////////////////////////////////////////
-#define GAME_TITLE "ARGSS Player"
-#define SCRIPTS_PATH "scripts.rb"
-#define SCRIPTS_ZLIB false
-#define RTP1 ""
-#define RTP2 ""
-#define RTP3 ""
-#define SCREEN_WIDTH 640
-#define SCREEN_HEIGHT 480
-#define ALLOW_FULLSCREEN_TOGGLE true
-#define RUN_FULLSCREEN false
-#define PAUSE_GAME_WHEN_FOCUS_LOST true
-#define PAUSE_AUDIO_WHEN_FOCUS_LOST false
+#define GAME_TITLE					"ARGSS Player"
+#define SCRIPTS_PATH				"scripts.rb"
+#define SCRIPTS_ZLIB				NO
+#define RTP1						""
+#define RTP2						""
+#define RTP3						""
+#define SCREEN_WIDTH				640
+#define SCREEN_HEIGHT				480
+#define ALLOW_FULLSCREEN_TOGGLE		YES
+#define RUN_FULLSCREEN				NO
+#define PAUSE_GAME_WHEN_FOCUS_LOST	YES
+#define PAUSE_AUDIO_WHEN_FOCUS_LOST	NO
 
 ////////////////////////////////////////////////////////////
 //	INI_NAME
@@ -94,10 +97,10 @@
 #else
 #define INI_NAME "ARGSS.ini"
 #endif
-#define READ_INI_GAME_TITLE true
-#define READ_INI_SCRIPTS_PATH true
-#define READ_INI_RTPS true
-#define READ_INI_SCREEN_SIZE true
+#define READ_INI_GAME_TITLE		YES
+#define READ_INI_SCRIPTS_PATH	YES
+#define READ_INI_RTPS			YES
+#define READ_INI_SCREEN_SIZE	YES
 
 ////////////////////////////////////////////////////////////
 //	DEFAULT_FPS
@@ -109,10 +112,10 @@
 //	UPDATE_ALL_KEYS
 //		Update all keys or just the Input default buttons.
 ////////////////////////////////////////////////////////////
-#define DEFAULT_FPS 60
-#define DEFAULT_BACKCOLOR 0x00000000
-#define UPDATE_ALL_KEYS true
-#define JOYSTICK_SUPPORT true
+#define DEFAULT_FPS			60
+#define DEFAULT_BACKCOLOR	0x00000000
+#define UPDATE_ALL_KEYS		YES
+#define JOYSTICK_SUPPORT	YES
 
 ////////////////////////////////////////////////////////////
 //	DEBUG
@@ -124,9 +127,9 @@
 //	DEBUG_ONLY_FPS
 //		Restrict FPS on title bar only for DEBUG.
 ////////////////////////////////////////////////////////////
-#define RUBY_DEBUG true
-#define DEBUG_VARIABLE "$DEBUG"
-#define DEBUG_ONLY_FPS false
+#define RUBY_DEBUG		YES
+#define DEBUG_VARIABLE	"$DEBUG"
+#define DEBUG_ONLY_FPS	NO
 
 ////////////////////////////////////////////////////////////
 //	OUTPUT_TYPE
@@ -141,8 +144,8 @@
 //	OUTPUT_FILE
 //		Name of the file for output.
 ////////////////////////////////////////////////////////////
-#define OUTPUT_TYPE 6
-#define OUTPUT_FILE "out.txt"
+#define OUTPUT_TYPE	6
+#define OUTPUT_FILE	"out.txt"
 
 ////////////////////////////////////////////////////////////
 //	Windows options
@@ -157,9 +160,9 @@
 //	READ_BUTTON_ASSIGMENT_VALUE
 //		Registry entry value.
 ////////////////////////////////////////////////////////////
-#define READ_BUTTON_ASSIGMENT true
-#define READ_BUTTON_ASSIGMENT_KEY "SOFTWARE\\Enterbrain\\RGSS"
-#define READ_BUTTON_ASSIGMENT_VALUE "ButtonAssign"
+#define READ_BUTTON_ASSIGMENT		YES
+#define READ_BUTTON_ASSIGMENT_KEY	"SOFTWARE\\Enterbrain\\RGSS"
+#define READ_BUTTON_ASSIGMENT_VALUE	"ButtonAssign"
 
 ////////////////////////////////////////////////////////////
 //	OSX options
@@ -169,10 +172,10 @@
 //		tilde (~) so that it looks it up from the current
 //		user's home directory. It has to be a ini file too.
 ////////////////////////////////////////////////////////////
-#define OSX_CONFIG_FILE "/Users/npepinpe/argss/config.ini"
-#define OSX_DEF_RPGXP_RTP "rpgxp/rtp"
-#define OSX_DEF_RPGVX_RTP "rpgvx/rtp"
-#define OSX_CONFIG_RPGXP_SECTION_NAME "RPGXP"
-#define OSX_CONFIG_RPGVX_SECTION_NAME "RPGVX"
-#define OSX_CONFIG_RTPPATH_KEY_NAME "RTP_PATH"
-#define OSX_CONFIG_RGSS_SECTION_NAME "RGSS"
+#define OSX_CONFIG_FILE					"/Users/npepinpe/argss/config.ini"
+#define OSX_DEF_RPGXP_RTP				"rpgxp/rtp"
+#define OSX_DEF_RPGVX_RTP				"rpgvx/rtp"
+#define OSX_CONFIG_RPGXP_SECTION_NAME	"RPGXP"
+#define OSX_CONFIG_RPGVX_SECTION_NAME	"RPGVX"
+#define OSX_CONFIG_RTPPATH_KEY_NAME		"RTP_PATH"
+#define OSX_CONFIG_RGSS_SECTION_NAME	"RGSS"

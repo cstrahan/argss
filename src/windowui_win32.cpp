@@ -189,20 +189,23 @@ WindowUi::WindowUi(long iwidth, long iheight, std::string title, bool center, bo
 	pfd.cDepthBits = 16;
 	pfd.iLayerType = PFD_MAIN_PLANE;
 
-	if (!(hdc = GetDC(hwnd))) {
+	hdc = GetDC(hwnd);
+	if (!hdc) {
 		Dispose();
 		Output::ErrorStr("Failed to create opengl device context.");
 	}
-	unsigned int PixelFormat;
-	if (!(PixelFormat = ChoosePixelFormat(hdc, &pfd))) {
+	unsigned int pixel_format = ChoosePixelFormat(hdc, &pfd);
+	if (!pixel_format) {
 		Dispose();
 		Output::ErrorStr("Couldn't find a suitable pixel format.");
 	}
-	if (!SetPixelFormat(hdc, PixelFormat, &pfd)) {
+	if (!SetPixelFormat(hdc, pixel_format, &pfd)) {
 		Dispose();
 		Output::ErrorStr("Can't set the pixel format.");
 	}
-	if (!(hrc = wglCreateContext(hdc))) {
+
+	hrc = wglCreateContext(hdc);
+	if (!hrc) {
 		Dispose();
 		Output::ErrorStr("Failed to create opengl rendering context.");
 	}

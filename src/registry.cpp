@@ -55,7 +55,7 @@ std::string Registry::ReadStrValue(HKEY hkey, std::string key, std::string val) 
 	DWORD size = 1024;
 	DWORD type = REG_SZ;
 	HKEY key_handle;
-#if MSVC
+#if UNICODE
 	std::wstring wkey = s2ws2(key.c_str());
 #else
 	std::string wkey = key;
@@ -63,7 +63,7 @@ std::string Registry::ReadStrValue(HKEY hkey, std::string key, std::string val) 
 	if (RegOpenKeyEx(hkey, wkey.c_str(), NULL, KEY_QUERY_VALUE, &key_handle)) {
 		return "";
 	}
-#if MSVC
+#if UNICODE
 	std::wstring wval = s2ws2(val.c_str());
 #else
 	std::string wval = val;
@@ -89,7 +89,7 @@ int Registry::ReadBinValue(HKEY hkey, std::string key, std::string val, unsigned
 	DWORD size = 1024;
 	DWORD type = REG_BINARY;
 	HKEY key_handle;
-#if MSVC
+#if UNICODE
 	std::wstring wkey = s2ws2(key.c_str());
 #else
 	std::string wkey = key;
@@ -97,7 +97,7 @@ int Registry::ReadBinValue(HKEY hkey, std::string key, std::string val, unsigned
 	if (RegOpenKeyEx(hkey, wkey.c_str(), NULL, KEY_QUERY_VALUE, &key_handle)) {
 		return 0;
 	}
-#if MSVC
+#if UNICODE
 	std::wstring wval = s2ws2(val.c_str());
 #else
 	std::string wval = val;

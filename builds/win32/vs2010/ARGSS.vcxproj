@@ -51,13 +51,13 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>..\..\..\dependencies;$(ARGSSDEV_MSVC)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>DEBUG;WIN32;MSVC;UNICODE</PreprocessorDefinitions>
+      <PreprocessorDefinitions>DEBUG;WIN32;MSVC;UNICODE;_CRT_SECURE_NO_DEPRECATE</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <PrecompiledHeader>
       </PrecompiledHeader>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <CompileAsManaged>
       </CompileAsManaged>
@@ -93,7 +93,7 @@
       <Optimization>MaxSpeed</Optimization>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <AdditionalIncludeDirectories>..\..\..\dependencies;$(ARGSSDEV_MSVC)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;MSVC;UNICODE</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;MSVC;UNICODE;_CRT_SECURE_NO_DEPRECATE</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <FunctionLevelLinking>
       </FunctionLevelLinking>

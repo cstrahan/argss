@@ -58,9 +58,10 @@ void Player::Init() {
 ////////////////////////////////////////////////////////////
 void Player::Update() {
 	Event evnt;
+	bool result;
 
-	while (true) {
-		bool result = main_window->GetEvent(evnt);
+	do {
+		result = main_window->GetEvent(evnt);
 		if (evnt.type == Event::Quit) {
 			ARGSS::Exit();
 			break;
@@ -75,27 +76,30 @@ void Player::Update() {
 			if (evnt.param1 == Input::Keys::ALT) {
 				alt_pressing = false;
 			}
-		} else if (PAUSE_GAME_WHEN_FOCUS_LOST) {
-			if (evnt.type == Event::GainFocus && !focus) {
-				focus = true;
-				Graphics::TimerContinue();
-				if (PAUSE_AUDIO_WHEN_FOCUS_LOST) {
-					Audio::Continue();
-				}
-			} else if (evnt.type == Event::LostFocus && focus) {
-				focus = false;
-				Input::ClearKeys();
-				Graphics::TimerWait();
-				if (PAUSE_AUDIO_WHEN_FOCUS_LOST) {
-					Audio::Pause();
+		} 
+		#if (PAUSE_GAME_WHEN_FOCUS_LOST == YES)
+			else {
+				if (evnt.type == Event::GainFocus && !focus) {
+					focus = true;
+					Graphics::TimerContinue();
+					#if (PAUSE_AUDIO_WHEN_FOCUS_LOST)
+						Audio::Continue();
+					#endif
+				} else if (evnt.type == Event::LostFocus && focus) {
+					focus = false;
+					Input::ClearKeys();
+					Graphics::TimerWait();
+					#if (PAUSE_AUDIO_WHEN_FOCUS_LOST)
+						Audio::Pause();
+					#endif
 				}
 			}
-		}
-
-		if (!result && !(PAUSE_GAME_WHEN_FOCUS_LOST && !focus)) {
-			break;
-		}
-	}
+		#endif
+#if PAUSE_GAME_WHEN_FOCUS_LOST == YES
+	} while(result || !focus);
+#else
+	} while(result);
+#endif
 }
 
 ////////////////////////////////////////////////////////////

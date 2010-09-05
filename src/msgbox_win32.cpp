@@ -49,7 +49,7 @@ static std::wstring s2ws(const std::string& s) {
 void MsgBox::OK(std::string msg, std::string title) {
 	if (msg.length() == 0) return;
 	if (msg.length() == 1 && (msg[0] == '\n' || msg[0] == '\r')) return;
-#ifdef MSVC
+#ifdef UNICODE
 	MessageBox(0, s2ws(msg).c_str(), s2ws(title).c_str(), MB_OK);
 #else
 	MessageBox(0, msg.c_str(), title.c_str(), MB_OK);
@@ -62,7 +62,7 @@ void MsgBox::OK(std::string msg, std::string title) {
 void MsgBox::Error(std::string msg, std::string title) {
 	if (msg.length() == 0) return;
 	if (msg.length() == 1 && (msg[0] == '\n' || msg[0] == '\r')) return;
-#ifdef MSVC
+#ifdef UNICODE
 	MessageBox(0, s2ws(msg).c_str(), s2ws(title).c_str(), MB_OK | MB_ICONERROR);
 #else
 	MessageBox(0, msg.c_str(), title.c_str(), MB_OK | MB_ICONERROR);
@@ -75,7 +75,7 @@ void MsgBox::Error(std::string msg, std::string title) {
 void MsgBox::Warning(std::string msg, std::string title) {
 	if (msg.length() == 0) return;
 	if (msg.length() == 1 && (msg[0] == '\n' || msg[0] == '\r')) return;
-#ifdef MSVC
+#ifdef UNICODE
 	MessageBox(0, s2ws(msg).c_str(), s2ws(title).c_str(), MB_OK | MB_ICONEXCLAMATION);
 #else
 	MessageBox(0, msg.c_str(), title.c_str(), MB_OK | MB_ICONEXCLAMATION);

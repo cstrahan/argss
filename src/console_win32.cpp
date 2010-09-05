@@ -67,7 +67,7 @@ void Console::SetTitle(char* title) {
 void Console::SetLines(int lines) {
 	CONSOLE_SCREEN_BUFFER_INFO coninfo;
 	GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &coninfo);
-	coninfo.dwSize.Y = lines;
+	coninfo.dwSize.Y = (short)lines;
 	SetConsoleScreenBufferSize(GetStdHandle(STD_OUTPUT_HANDLE), coninfo.dwSize);
 }
 

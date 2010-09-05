@@ -45,7 +45,7 @@ double CapColorValue(double v) {
 ////////////////////////////////////////////////////////////
 /// ARGSS Color ruby functions
 ////////////////////////////////////////////////////////////
-VALUE ARGSS::AColor::rinitialize(int argc, VALUE *argv, VALUE self) {
+VALUE ARGSS::AColor::rinitialize(int argc, VALUE* argv, VALUE self) {
 	if (argc < 3) raise_argn(argc, 3);
 	else if (argc > 4) raise_argn(argc, 4);
 	rb_iv_set(self, "@red", rb_float_new(CapColorValue(NUM2DBL(argv[0]))));
@@ -58,7 +58,7 @@ VALUE ARGSS::AColor::rinitialize(int argc, VALUE *argv, VALUE self) {
 	}
 	return self;
 }
-VALUE ARGSS::AColor::rset(int argc, VALUE *argv, VALUE self) {
+VALUE ARGSS::AColor::rset(int argc, VALUE* argv, VALUE self) {
 	if (argc < 3) raise_argn(argc, 3);
 	else if (argc > 4) raise_argn(argc, 4);
 	rb_iv_set(self, "@red", rb_float_new(CapColorValue(NUM2DBL(argv[0]))));
@@ -98,17 +98,10 @@ VALUE ARGSS::AColor::ralphaE(VALUE self, VALUE alpha) {
 VALUE ARGSS::AColor::rinspect(VALUE self) {
 	char str[255];
 	long n;
-#ifdef MSVC
-	n = sprintf_s(str, 255, "(%f, %f, %f, %f)", NUM2DBL(rb_iv_get(self, "@red")),
-											NUM2DBL(rb_iv_get(self, "@green")),
-											NUM2DBL(rb_iv_get(self, "@blue")),
-											NUM2DBL(rb_iv_get(self, "@alpha")));
-#else
 	n = sprintf(str, "(%f, %f, %f, %f)", NUM2DBL(rb_iv_get(self, "@red")),
-											NUM2DBL(rb_iv_get(self, "@green")),
-											NUM2DBL(rb_iv_get(self, "@blue")),
-											NUM2DBL(rb_iv_get(self, "@alpha")));
-#endif
+										NUM2DBL(rb_iv_get(self, "@green")),
+										NUM2DBL(rb_iv_get(self, "@blue")),
+										NUM2DBL(rb_iv_get(self, "@alpha")));
 	return rb_str_new(str, n);
 }
 VALUE ARGSS::AColor::rdump(int argc, VALUE* argv, VALUE self) {

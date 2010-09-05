@@ -97,17 +97,10 @@ VALUE ARGSS::ARect::rempty(VALUE self) {
 VALUE ARGSS::ARect::rinspect(VALUE self) {
 	char str[255];
 	long n;
-#ifdef MSVC
-	n = sprintf_s(str, 255, "(%i, %i, %i, %i)", NUM2INT(rb_iv_get(self, "@x")),
-											NUM2INT(rb_iv_get(self, "@y")),
-											NUM2INT(rb_iv_get(self, "@width")),
-											NUM2INT(rb_iv_get(self, "@height")));
-#else
 	n = sprintf(str, "(%i, %i, %i, %i)", NUM2INT(rb_iv_get(self, "@x")),
-											NUM2INT(rb_iv_get(self, "@y")),
-											NUM2INT(rb_iv_get(self, "@width")),
-											NUM2INT(rb_iv_get(self, "@height")));
-#endif
+										NUM2INT(rb_iv_get(self, "@y")),
+										NUM2INT(rb_iv_get(self, "@width")),
+										NUM2INT(rb_iv_get(self, "@height")));
 	return rb_str_new(str, n);
 }
 VALUE ARGSS::ARect::rdump(int argc, VALUE* argv, VALUE self) {

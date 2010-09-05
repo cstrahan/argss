@@ -42,7 +42,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="..\..\..\dependencies;&quot;..\..\..\dependencies\win32\ruby1.8.6-p287\include&quot;;..\..\..\dependencies\win32\soil\include;..\..\..\dependencies\win32\freetype\include;..\..\..\dependencies\win32\sdl\include;..\..\..\dependencies\win32\missing"
-				PreprocessorDefinitions="_DEBUG;"
+				PreprocessorDefinitions="DEBUG;WIN32;MSVC;UNICODE;_CRT_SECURE_NO_DEPRECATE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -89,7 +89,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="copy &quot;..\..\..\dependencies\win32\ruby1.8.6-p287\bin\msvcrt-ruby18-msvc.dll&quot; &quot;..\..\..\bin\msvcrt-ruby18.dll&quot;&#x0D;&#x0A;copy &quot;..\..\..\dependencies\win32\sdl\bin\SDL-msvc.dll&quot; &quot;..\..\..\bin\SDL.dll&quot;&#x0D;&#x0A;copy &quot;..\..\..\dependencies\win32\sdl\bin\SDL_mixer.dll&quot; &quot;..\..\..\bin\SDL_mixer.dll&quot;&#x0D;&#x0A;copy &quot;..\..\..\dependencies\win32\sdl\bin\libogg-0.dll&quot; &quot;..\..\..\bin\libogg-0.dll&quot;&#x0D;&#x0A;copy &quot;..\..\..\dependencies\win32\sdl\bin\libvorbis-0.dll&quot; &quot;..\..\..\bin\libvorbis-0.dll&quot;&#x0D;&#x0A;copy &quot;..\..\..\dependencies\win32\sdl\bin\libvorbisfile-3.dll&quot; &quot;..\..\..\bin\libvorbisfile-3.dll&quot;&#x0D;&#x0A;copy &quot;..\..\..\dependencies\win32\sdl\bin\mikmod.dll&quot; &quot;..\..\..\bin\mikmod.dll&quot;&#x0D;&#x0A;copy &quot;..\..\..\dependencies\win32\sdl\bin\smpeg.dll&quot; &quot;..\..\..\bin\smpeg.dll&quot;&#x0D;&#x0A;del &quot;..\..\..\bin\libgcc_s_dw2-1.dll&quot;"
+				CommandLine="copy &quot;..\..\..\dependencies\win32\ruby1.8.6-p287\bin\msvcrt-ruby18-msvc.dll&quot; &quot;..\..\..\bin\msvcrt-ruby18.dll&quot;&#x0D;&#x0A;copy &quot;..\..\..\dependencies\win32\sdl\bin\SDL-msvc.dll&quot; &quot;..\..\..\bin\SDL.dll&quot;&#x0D;&#x0A;copy &quot;..\..\..\dependencies\win32\sdl\bin\SDL_mixer.dll&quot; &quot;..\..\..\bin\SDL_mixer.dll&quot;&#x0D;&#x0A;copy &quot;..\..\..\dependencies\win32\sdl\bin\libogg-0.dll&quot; &quot;..\..\..\bin\libogg-0.dll&quot;&#x0D;&#x0A;copy &quot;..\..\..\dependencies\win32\sdl\bin\libvorbis-0.dll&quot; &quot;..\..\..\bin\libvorbis-0.dll&quot;&#x0D;&#x0A;copy &quot;..\..\..\dependencies\win32\sdl\bin\libvorbisfile-3.dll&quot; &quot;..\..\..\bin\libvorbisfile-3.dll&quot;&#x0D;&#x0A;copy &quot;..\..\..\dependencies\win32\sdl\bin\mikmod.dll&quot; &quot;..\..\..\bin\mikmod.dll&quot;&#x0D;&#x0A;copy &quot;..\..\..\dependencies\win32\sdl\bin\smpeg.dll&quot; &quot;..\..\..\bin\smpeg.dll&quot;&#x0D;&#x0A;del &quot;..\..\..\bin\libgcc_s_dw2-1.dll&quot;&#x0D;&#x0A;"
 			/>
 		</Configuration>
 		<Configuration
@@ -121,7 +121,7 @@
 				EnableIntrinsicFunctions="true"
 				FavorSizeOrSpeed="1"
 				AdditionalIncludeDirectories="..\..\..\dependencies;&quot;..\..\..\dependencies\win32\ruby1.8.6-p287\include&quot;;..\..\..\dependencies\win32\soil\include;..\..\..\dependencies\win32\freetype\include;..\..\..\dependencies\win32\sdl\include;..\..\..\dependencies\win32\missing"
-				PreprocessorDefinitions="WIN32;_WINDOWS;MSVC"
+				PreprocessorDefinitions="WIN32;MSVC;UNICODE;_CRT_SECURE_NO_DEPRECATE"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
@@ -170,7 +170,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="copy &quot;..\..\..\dependencies\win32\ruby1.8.6-p287\bin\msvcrt-ruby18-msvc.dll&quot; &quot;..\..\..\bin\msvcrt-ruby18.dll&quot;&#x0D;&#x0A;copy &quot;..\..\..\dependencies\win32\sdl\bin\SDL-msvc.dll&quot; &quot;..\..\..\bin\SDL.dll&quot;&#x0D;&#x0A;copy &quot;..\..\..\dependencies\win32\sdl\bin\SDL_mixer.dll&quot; &quot;..\..\..\bin\SDL_mixer.dll&quot;&#x0D;&#x0A;copy &quot;..\..\..\dependencies\win32\sdl\bin\libogg-0.dll&quot; &quot;..\..\..\bin\libogg-0.dll&quot;&#x0D;&#x0A;copy &quot;..\..\..\dependencies\win32\sdl\bin\libvorbis-0.dll&quot; &quot;..\..\..\bin\libvorbis-0.dll&quot;&#x0D;&#x0A;copy &quot;..\..\..\dependencies\win32\sdl\bin\libvorbisfile-3.dll&quot; &quot;..\..\..\bin\libvorbisfile-3.dll&quot;&#x0D;&#x0A;copy &quot;..\..\..\dependencies\win32\sdl\bin\mikmod.dll&quot; &quot;..\..\..\bin\mikmod.dll&quot;&#x0D;&#x0A;copy &quot;..\..\..\dependencies\win32\sdl\bin\smpeg.dll&quot; &quot;..\..\..\bin\smpeg.dll&quot;&#x0D;&#x0A;del &quot;..\..\..\bin\libgcc_s_dw2-1.dll&quot;"
+				CommandLine="copy &quot;..\..\..\dependencies\win32\ruby1.8.6-p287\bin\msvcrt-ruby18-msvc.dll&quot; &quot;..\..\..\bin\msvcrt-ruby18.dll&quot;&#x0D;&#x0A;copy &quot;..\..\..\dependencies\win32\sdl\bin\SDL-msvc.dll&quot; &quot;..\..\..\bin\SDL.dll&quot;&#x0D;&#x0A;copy &quot;..\..\..\dependencies\win32\sdl\bin\SDL_mixer.dll&quot; &quot;..\..\..\bin\SDL_mixer.dll&quot;&#x0D;&#x0A;copy &quot;..\..\..\dependencies\win32\sdl\bin\libogg-0.dll&quot; &quot;..\..\..\bin\libogg-0.dll&quot;&#x0D;&#x0A;copy &quot;..\..\..\dependencies\win32\sdl\bin\libvorbis-0.dll&quot; &quot;..\..\..\bin\libvorbis-0.dll&quot;&#x0D;&#x0A;copy &quot;..\..\..\dependencies\win32\sdl\bin\libvorbisfile-3.dll&quot; &quot;..\..\..\bin\libvorbisfile-3.dll&quot;&#x0D;&#x0A;copy &quot;..\..\..\dependencies\win32\sdl\bin\mikmod.dll&quot; &quot;..\..\..\bin\mikmod.dll&quot;&#x0D;&#x0A;copy &quot;..\..\..\dependencies\win32\sdl\bin\smpeg.dll&quot; &quot;..\..\..\bin\smpeg.dll&quot;&#x0D;&#x0A;del &quot;..\..\..\bin\libgcc_s_dw2-1.dll&quot;&#x0D;&#x0A;"
 			/>
 		</Configuration>
 	</Configurations>

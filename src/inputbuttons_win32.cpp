@@ -43,14 +43,14 @@ std::map< int, std::vector<int> > Input::buttons;
 void Input::InitButtons() {
 	bool standard = true;
 
-	if (READ_BUTTON_ASSIGMENT) {
+	#if (READ_BUTTON_ASSIGMENT == YES)
 		unsigned char data[1024];
 		int n = Registry::ReadBinValue(HKEY_CURRENT_USER, READ_BUTTON_ASSIGMENT_KEY, READ_BUTTON_ASSIGMENT_VALUE, data);
 		if (n > 0) {
 			for (int i = 11; i < 19; i++) {
 				for (int j = 0; j < 15; j++) {
-					if (JOYSTICK_SUPPORT && j < 10) {
-						if (i == data[j]) {
+					#if (JOYSTICK_SUPPORT == YES)
+						if (j < 10 && i == data[j]) {
 							if (j == 0) buttons[i].push_back(Keys::JOY_1);
 							if (j == 1) buttons[i].push_back(Keys::JOY_2);
 							if (j == 2) buttons[i].push_back(Keys::JOY_3);
@@ -62,7 +62,7 @@ void Input::InitButtons() {
 							if (j == 8) buttons[i].push_back(Keys::JOY_9);
 							if (j == 9) buttons[i].push_back(Keys::JOY_10);
 						}
-					}
+					#endif
 					if (i == data[10 + j]) {
 						if (j == 0) buttons[i].push_back(Keys::SPACE);
 						if (j == 1) buttons[i].push_back(Keys::RETURN);
@@ -84,7 +84,7 @@ void Input::InitButtons() {
 			}
 			standard = false;
 		}
-	}
+	#endif
 	if (standard) {
 		buttons[11].push_back(Keys::Z);
 		buttons[11].push_back(Keys::SHIFT);
@@ -99,7 +99,7 @@ void Input::InitButtons() {
 		buttons[16].push_back(Keys::D);
 		buttons[17].push_back(Keys::Q);
 		buttons[18].push_back(Keys::W);
-		if (JOYSTICK_SUPPORT) {
+		#if (JOYSTICK_SUPPORT == YES)
 			buttons[11].push_back(Keys::JOY_1);
 			buttons[12].push_back(Keys::JOY_2);
 			buttons[13].push_back(Keys::JOY_3);
@@ -108,7 +108,7 @@ void Input::InitButtons() {
 			buttons[16].push_back(Keys::JOY_6);
 			buttons[17].push_back(Keys::JOY_7);
 			buttons[18].push_back(Keys::JOY_8);
-		}
+		#endif
 	}
 	buttons[2].push_back(Keys::DOWN);
 	buttons[4].push_back(Keys::LEFT);

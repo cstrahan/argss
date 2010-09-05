@@ -49,21 +49,21 @@ std::string FileFinder::fonts_path;
 void FileFinder::Init() {
 	for (int i = 0; i < 3; i++) {
 		if (System::RTPS[i] == "") continue;
-		if (RPGMAKER == RPGXP) {
+		#if (RPGMAKER == RPGXP)
 			rtp_paths[i] = Registry::ReadStrValue(HKEY_CURRENT_USER, "SOFTWARE\\Enterbrain\\RGSS\\RTP", System::RTPS[i]);
 			if (rtp_paths[i].size() == 0) {
 				rtp_paths[i] = Registry::ReadStrValue(HKEY_LOCAL_MACHINE, "SOFTWARE\\Enterbrain\\RGSS\\RTP", System::RTPS[i]);
 			}
-		} else if (RPGMAKER == RPGVX) {
+		#elif (RPGMAKER == RPGVX)
 			rtp_paths[i] = Registry::ReadStrValue(HKEY_CURRENT_USER, "SOFTWARE\\Enterbrain\\RGSS2\\RTP", System::RTPS[i]);
 			if (rtp_paths[i].size() == 0) {
 				rtp_paths[i] = Registry::ReadStrValue(HKEY_LOCAL_MACHINE, "SOFTWARE\\Enterbrain\\RGSS2\\RTP", System::RTPS[i]);
 			}
-		}
+		#endif
 	}
 
 	fonts_path = "";
-#if MSVC
+#if UNICODE
 	wchar_t* dir = new wchar_t[256];
 #else
 	char* dir = new char[256];

@@ -44,7 +44,7 @@ VALUE ARGSS::ATilemap::id;
 ////////////////////////////////////////////////////////////
 /// ARGSS Tilemap ruby functions
 ////////////////////////////////////////////////////////////
-VALUE ARGSS::ATilemap::rinitialize(int argc, VALUE *argv, VALUE self) {
+VALUE ARGSS::ATilemap::rinitialize(int argc, VALUE* argv, VALUE self) {
 	if (argc == 1) {
 		Check_Classes_N(argv[0], ARGSS::AViewport::id);
 		rb_iv_set(self, "@viewport", argv[0]);

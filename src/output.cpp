@@ -64,11 +64,7 @@ void Output::Error(const char* fmt, ...) {
 	va_start(args, fmt);
 
 	char str[256];
-#ifdef MSVC
-	vsprintf_s(str, 256, fmt, args);
-#else
 	vsprintf(str, fmt, args);
-#endif
 	Output::ErrorStr((std::string)str);
 
 	va_end(args);
@@ -78,11 +74,7 @@ void Output::ErrorStr(std::string err){
 	if (Console::Active()) {
 		Post("\nARGSS will close now. Press any key...");
 #ifdef WIN32
-#ifdef MSVC
-		_getch();
-#else
 		getch();
-#endif
 #endif
 	}
 	Player::Exit();
@@ -118,11 +110,7 @@ void Output::Post(const char* fmt, ...) {
 	va_start(args, fmt);
 
 	char str[256];
-#ifdef MSVC
-	vsprintf_s(str, 256, fmt, args);
-#else
 	vsprintf(str, fmt, args);
-#endif
 	Output::PostStr((std::string)str);
 
 	va_end(args);
@@ -203,11 +191,7 @@ void Output::None() {
 std::string Output::Gets() {
 	char string[256] = "\0";
 	if (Console::Active()) {
-#ifdef MSVC
-		gets_s(string, 256);
-#else
 		gets(string);
-#endif
 	}
 	return string;
 }
@@ -217,14 +201,10 @@ std::string Output::Gets() {
 ////////////////////////////////////////////////////////////
 std::string Output::Getc() {
 	std::string chr = "";
-	if (Console::Active()) {
 #ifdef WIN32
-#ifdef MSVC
-		chr += _getch();
-#else
+	if (Console::Active()) {
 		chr += getch();
-#endif
-#endif
 	}
+#endif
 	return chr;
 }

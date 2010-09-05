@@ -74,11 +74,11 @@ VALUE ARGSS::AOutput::rstderr_write(VALUE self, VALUE str) {
 	//Output::ErrorStr(StringValuePtr(str));
 	return INT2FIX(RSTRING(str)->len);
 }
-VALUE ARGSS::AOutput::stdin_gets(int argc, VALUE *argv, VALUE self) {
+VALUE ARGSS::AOutput::stdin_gets(int argc, VALUE* argv, VALUE self) {
 	std::string str = Output::Gets();
 	return rb_str_new(str.c_str(), str.length());
 }
-VALUE ARGSS::AOutput::stdin_getc(int argc, VALUE *argv, VALUE self) {
+VALUE ARGSS::AOutput::stdin_getc(int argc, VALUE* argv, VALUE self) {
 	std::string str = Output::Getc();
 	return rb_str_new(str.c_str(), str.length());
 }

@@ -311,7 +311,7 @@ void Bitmap::Blit(int x, int y, Bitmap* src_bitmap, Rect src_rect, int opacity) 
 				const Uint8* src = src_pixels + j * 4;
 				Uint8* dst = dst_pixels + j * 4;
 
-				Uint8 srca = src[3] * opacity / 255;
+				Uint8 srca = (Uint8)(src[3] * opacity / 255);
 				dst[0] = (dst[0] * (255 - srca) + src[0] * srca) / 255;
 				dst[1] = (dst[1] * (255 - srca) + src[1] * srca) / 255;
 				dst[2] = (dst[2] * (255 - srca) + src[2] * srca) / 255;
@@ -549,12 +549,12 @@ void Bitmap::RadialBlur(int angle, int division) {
 void Bitmap::ToneChange(Tone tone) {
 	if (tone.red == 0 && tone.green == 0 && tone.blue == 0 && tone.gray == 0) return;
 
-	Uint8 *dst_pixels = (Uint8*)&pixels[0];
+	Uint8* dst_pixels = (Uint8*)&pixels[0];
 
 	if (tone.gray == 0) {
 		for (int i = 0; i < GetHeight(); i++) {
 			for (int j = 0; j < GetWidth(); j++) {
-				Uint8 *pixel = dst_pixels;
+				Uint8* pixel = dst_pixels;
 				pixel[0] = (Uint8)max(min(pixel[0] + tone.red, 255), 0);
 				pixel[1] = (Uint8)max(min(pixel[1] + tone.green, 255), 0);
 				pixel[2] = (Uint8)max(min(pixel[2] + tone.blue, 255), 0);
@@ -566,7 +566,7 @@ void Bitmap::ToneChange(Tone tone) {
 		double gray;
 		for (int i = 0; i < GetHeight(); i++) {
 			for (int j = 0; j < GetWidth(); j++) {
-				Uint8 *pixel = dst_pixels;
+				Uint8* pixel = dst_pixels;
 
 				gray = pixel[0] * 0.299 + pixel[1] * 0.587 + pixel[2] * 0.114;
 				pixel[0] = (Uint8)max(min((pixel[0] - gray) * factor + gray + tone.red + 0.5, 255), 0);
@@ -588,7 +588,7 @@ void Bitmap::OpacityChange(int opacity, int bush_depth) {
 
 	SDL_LockSurface(bitmap);
 
-	Uint8 *pixels = (Uint8 *)bitmap->pixels;
+	Uint8* pixels = (Uint8 *)bitmap->pixels;
 
 	int start_bush = max(GetHeight() - bush_depth, 0);
 
@@ -597,14 +597,14 @@ void Bitmap::OpacityChange(int opacity, int bush_depth) {
 	if (opacity < 255) {
 		for (int i = 0; i < start_bush; i++) {
 			for (int j = 0; j < GetWidth(); j++) {
-				Uint8 *pixel = pixels;
+				Uint8* pixel = pixels;
 				pixel[abyte] = pixel[abyte] * opacity / 255;
 				pixels += 4;
 			}
 		}
 		for (int i = start_bush; i< GetHeight(); i++) {
 			for (int j = 0; j < GetWidth(); j++) {
-				Uint8 *pixel = pixels;
+				Uint8* pixel = pixels;
 				pixel[abyte] = (pixel[abyte] / 2) * opacity / 255;
 				pixels += 4;
 			}
@@ -613,7 +613,7 @@ void Bitmap::OpacityChange(int opacity, int bush_depth) {
 		pixels += start_bush * GetWidth() * 4;
 		for (int i = start_bush; i < GetHeight(); i++) {
 			for (int j = 0; j < GetWidth(); j++) {
-				Uint8 *pixel = pixels;
+				Uint8* pixel = pixels;
 				pixel[abyte] = pixel[abyte] / 2;
 				pixels += 4;
 			}

@@ -39,7 +39,7 @@ VALUE ARGSS::ATable::id;
 ////////////////////////////////////////////////////////////
 /// ARGSS Table ruby functions
 ////////////////////////////////////////////////////////////
-VALUE ARGSS::ATable::rinitialize(int argc, VALUE *argv, VALUE self) {
+VALUE ARGSS::ATable::rinitialize(int argc, VALUE* argv, VALUE self) {
 	if (argc < 1) raise_argn(argc, 1);
 	else if (argc > 3) raise_argn(argc, 3);
 	rb_iv_set(self, "@dim", INT2NUM(argc));
@@ -62,7 +62,7 @@ VALUE ARGSS::ATable::rinitialize(int argc, VALUE *argv, VALUE self) {
 	rb_iv_set(self, "@modified", Qtrue);
 	return self;
 }
-VALUE ARGSS::ATable::rresize(int argc, VALUE *argv, VALUE self) {
+VALUE ARGSS::ATable::rresize(int argc, VALUE* argv, VALUE self) {
 	int xsize = 1;
 	int ysize = 1;
 	int zsize = 1;
@@ -101,7 +101,7 @@ VALUE ARGSS::ATable::rysize(VALUE self) {
 VALUE ARGSS::ATable::rzsize(VALUE self) {
 	return rb_iv_get(self, "@zsize");
 }
-VALUE ARGSS::ATable::raref(int argc, VALUE *argv, VALUE self) {
+VALUE ARGSS::ATable::raref(int argc, VALUE* argv, VALUE self) {
 	int dim = NUM2INT(rb_iv_get(self, "@dim"));
 	if (argc != dim) raise_argn(argc, dim);
 	int x = 0;
@@ -125,7 +125,7 @@ VALUE ARGSS::ATable::raref(int argc, VALUE *argv, VALUE self) {
 		return rb_ary_entry(data, x + y * xsize + z * xsize * ysize);
 	}
 }
-VALUE ARGSS::ATable::raset(int argc, VALUE *argv, VALUE self) {
+VALUE ARGSS::ATable::raset(int argc, VALUE* argv, VALUE self) {
 	int dim = NUM2INT(rb_iv_get(self, "@dim"));
 	if (argc != (dim + 1)) raise_argn(argc, dim + 1);
 	int x = 0;
@@ -160,7 +160,7 @@ VALUE ARGSS::ATable::rdump(int argc, VALUE* argv, VALUE self) {
 	VALUE xsize = rb_iv_get(self, "@xsize");
 	VALUE ysize = rb_iv_get(self, "@ysize");
 	VALUE zsize = rb_iv_get(self, "@zsize");
-	unsigned long items = NUM2INT(xsize) * NUM2INT(ysize) *NUM2INT(zsize);
+	unsigned long items = NUM2INT(xsize) * NUM2INT(ysize) * NUM2INT(zsize);
 	VALUE arr = rb_ary_new3(5, rb_iv_get(self, "@dim"), xsize, ysize, zsize, INT2NUM(items));
 	rb_str_concat(str, rb_funcall(arr, rb_intern("pack"), 1, rb_str_new2("L5")));
 	rb_str_concat(str, rb_funcall(rb_iv_get(self, "@data"), rb_intern("pack"), 1, rb_str_times(rb_str_new2("S"), INT2NUM(items))));

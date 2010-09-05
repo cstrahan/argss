@@ -43,7 +43,7 @@ VALUE ARGSS::AViewport::id;
 ////////////////////////////////////////////////////////////
 /// ARGSS Viewport ruby functions
 ////////////////////////////////////////////////////////////
-VALUE ARGSS::AViewport::rinitialize(int argc, VALUE *argv, VALUE self) {
+VALUE ARGSS::AViewport::rinitialize(int argc, VALUE* argv, VALUE self) {
 	if (argc == 0) raise_argn(argc, 1);
 	else if (argc > 1 && argc < 4) raise_argn(argc, 4);
 	if (argc == 1) rb_iv_set(self, "@rect", argv[0]);

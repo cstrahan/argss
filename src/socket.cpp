@@ -87,7 +87,7 @@ Buffer Socket::Receive() {
 
 
 void Socket::Send(Buffer buffer) {
-	unsigned short bufferSize = buffer.GetSize();
+	unsigned short bufferSize = (unsigned short)buffer.GetSize();
 	char* pFinalBuffer = new char[2 + bufferSize];
 	memcpy(pFinalBuffer, &bufferSize, 2);
 	memcpy(pFinalBuffer + 2, buffer.GetData(), bufferSize);
