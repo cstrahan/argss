@@ -24,36 +24,14 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /////////////////////////////////////////////////////////////////////////////
 
+#ifndef _HSLRGB_H_
+#define _HSLRGB_H_
+
 ////////////////////////////////////////////////////////////
 // Headers
 ////////////////////////////////////////////////////////////
-#include "output.h"
-#include "system.h"
-#include "tools/filefinder.h"
-#include "player.h"
-#include "graphics/graphics.h"
-#include "audio/audio.h"
-#include "input/input.h"
-#include "argss/argss.h"
+#include "graphics/color.h"
 
-////////////////////////////////////////////////////////////
-/// Main
-////////////////////////////////////////////////////////////
-#ifdef WIN32
-int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /*lpCmdLine*/, int /*nCmdShow*/) {
-#else
-int main(int argc, char** argv) {
+Color RGBAdjustHSL(Color col, double h, double s, double l);
+
 #endif
-
-	// Common code
-	Output::Init();
-	System::Init();
-	FileFinder::Init();
-	Player::Init();
-	Graphics::Init();
-	Input::Init();
-	Audio::Init();
-	ARGSS::Init();
-
-	return 0;
-}

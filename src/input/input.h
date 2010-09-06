@@ -24,36 +24,40 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /////////////////////////////////////////////////////////////////////////////
 
+#ifndef _INPUT_H_
+#define _INPUT_H_
+
 ////////////////////////////////////////////////////////////
 // Headers
 ////////////////////////////////////////////////////////////
-#include "output.h"
-#include "system.h"
-#include "tools/filefinder.h"
-#include "player.h"
-#include "graphics/graphics.h"
-#include "audio/audio.h"
-#include "input/input.h"
-#include "argss/argss.h"
+#include <vector>
+#include "input/keys.h"
 
 ////////////////////////////////////////////////////////////
-/// Main
+/// Input namespace
 ////////////////////////////////////////////////////////////
-#ifdef WIN32
-int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /*lpCmdLine*/, int /*nCmdShow*/) {
-#else
-int main(int argc, char** argv) {
+namespace Input {
+	void Init();
+	void Update();
+	void ClearKeys();
+	bool IsPressed(unsigned long button);
+	bool IsTriggered(unsigned long button);
+	bool IsRepeated(unsigned long button);
+	bool IsReleased(unsigned long button);
+	unsigned long GetPressed();
+	unsigned long GetTriggered();
+	unsigned long GetRepeated();
+	unsigned long GetReleased();
+
+	extern std::vector<int> press_time;
+	extern std::vector<bool> triggered;
+	extern std::vector<bool> repeated;
+	extern std::vector<bool> released;
+	extern int dir4;
+	extern int dir8;
+	extern int start_repeat_time;
+	extern int repeat_time;
+	extern std::vector< std::vector<int> > dirkeys;
+};
+
 #endif
-
-	// Common code
-	Output::Init();
-	System::Init();
-	FileFinder::Init();
-	Player::Init();
-	Graphics::Init();
-	Input::Init();
-	Audio::Init();
-	ARGSS::Init();
-
-	return 0;
-}

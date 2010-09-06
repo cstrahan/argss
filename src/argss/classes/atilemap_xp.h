@@ -24,36 +24,45 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /////////////////////////////////////////////////////////////////////////////
 
+#ifndef _ARGSS_TILEMAP_XP_H_
+#define _ARGSS_TILEMAP_XP_H_
+
 ////////////////////////////////////////////////////////////
 // Headers
 ////////////////////////////////////////////////////////////
-#include "output.h"
-#include "system.h"
-#include "tools/filefinder.h"
-#include "player.h"
-#include "graphics/graphics.h"
-#include "audio/audio.h"
-#include "input/input.h"
-#include "argss/argss.h"
+#include "argss/classes/atilemapautotiles_xp.h"
 
 ////////////////////////////////////////////////////////////
-/// Main
+/// ARGSS Tilemap namespace
 ////////////////////////////////////////////////////////////
-#ifdef WIN32
-int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /*lpCmdLine*/, int /*nCmdShow*/) {
-#else
-int main(int argc, char** argv) {
+namespace ARGSS {
+	namespace ATilemap {
+		extern VALUE id;
+		void Init();
+		void CheckDisposed(VALUE self);
+
+		VALUE rinitialize(int argc, VALUE* argv, VALUE self);
+		VALUE rdispose(VALUE self);
+		VALUE rdisposeQ(VALUE self);
+		VALUE rupdate(VALUE self);
+		VALUE rviewport(VALUE self);
+		VALUE rviewportE(VALUE self, VALUE viewport);
+		VALUE rtileset(VALUE self);
+		VALUE rtilesetE(VALUE self, VALUE tileset);
+		VALUE rautotiles(VALUE self);
+		VALUE rmap_data(VALUE self);
+		VALUE rmap_dataE(VALUE self, VALUE map_data);
+		VALUE rflash_data(VALUE self);
+		VALUE rflash_dataE(VALUE self, VALUE flash_data);
+		VALUE rpriorities(VALUE self);
+		VALUE rprioritiesE(VALUE self, VALUE priorities);
+		VALUE rvisible(VALUE self);
+		VALUE rvisibleE(VALUE self, VALUE visible);
+		VALUE rox(VALUE self);
+		VALUE roxE(VALUE self, VALUE ox);
+		VALUE roy(VALUE self);
+		VALUE royE(VALUE self, VALUE oy);
+	};
+};
+
 #endif
-
-	// Common code
-	Output::Init();
-	System::Init();
-	FileFinder::Init();
-	Player::Init();
-	Graphics::Init();
-	Input::Init();
-	Audio::Init();
-	ARGSS::Init();
-
-	return 0;
-}

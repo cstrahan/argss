@@ -27,33 +27,44 @@
 ////////////////////////////////////////////////////////////
 // Headers
 ////////////////////////////////////////////////////////////
-#include "output.h"
-#include "system.h"
-#include "tools/filefinder.h"
-#include "player.h"
-#include "graphics/graphics.h"
-#include "audio/audio.h"
-#include "input/input.h"
-#include "argss/argss.h"
+#include "argss/classes/atilemapautotiles_xp.h"
+#include "argss/classes/abitmap.h"
 
 ////////////////////////////////////////////////////////////
-/// Main
+// Global Variables
 ////////////////////////////////////////////////////////////
-#ifdef WIN32
-int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /*lpCmdLine*/, int /*nCmdShow*/) {
-#else
-int main(int argc, char** argv) {
-#endif
+VALUE ARGSS::ATilemapAutotiles::id;
 
-	// Common code
-	Output::Init();
-	System::Init();
-	FileFinder::Init();
-	Player::Init();
-	Graphics::Init();
-	Input::Init();
-	Audio::Init();
-	ARGSS::Init();
+////////////////////////////////////////////////////////////
+/// ARGSS TilemapAutotiles ruby functions
+////////////////////////////////////////////////////////////
+VALUE ARGSS::ATilemapAutotiles::rinitialize(VALUE self) {
+	rb_iv_set(self, "@autotiles", rb_ary_new2(8));
+	return self;
+}
+VALUE ARGSS::ATilemapAutotiles::raref(VALUE self, VALUE index) {
+	return rb_ary_entry(rb_iv_get(self, "@autotiles"), NUM2INT(index));
+}
+VALUE ARGSS::ATilemapAutotiles::raset(VALUE self, VALUE index, VALUE bitmap) {
+	Check_Classes_N(bitmap, ARGSS::ABitmap::id);
+	rb_ary_store(rb_iv_get(self, "@autotiles"), NUM2INT(index), bitmap);
+	return bitmap;
+}
 
-	return 0;
+////////////////////////////////////////////////////////////
+/// ARGSS TilemapAutotiles initialize
+////////////////////////////////////////////////////////////
+void ARGSS::ATilemapAutotiles::Init() {
+	typedef VALUE (*rubyfunc)(...);
+	id = rb_define_class("TilemapAutotiles", rb_cObject);
+	rb_define_method(id, "initialize", (rubyfunc)rinitialize, 0);
+	rb_define_method(id, "[]", (rubyfunc)raref, 1);
+	rb_define_method(id, "[]=", (rubyfunc)raset, 2);
+}
+
+////////////////////////////////////////////////////////////
+/// ARGSS TilemapAutotiles new ruby instance
+////////////////////////////////////////////////////////////
+VALUE ARGSS::ATilemapAutotiles::New() {
+	return rb_class_new_instance(0, 0, id);
 }

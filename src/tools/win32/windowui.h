@@ -24,36 +24,61 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /////////////////////////////////////////////////////////////////////////////
 
+#ifndef _WINDOWUI_WIN32_H_
+#define _WINDOWUI_WIN32_H_
+
 ////////////////////////////////////////////////////////////
 // Headers
 ////////////////////////////////////////////////////////////
-#include "output.h"
-#include "system.h"
-#include "tools/filefinder.h"
-#include "player.h"
-#include "graphics/graphics.h"
-#include "audio/audio.h"
-#include "input/input.h"
-#include "argss/argss.h"
+#include <string>
+#include <queue>
+#include <windows.h>
+#include "tools/event.h"
+#include "input/keys.h"
 
 ////////////////////////////////////////////////////////////
-/// Main
+/// WindowUi class
 ////////////////////////////////////////////////////////////
-#ifdef WIN32
-int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /*lpCmdLine*/, int /*nCmdShow*/) {
-#else
-int main(int argc, char** argv) {
+class WindowUi {
+public:
+	WindowUi(long iwidth, long iheight, std::string title, bool center, bool fs_flag);
+	~WindowUi();
+
+	void Dispose();
+	void SwapBuffers();
+	void Resize(long nwidth, long nheight);
+	void SetTitle(std::string title);
+	void ToggleFullscreen();
+	long GetWidth();
+	long GetHeight();
+
+	bool GetEvent(Event& evnt);
+	int ProccesEvents(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+
+	bool IsFullscreen();
+	std::vector<bool> GetKeyStates();
+	bool GetMouseFocus();
+	int GetMouseWheel();
+	int GetMousePosX();
+	int GetMousePosY();
+
+private:
+	Input::Keys::InputKey VK2IK(int vk);
+
+	HDC hdc;
+	HGLRC hrc;
+	HWND hwnd;
+	HINSTANCE hinstance;
+	long width;
+	long height;
+
+	std::queue<Event> events;
+	std::vector<bool> keys;
+	bool mouse_focus;
+	int mouse_wheel;
+	int mouse_x;
+	int mouse_y;
+	bool fullscreen;
+};
+
 #endif
-
-	// Common code
-	Output::Init();
-	System::Init();
-	FileFinder::Init();
-	Player::Init();
-	Graphics::Init();
-	Input::Init();
-	Audio::Init();
-	ARGSS::Init();
-
-	return 0;
-}

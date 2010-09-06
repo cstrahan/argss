@@ -24,36 +24,71 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /////////////////////////////////////////////////////////////////////////////
 
+#ifndef _GRAPHICS_H_
+#define _GRAPHICS_H_
+
 ////////////////////////////////////////////////////////////
 // Headers
 ////////////////////////////////////////////////////////////
-#include "output.h"
-#include "system.h"
-#include "tools/filefinder.h"
-#include "player.h"
-#include "graphics/graphics.h"
-#include "audio/audio.h"
-#include "input/input.h"
-#include "argss/argss.h"
+#include <string>
+#include <list>
+#include <map>
+#include "graphics/drawable.h"
+#include "graphics/zobj.h"
+#include "graphics/color.h"
 
 ////////////////////////////////////////////////////////////
-/// Main
+/// Graphics namespace
 ////////////////////////////////////////////////////////////
-#ifdef WIN32
-int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /*lpCmdLine*/, int /*nCmdShow*/) {
-#else
-int main(int argc, char** argv) {
+namespace Graphics {
+	void Init();
+	void InitOpenGL();
+	void Exit();
+	void RefreshAll();
+	void TimerWait();
+	void TimerContinue();
+	void DrawFrame();
+
+	void Update();
+	void Freeze();
+	void Transition(int duration, std::string filename, int vague);
+	void FrameReset();
+	void Wait(int duration);
+	void ResizeScreen(int width, int height);
+	unsigned long SnapToBitmap();
+	void FadeOut(int duration);
+	void FadeIn(int duration);
+	int GetFrameRate();
+	void SetFrameRate(int nframerate);
+	int GetFrameCount();
+	void SetFrameCount(int nframecount);
+	unsigned long GetBackColor();
+	void SetBackColor(unsigned long nbackcolor);
+	int GetBrightness();
+	void SetBrightness(int nbrightness);
+
+	bool SortZObj(ZObj &first, ZObj &second);
+	void RegisterZObj(long z, unsigned long id);
+	void RegisterZObj(long z, unsigned long id, bool multiz);
+	void RemoveZObj(unsigned long id);
+	void UpdateZObj(unsigned long id, long z);
+
+	extern int fps;
+	extern int framerate;
+	extern int framecount;
+	extern Color backcolor;
+	extern int brightness;
+	extern double framerate_interval;
+	extern long creation;
+	extern long last_tics;
+	extern long last_tics_wait;
+	extern long next_tics_fps;
+
+	extern std::map<unsigned long, Drawable*> drawable_map;
+	extern std::map<unsigned long, Drawable*>::iterator it_drawable_map;
+
+	extern std::list<ZObj> zlist;
+	extern std::list<ZObj>::iterator it_zlist;
+};
+
 #endif
-
-	// Common code
-	Output::Init();
-	System::Init();
-	FileFinder::Init();
-	Player::Init();
-	Graphics::Init();
-	Input::Init();
-	Audio::Init();
-	ARGSS::Init();
-
-	return 0;
-}

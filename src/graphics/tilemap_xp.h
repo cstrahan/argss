@@ -24,36 +24,77 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /////////////////////////////////////////////////////////////////////////////
 
+#ifndef _TILEMAP_XP_H_
+#define _TILEMAP_XP_H_
+
 ////////////////////////////////////////////////////////////
 // Headers
 ////////////////////////////////////////////////////////////
-#include "output.h"
-#include "system.h"
-#include "tools/filefinder.h"
-#include "player.h"
-#include "graphics/graphics.h"
-#include "audio/audio.h"
-#include "input/input.h"
-#include "argss/argss.h"
+#include <string>
+#include <map>
+#include <vector>
+#include "graphics/bitmap.h"
+#include "graphics/drawable.h"
 
 ////////////////////////////////////////////////////////////
-/// Main
+/// Tilemap class
 ////////////////////////////////////////////////////////////
-#ifdef WIN32
-int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /*lpCmdLine*/, int /*nCmdShow*/) {
-#else
-int main(int argc, char** argv) {
+class Tilemap : public Drawable {
+public:
+	Tilemap(unsigned long iid);
+	~Tilemap();
+
+	static void Init();
+	static bool IsDisposed(unsigned long id);
+	static void New(unsigned long id);
+	static Tilemap* Get(unsigned long id);
+	static void Dispose(unsigned long id);
+
+	void RefreshBitmaps();
+	void Draw(long z);
+	void Draw(long z, Bitmap* dst_bitmap);
+	void RefreshData();
+
+	void Update();
+	unsigned long GetViewport();
+	void SetViewport(unsigned long nviewport);
+	unsigned long GetTileset();
+	void SetTileset(unsigned long ntileset);
+	unsigned long GetMapData();
+	void SetMapData(unsigned long nmap_data);
+	unsigned long GetFlashData();
+	void SetFlashData(unsigned long nflash_data);
+	unsigned long GetPriorities();
+	void SetPriorities(unsigned long npriorities);
+	bool GetVisible();
+	void SetVisible(bool nvisible);
+	int GetOx();
+	void SetOx(int nox);
+	int GetOy();
+	void SetOy(int noy);
+
+private:
+	unsigned long id;
+	unsigned long viewport;
+	unsigned long tileset;
+	unsigned long autotiles;
+	unsigned long map_data;
+	unsigned long flash_data;
+	unsigned long priorities;
+	bool visible;
+	int ox;
+	int oy;
+	int autotile_frame;
+	int autotile_time;
+
+	std::map<unsigned long, std::map<int, std::map<int, Bitmap*> > > autotiles_cache;
+	static int autotiles_id[6][8][4];
+
+	struct TileData {
+		int id;
+		int priority;
+	};
+	std::vector<std::vector<std::vector<TileData> > > data_cache;
+};
+
 #endif
-
-	// Common code
-	Output::Init();
-	System::Init();
-	FileFinder::Init();
-	Player::Init();
-	Graphics::Init();
-	Input::Init();
-	Audio::Init();
-	ARGSS::Init();
-
-	return 0;
-}

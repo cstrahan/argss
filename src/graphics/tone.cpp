@@ -27,33 +27,36 @@
 ////////////////////////////////////////////////////////////
 // Headers
 ////////////////////////////////////////////////////////////
-#include "output.h"
-#include "system.h"
-#include "tools/filefinder.h"
-#include "player.h"
-#include "graphics/graphics.h"
-#include "audio/audio.h"
-#include "input/input.h"
-#include "argss/argss.h"
+#include "graphics/tone.h"
+#include "aruby.h"
 
 ////////////////////////////////////////////////////////////
-/// Main
+/// Constructor
 ////////////////////////////////////////////////////////////
-#ifdef WIN32
-int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /*lpCmdLine*/, int /*nCmdShow*/) {
-#else
-int main(int argc, char** argv) {
-#endif
+Tone::Tone() {
+	red = 0;
+	green = 0;
+	blue = 0;
+	gray = 0;
+}
+Tone::Tone(VALUE tone) {
+	red = NUM2DBL(rb_iv_get(tone, "@red"));
+	green = NUM2DBL(rb_iv_get(tone, "@green"));
+	blue = NUM2DBL(rb_iv_get(tone, "@blue"));
+	gray = NUM2DBL(rb_iv_get(tone, "@gray"));
+}
 
-	// Common code
-	Output::Init();
-	System::Init();
-	FileFinder::Init();
-	Player::Init();
-	Graphics::Init();
-	Input::Init();
-	Audio::Init();
-	ARGSS::Init();
+////////////////////////////////////////////////////////////
+/// Destructor
+////////////////////////////////////////////////////////////
+Tone::~Tone() { }
 
-	return 0;
+////////////////////////////////////////////////////////////
+/// Set
+////////////////////////////////////////////////////////////
+void Tone::Set(VALUE tone) {
+	red = NUM2DBL(rb_iv_get(tone, "@red"));
+	green = NUM2DBL(rb_iv_get(tone, "@green"));
+	blue = NUM2DBL(rb_iv_get(tone, "@blue"));
+	gray = NUM2DBL(rb_iv_get(tone, "@gray"));
 }

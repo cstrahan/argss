@@ -1,4 +1,4 @@
-/////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////
 // ARGSS - Copyright (c) 2009 - 2010, Alejandro Marzini (vgvgf)
 // All rights reserved.
 //
@@ -24,36 +24,43 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /////////////////////////////////////////////////////////////////////////////
 
+#ifndef _ARGSS_VIEWPORT_H_
+#define _ARGSS_VIEWPORT_H_
+
 ////////////////////////////////////////////////////////////
 // Headers
 ////////////////////////////////////////////////////////////
-#include "output.h"
-#include "system.h"
-#include "tools/filefinder.h"
-#include "player.h"
-#include "graphics/graphics.h"
-#include "audio/audio.h"
-#include "input/input.h"
-#include "argss/argss.h"
+#include "aruby.h"
 
 ////////////////////////////////////////////////////////////
-/// Main
+/// ARGSS Viewport namespace
 ////////////////////////////////////////////////////////////
-#ifdef WIN32
-int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /*lpCmdLine*/, int /*nCmdShow*/) {
-#else
-int main(int argc, char** argv) {
+namespace ARGSS {
+	namespace AViewport {
+		extern VALUE id;
+		void Init();
+		void CheckDisposed(VALUE self);
+
+		VALUE rinitialize(int argc, VALUE* argv, VALUE self);
+		VALUE rdispose(VALUE self);
+		VALUE rdisposedQ(VALUE self);
+		VALUE rflash(VALUE self, VALUE color, VALUE duration);
+		VALUE rupdate(VALUE self);
+		VALUE rrect(VALUE self);
+		VALUE rrectE(VALUE self, VALUE rect);
+		VALUE rvisible(VALUE self);
+		VALUE rvisibleE(VALUE self, VALUE visible);
+		VALUE rz(VALUE self);
+		VALUE rzE(VALUE self, VALUE z);
+		VALUE rox(VALUE self);
+		VALUE roxE(VALUE self, VALUE ox);
+		VALUE roy(VALUE self);
+		VALUE royE(VALUE self, VALUE oy);
+		VALUE rcolor(VALUE self);
+		VALUE rcolorE(VALUE self, VALUE color);
+		VALUE rtone(VALUE self);
+		VALUE rtoneE(VALUE self, VALUE tone);
+	};
+};
+
 #endif
-
-	// Common code
-	Output::Init();
-	System::Init();
-	FileFinder::Init();
-	Player::Init();
-	Graphics::Init();
-	Input::Init();
-	Audio::Init();
-	ARGSS::Init();
-
-	return 0;
-}

@@ -24,36 +24,41 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /////////////////////////////////////////////////////////////////////////////
 
+#ifndef _ARGSS_RPG_CACHE_H_
+#define _ARGSS_RPG_CACHE_H_
+
 ////////////////////////////////////////////////////////////
 // Headers
 ////////////////////////////////////////////////////////////
-#include "output.h"
-#include "system.h"
-#include "tools/filefinder.h"
-#include "player.h"
-#include "graphics/graphics.h"
-#include "audio/audio.h"
-#include "input/input.h"
-#include "argss/argss.h"
+#include "aruby.h"
 
 ////////////////////////////////////////////////////////////
-/// Main
+/// ARGSS RPG::Cache namespace
 ////////////////////////////////////////////////////////////
-#ifdef WIN32
-int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /*lpCmdLine*/, int /*nCmdShow*/) {
-#else
-int main(int argc, char** argv) {
+namespace ARGSS {
+	namespace ARPG {
+		namespace ACache {
+			extern VALUE id;
+			void Init();
+
+			VALUE rload_bitmap(int argc, VALUE* argv, VALUE self);
+			VALUE ranimation(VALUE self, VALUE filename, VALUE hue);
+			VALUE rautotile(VALUE self, VALUE filename);
+			VALUE rbattleback(VALUE self, VALUE filename);
+			VALUE rbattler(VALUE self, VALUE filename, VALUE hue);
+			VALUE rcharacter(VALUE self, VALUE filename, VALUE hue);
+			VALUE rfog(VALUE self, VALUE filename, VALUE hue);
+			VALUE rgameover(VALUE self, VALUE filename);
+			VALUE ricon(VALUE self, VALUE filename);
+			VALUE rpanorama(VALUE self, VALUE filename, VALUE hue);
+			VALUE rpicture(VALUE self, VALUE filename);
+			VALUE rtileset(VALUE self, VALUE filename);
+			VALUE rtitle(VALUE self, VALUE filename);
+			VALUE rwindowskin(VALUE self, VALUE filename);
+			VALUE rtile(VALUE self, VALUE filename, VALUE tile_id, VALUE hue);
+			VALUE rclear(VALUE self);
+		};
+	};
+};
+
 #endif
-
-	// Common code
-	Output::Init();
-	System::Init();
-	FileFinder::Init();
-	Player::Init();
-	Graphics::Init();
-	Input::Init();
-	Audio::Init();
-	ARGSS::Init();
-
-	return 0;
-}

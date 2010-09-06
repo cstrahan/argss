@@ -24,36 +24,48 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /////////////////////////////////////////////////////////////////////////////
 
+#ifndef _ARGSS_RPG_SPRITE_H_
+#define _ARGSS_RPG_SPRITE_H_
+
 ////////////////////////////////////////////////////////////
 // Headers
 ////////////////////////////////////////////////////////////
-#include "output.h"
-#include "system.h"
-#include "tools/filefinder.h"
-#include "player.h"
-#include "graphics/graphics.h"
-#include "audio/audio.h"
-#include "input/input.h"
-#include "argss/argss.h"
+#include "aruby.h"
 
 ////////////////////////////////////////////////////////////
-/// Main
+/// ARGSS RPG::Sprite namespace
 ////////////////////////////////////////////////////////////
-#ifdef WIN32
-int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /*lpCmdLine*/, int /*nCmdShow*/) {
-#else
-int main(int argc, char** argv) {
+namespace ARGSS {
+	namespace ARPG {
+		namespace ASprite {
+			extern VALUE id;
+			void Init();
+
+			VALUE rinitialize(int argc, VALUE* argv, VALUE self);
+			VALUE rdispose(VALUE self);
+			VALUE rwhiten(VALUE self);
+			VALUE rappear(VALUE self);
+			VALUE rescape(VALUE self);
+			VALUE rcollapse(VALUE self);
+			VALUE rdamage(VALUE self, VALUE value, VALUE critical);
+			VALUE ranimation(VALUE self, VALUE animation, VALUE hit);
+			VALUE rloop_animation(VALUE self, VALUE animation);
+			VALUE rdispose_damage(VALUE self);
+			VALUE rdispose_animation(VALUE self);
+			VALUE rdispose_loop_animation(VALUE self);
+			VALUE rblink_on(VALUE self);
+			VALUE rblink_off(VALUE self);
+			VALUE rblinkQ(VALUE self);
+			VALUE reffectQ(VALUE self);
+			VALUE rupdate(VALUE self);
+			VALUE rupdate_animation(VALUE self);
+			VALUE rupdate_loop_animation(VALUE self);
+			VALUE ranimation_set_sprites(VALUE self, VALUE sprites, VALUE cell_data, VALUE position);
+			VALUE ranimation_process_timing(VALUE self, VALUE timing, VALUE hit);
+			VALUE rxE(VALUE self, VALUE x);
+			VALUE ryE(VALUE self, VALUE y);
+		};
+	};
+};
+
 #endif
-
-	// Common code
-	Output::Init();
-	System::Init();
-	FileFinder::Init();
-	Player::Init();
-	Graphics::Init();
-	Input::Init();
-	Audio::Init();
-	ARGSS::Init();
-
-	return 0;
-}

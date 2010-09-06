@@ -38,9 +38,9 @@
 #include "options.h"
 #include "system.h"
 #include "player.h"
-#include "console.h"
-#include "msgbox.h"
-#include "graphics.h"
+#include "tools/console.h"
+#include "tools/msgbox.h"
+#include "graphics/graphics.h"
 
 ////////////////////////////////////////////////////////////
 // Global Variables
@@ -203,7 +203,7 @@ std::string Output::Getc() {
 	std::string chr = "";
 #ifdef WIN32
 	if (Console::Active()) {
-		chr += getch();
+		chr += (char)getch();
 	}
 #endif
 	return chr;

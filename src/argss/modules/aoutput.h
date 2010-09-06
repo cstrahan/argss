@@ -24,36 +24,34 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /////////////////////////////////////////////////////////////////////////////
 
+#ifndef _ARGSS_OUTPUT_H_
+#define _ARGSS_OUTPUT_H_
+
 ////////////////////////////////////////////////////////////
 // Headers
 ////////////////////////////////////////////////////////////
-#include "output.h"
-#include "system.h"
-#include "tools/filefinder.h"
-#include "player.h"
-#include "graphics/graphics.h"
-#include "audio/audio.h"
-#include "input/input.h"
-#include "argss/argss.h"
+#include "aruby.h"
 
 ////////////////////////////////////////////////////////////
-/// Main
+/// ARGSS Output namespace
 ////////////////////////////////////////////////////////////
-#ifdef WIN32
-int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /*lpCmdLine*/, int /*nCmdShow*/) {
-#else
-int main(int argc, char** argv) {
+namespace ARGSS {
+	namespace AOutput {
+		extern VALUE id;
+		extern VALUE stdout_id;
+		extern VALUE stderr_id;
+		extern VALUE stdin_id;
+		void Init();
+
+		VALUE rconsole(VALUE self);
+		VALUE rmsgbox(VALUE self);
+		VALUE rfile(VALUE self, VALUE file);
+		VALUE rnone(VALUE self);
+		VALUE rstdout_write(VALUE self, VALUE str);
+		VALUE rstderr_write(VALUE self, VALUE str);
+		VALUE stdin_gets(int argc, VALUE* argv, VALUE self);
+		VALUE stdin_getc(int argc, VALUE* argv, VALUE self);
+	};
+};
+
 #endif
-
-	// Common code
-	Output::Init();
-	System::Init();
-	FileFinder::Init();
-	Player::Init();
-	Graphics::Init();
-	Input::Init();
-	Audio::Init();
-	ARGSS::Init();
-
-	return 0;
-}

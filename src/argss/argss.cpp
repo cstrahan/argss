@@ -27,33 +27,66 @@
 ////////////////////////////////////////////////////////////
 // Headers
 ////////////////////////////////////////////////////////////
-#include "output.h"
-#include "system.h"
-#include "tools/filefinder.h"
-#include "player.h"
-#include "graphics/graphics.h"
-#include "audio/audio.h"
-#include "input/input.h"
 #include "argss/argss.h"
+#include "aruby.h"
+#include "argss/modules/aoutput.h"
+#include "argss/modules/aaudio.h"
+#include "argss/modules/agraphics.h"
+#include "argss/modules/ainput.h"
+#include "argss/modules/akeys.h"
+#include "argss/classes/abitmap.h"
+#include "argss/classes/acolor.h"
+#include "argss/classes/afont.h"
+#include "argss/classes/aplane.h"
+#include "argss/classes/arect.h"
+#include "argss/classes/asprite.h"
+#include "argss/classes/atable.h"
+#include "argss/classes/atilemap.h"
+#include "argss/classes/atone.h"
+#include "argss/classes/aviewport.h"
+#include "argss/classes/awindow.h"
+#include "argss/classes/aerror.h"
+#include "argss/rpg/rpg.h"
+#include "argss/rpg/rpg_cache.h"
+#include "argss/rpg/rpg_weather.h"
+#include "argss/rpg/rpg_sprite.h"
 
 ////////////////////////////////////////////////////////////
-/// Main
+/// ARGSS initialize
 ////////////////////////////////////////////////////////////
-#ifdef WIN32
-int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /*lpCmdLine*/, int /*nCmdShow*/) {
-#else
-int main(int argc, char** argv) {
-#endif
+void ARGSS::Init() {
+	ARGSS::ARuby::Init();
 
-	// Common code
-	Output::Init();
-	System::Init();
-	FileFinder::Init();
-	Player::Init();
-	Graphics::Init();
-	Input::Init();
-	Audio::Init();
-	ARGSS::Init();
+	ARGSS::AOutput::Init();
+	ARGSS::AAudio::Init();
+	ARGSS::AGraphics::Init();
+	ARGSS::AInput::Init();
+	ARGSS::AKeys::Init();
 
-	return 0;
+	ARGSS::ABitmap::Init();
+	ARGSS::AColor::Init();
+	ARGSS::AFont::Init();
+	ARGSS::APlane::Init();
+	ARGSS::ARect::Init();
+	ARGSS::ASprite::Init();
+	ARGSS::ATable::Init();
+	ARGSS::ATilemap::Init();
+	ARGSS::ATone::Init();
+	ARGSS::AViewport::Init();
+	ARGSS::AWindow::Init();
+	ARGSS::AError::Init();
+
+	ARGSS::ARPG::Init();
+	/*ARGSS::ARPG::ACache::Init();
+	ARGSS::ARPG::AWeather::Init();
+	ARGSS::ARPG::ASprite::Init();*/
+
+	ARGSS::ARuby::Run();
+}
+
+////////////////////////////////////////////////////////////
+/// ARGSS Exit
+////////////////////////////////////////////////////////////
+void ARGSS::Exit() {
+	rb_exit(1);
 }

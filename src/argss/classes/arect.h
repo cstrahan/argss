@@ -24,36 +24,38 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /////////////////////////////////////////////////////////////////////////////
 
+#ifndef _ARGSS_RECT_H_
+#define _ARGSS_RECT_H_
+
 ////////////////////////////////////////////////////////////
 // Headers
 ////////////////////////////////////////////////////////////
-#include "output.h"
-#include "system.h"
-#include "tools/filefinder.h"
-#include "player.h"
-#include "graphics/graphics.h"
-#include "audio/audio.h"
-#include "input/input.h"
-#include "argss/argss.h"
+#include "aruby.h"
 
 ////////////////////////////////////////////////////////////
-/// Main
+/// ARGSS Rect namespace
 ////////////////////////////////////////////////////////////
-#ifdef WIN32
-int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /*lpCmdLine*/, int /*nCmdShow*/) {
-#else
-int main(int argc, char** argv) {
+namespace ARGSS {
+	namespace ARect {
+		extern VALUE id;
+		void Init();
+		VALUE New(double x, double y, double width, double height);
+
+		VALUE rinitialize(VALUE self, VALUE x, VALUE y, VALUE w, VALUE h);
+		VALUE rset(VALUE self, VALUE x, VALUE y, VALUE w, VALUE h);
+		VALUE rx(VALUE self);
+		VALUE rxE(VALUE self, VALUE x);
+		VALUE ry(VALUE self);
+		VALUE ryE(VALUE self, VALUE y);
+		VALUE rwidth(VALUE self);
+		VALUE rwidthE(VALUE self, VALUE w);
+		VALUE rheight(VALUE self);
+		VALUE rheightE(VALUE self, VALUE h);
+		VALUE rempty(VALUE self);
+		VALUE rinspect(VALUE self);
+		VALUE rdump(int argc, VALUE* argv, VALUE self);
+		VALUE rload(VALUE self, VALUE str);
+	};
+};
+
 #endif
-
-	// Common code
-	Output::Init();
-	System::Init();
-	FileFinder::Init();
-	Player::Init();
-	Graphics::Init();
-	Input::Init();
-	Audio::Init();
-	ARGSS::Init();
-
-	return 0;
-}

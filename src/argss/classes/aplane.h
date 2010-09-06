@@ -24,36 +24,51 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /////////////////////////////////////////////////////////////////////////////
 
+#ifndef _ARGSS_PLANE_H_
+#define _ARGSS_PLANE_H_
+
 ////////////////////////////////////////////////////////////
 // Headers
 ////////////////////////////////////////////////////////////
-#include "output.h"
-#include "system.h"
-#include "tools/filefinder.h"
-#include "player.h"
-#include "graphics/graphics.h"
-#include "audio/audio.h"
-#include "input/input.h"
-#include "argss/argss.h"
+#include "aruby.h"
 
 ////////////////////////////////////////////////////////////
-/// Main
+/// ARGSS Plane namespace
 ////////////////////////////////////////////////////////////
-#ifdef WIN32
-int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /*lpCmdLine*/, int /*nCmdShow*/) {
-#else
-int main(int argc, char** argv) {
+namespace ARGSS {
+	namespace APlane {
+		extern VALUE id;
+		void Init();
+		void CheckDisposed(VALUE self);
+
+		VALUE rinitialize(int argc, VALUE* argv, VALUE self);
+		VALUE rdispose(VALUE self);
+		VALUE rdisposedQ(VALUE self);
+		VALUE rviewport(VALUE self);
+		VALUE rviewportE(VALUE self, VALUE viewport);
+		VALUE rbitmap(VALUE self);
+		VALUE rbitmapE(VALUE self, VALUE bitmap);
+		VALUE rvisible(VALUE self);
+		VALUE rvisibleE(VALUE self, VALUE visible);
+		VALUE rz(VALUE self);
+		VALUE rzE(VALUE self, VALUE z);
+		VALUE rox(VALUE self);
+		VALUE roxE(VALUE self, VALUE ox);
+		VALUE roy(VALUE self);
+		VALUE royE(VALUE self, VALUE oy);
+		VALUE rzoom_x(VALUE self);
+		VALUE rzoom_xE(VALUE self, VALUE zoom_x);
+		VALUE rzoom_y(VALUE self);
+		VALUE rzoom_yE(VALUE self, VALUE zoom_y);
+		VALUE ropacity(VALUE self);
+		VALUE ropacityE(VALUE self, VALUE opacity);
+		VALUE rblend_type(VALUE self);
+		VALUE rblend_typeE(VALUE self, VALUE blend_type);
+		VALUE rcolor(VALUE self);
+		VALUE rcolorE(VALUE self, VALUE color);
+		VALUE rtone(VALUE self);
+		VALUE rtoneE(VALUE self, VALUE tone);
+	};
+};
+
 #endif
-
-	// Common code
-	Output::Init();
-	System::Init();
-	FileFinder::Init();
-	Player::Init();
-	Graphics::Init();
-	Input::Init();
-	Audio::Init();
-	ARGSS::Init();
-
-	return 0;
-}

@@ -24,36 +24,62 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /////////////////////////////////////////////////////////////////////////////
 
+#ifdef WIN32
+
 ////////////////////////////////////////////////////////////
 // Headers
 ////////////////////////////////////////////////////////////
-#include "output.h"
-#include "system.h"
-#include "tools/filefinder.h"
-#include "player.h"
-#include "graphics/graphics.h"
-#include "audio/audio.h"
-#include "input/input.h"
-#include "argss/argss.h"
+#include <windows.h>
+#include "tools/win32/msgbox.h"
 
-////////////////////////////////////////////////////////////
-/// Main
-////////////////////////////////////////////////////////////
-#ifdef WIN32
-int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /*lpCmdLine*/, int /*nCmdShow*/) {
-#else
-int main(int argc, char** argv) {
-#endif
-
-	// Common code
-	Output::Init();
-	System::Init();
-	FileFinder::Init();
-	Player::Init();
-	Graphics::Init();
-	Input::Init();
-	Audio::Init();
-	ARGSS::Init();
-
-	return 0;
+static std::wstring s2ws(const std::string& s) {
+	int len;
+	int slength = (int)s.length() + 1;
+	len = MultiByteToWideChar(CP_ACP, 0, s.c_str(), slength, 0, 0);
+	wchar_t* buf = new wchar_t[len];
+	MultiByteToWideChar(CP_ACP, 0, s.c_str(), slength, buf, len);
+	std::wstring r(buf);
+	delete[] buf;
+	return r;
 }
+
+////////////////////////////////////////////////////////////
+/// Default Message Box with OK button
+////////////////////////////////////////////////////////////
+void MsgBox::OK(std::string msg, std::string title) {
+	if (msg.length() == 0) return;
+	if (msg.length() == 1 && (msg[0] == '\n' || msg[0] == '\r')) return;
+#ifdef UNICODE
+	MessageBox(0, s2ws(msg).c_str(), s2ws(title).c_str(), MB_OK);
+#else
+	MessageBox(0, msg.c_str(), title.c_str(), MB_OK);
+#endif
+}
+
+////////////////////////////////////////////////////////////
+/// Error Message Box
+////////////////////////////////////////////////////////////
+void MsgBox::Error(std::string msg, std::string title) {
+	if (msg.length() == 0) return;
+	if (msg.length() == 1 && (msg[0] == '\n' || msg[0] == '\r')) return;
+#ifdef UNICODE
+	MessageBox(0, s2ws(msg).c_str(), s2ws(title).c_str(), MB_OK | MB_ICONERROR);
+#else
+	MessageBox(0, msg.c_str(), title.c_str(), MB_OK | MB_ICONERROR);
+#endif
+}
+
+////////////////////////////////////////////////////////////
+/// Warning Message Box
+////////////////////////////////////////////////////////////
+void MsgBox::Warning(std::string msg, std::string title) {
+	if (msg.length() == 0) return;
+	if (msg.length() == 1 && (msg[0] == '\n' || msg[0] == '\r')) return;
+#ifdef UNICODE
+	MessageBox(0, s2ws(msg).c_str(), s2ws(title).c_str(), MB_OK | MB_ICONEXCLAMATION);
+#else
+	MessageBox(0, msg.c_str(), title.c_str(), MB_OK | MB_ICONEXCLAMATION);
+#endif
+}
+
+#endif

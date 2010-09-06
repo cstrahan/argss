@@ -24,36 +24,34 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /////////////////////////////////////////////////////////////////////////////
 
+#ifndef _ARGSS_TABLE_H_
+#define _ARGSS_TABLE_H_
+
 ////////////////////////////////////////////////////////////
 // Headers
 ////////////////////////////////////////////////////////////
-#include "output.h"
-#include "system.h"
-#include "tools/filefinder.h"
-#include "player.h"
-#include "graphics/graphics.h"
-#include "audio/audio.h"
-#include "input/input.h"
-#include "argss/argss.h"
+#include "aruby.h"
+////////////////////////////////////////////////////////////
+/// ARGSS Table namespace
+////////////////////////////////////////////////////////////
+namespace ARGSS {
+	namespace ATable {
+		extern VALUE id;
+		void Init();
+		VALUE New(int xsize);
+		VALUE New(int xsize, int ysize);
+		VALUE New(int xsize, int ysize, int zsize);
 
-////////////////////////////////////////////////////////////
-/// Main
-////////////////////////////////////////////////////////////
-#ifdef WIN32
-int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /*lpCmdLine*/, int /*nCmdShow*/) {
-#else
-int main(int argc, char** argv) {
+		VALUE rinitialize(int argc, VALUE* argv, VALUE self);
+		VALUE rresize(int argc, VALUE* argv, VALUE self);
+		VALUE rxsize(VALUE self);
+		VALUE rysize(VALUE self);
+		VALUE rzsize(VALUE self);
+		VALUE raref(int argc, VALUE* argv, VALUE self);
+		VALUE raset(int argc, VALUE* argv, VALUE self);
+		VALUE rdump(int argc, VALUE* argv, VALUE self);
+		VALUE rload(VALUE self, VALUE str);
+	};
+};
+
 #endif
-
-	// Common code
-	Output::Init();
-	System::Init();
-	FileFinder::Init();
-	Player::Init();
-	Graphics::Init();
-	Input::Init();
-	Audio::Init();
-	ARGSS::Init();
-
-	return 0;
-}

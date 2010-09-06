@@ -24,36 +24,38 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /////////////////////////////////////////////////////////////////////////////
 
+#ifndef _ARGSS_TONE_H_
+#define _ARGSS_TONE_H_
+
 ////////////////////////////////////////////////////////////
 // Headers
 ////////////////////////////////////////////////////////////
-#include "output.h"
-#include "system.h"
-#include "tools/filefinder.h"
-#include "player.h"
-#include "graphics/graphics.h"
-#include "audio/audio.h"
-#include "input/input.h"
-#include "argss/argss.h"
+#include "aruby.h"
 
 ////////////////////////////////////////////////////////////
-/// Main
+/// ARGSS Tone namespace
 ////////////////////////////////////////////////////////////
-#ifdef WIN32
-int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /*lpCmdLine*/, int /*nCmdShow*/) {
-#else
-int main(int argc, char** argv) {
+namespace ARGSS {
+	namespace ATone {
+		extern VALUE id;
+		void Init();
+		VALUE New(double r, double g, double b, double gray);
+		VALUE New();
+
+		VALUE rinitialize(int argc, VALUE* argv, VALUE self);
+		VALUE rset(int argc, VALUE* argv, VALUE self);
+		VALUE rred(VALUE self);
+		VALUE rredE(VALUE self, VALUE r);
+		VALUE rgreen(VALUE self);
+		VALUE rgreenE(VALUE self, VALUE g);
+		VALUE rblue(VALUE self);
+		VALUE rblueE(VALUE self, VALUE b);
+		VALUE rgray(VALUE self);
+		VALUE rgrayE(VALUE self, VALUE g);
+		VALUE rinspect(VALUE self);
+		VALUE rdump(int argc, VALUE* argv, VALUE self);
+		VALUE rload(VALUE self, VALUE str);
+	};
+};
+
 #endif
-
-	// Common code
-	Output::Init();
-	System::Init();
-	FileFinder::Init();
-	Player::Init();
-	Graphics::Init();
-	Input::Init();
-	Audio::Init();
-	ARGSS::Init();
-
-	return 0;
-}

@@ -24,36 +24,31 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /////////////////////////////////////////////////////////////////////////////
 
+#ifndef _TEXT_H_
+#define _TEXT_H_
+
 ////////////////////////////////////////////////////////////
 // Headers
 ////////////////////////////////////////////////////////////
-#include "output.h"
-#include "system.h"
-#include "tools/filefinder.h"
-#include "player.h"
-#include "graphics/graphics.h"
-#include "audio/audio.h"
-#include "input/input.h"
-#include "argss/argss.h"
+#include <string>
+#include <map>
+#include <ft2build.h>
+#include FT_FREETYPE_H
+#include "graphics/bitmap.h"
+#include "graphics/color.h"
+#include "graphics/rect.h"
 
 ////////////////////////////////////////////////////////////
-/// Main
+/// Text namespace
 ////////////////////////////////////////////////////////////
-#ifdef WIN32
-int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /*lpCmdLine*/, int /*nCmdShow*/) {
-#else
-int main(int argc, char** argv) {
+namespace Text {
+	void Init();
+	Bitmap* Draw(std::string text, std::string font, Color color, int size, bool bold, bool italic, bool shadow);
+	Rect RectSize(std::string text, std::string font, int size);
+	FT_Face GetFont(std::string name);
+
+	extern FT_Library library;
+	extern std::map<std::string, FT_Face> fonts;
+};
+
 #endif
-
-	// Common code
-	Output::Init();
-	System::Init();
-	FileFinder::Init();
-	Player::Init();
-	Graphics::Init();
-	Input::Init();
-	Audio::Init();
-	ARGSS::Init();
-
-	return 0;
-}

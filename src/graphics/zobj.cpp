@@ -27,33 +27,34 @@
 ////////////////////////////////////////////////////////////
 // Headers
 ////////////////////////////////////////////////////////////
-#include "output.h"
-#include "system.h"
-#include "tools/filefinder.h"
-#include "player.h"
-#include "graphics/graphics.h"
-#include "audio/audio.h"
-#include "input/input.h"
-#include "argss/argss.h"
+#include "graphics/zobj.h"
 
 ////////////////////////////////////////////////////////////
-/// Main
+/// Constructor
 ////////////////////////////////////////////////////////////
-#ifdef WIN32
-int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /*lpCmdLine*/, int /*nCmdShow*/) {
-#else
-int main(int argc, char** argv) {
-#endif
+ZObj::ZObj(long iz, unsigned long icreation, unsigned long iid) {
+	z = iz;
+	creation = icreation;
+	id = iid;
+}
 
-	// Common code
-	Output::Init();
-	System::Init();
-	FileFinder::Init();
-	Player::Init();
-	Graphics::Init();
-	Input::Init();
-	Audio::Init();
-	ARGSS::Init();
+////////////////////////////////////////////////////////////
+/// Destructor
+////////////////////////////////////////////////////////////
+ZObj::~ZObj() { }
 
-	return 0;
+////////////////////////////////////////////////////////////
+/// Properties
+////////////////////////////////////////////////////////////
+void ZObj::SetZ(long nz) {
+	z = nz;
+}
+long ZObj::GetZ() {
+	return z;
+}
+unsigned long ZObj::GetCreation(){
+	return creation;
+}
+unsigned long ZObj::GetId() {
+	return id;
 }

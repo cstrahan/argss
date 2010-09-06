@@ -50,7 +50,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\..\..\dependencies;$(ARGSSDEV_MSVC)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\src;..\..\..\dependencies;$(ARGSSDEV_MSVC)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>DEBUG;WIN32;MSVC;UNICODE;_CRT_SECURE_NO_DEPRECATE</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -66,6 +66,7 @@
       </PrecompiledHeaderFile>
       <PrecompiledHeaderOutputFile>
       </PrecompiledHeaderOutputFile>
+      <DisableSpecificWarnings>4100;4996</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <AdditionalDependencies>opengl32.lib;dxguid.lib;winmm.lib;soil.lib;freetype.lib;RubyLibs186.lib;ruby186.lib;SDL.lib;SDLmain.lib;libogg.lib;libvorbis.lib;libvorbisfile.lib;native_midi.lib;smpeg.lib;mikmod.lib;SDL_mixer.lib;ws2_32.lib;zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -146,127 +147,127 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\src\buffer.h" />
+    <ClInclude Include="..\..\..\src\ARGSS\argss.h" />
+    <ClInclude Include="..\..\..\src\argss\classes\abitmap.h" />
+    <ClInclude Include="..\..\..\src\argss\classes\acolor.h" />
+    <ClInclude Include="..\..\..\src\argss\classes\aerror.h" />
+    <ClInclude Include="..\..\..\src\argss\classes\afont.h" />
+    <ClInclude Include="..\..\..\src\argss\classes\aplane.h" />
+    <ClInclude Include="..\..\..\src\argss\classes\arect.h" />
+    <ClInclude Include="..\..\..\src\argss\classes\asprite.h" />
+    <ClInclude Include="..\..\..\src\argss\classes\atable.h" />
+    <ClInclude Include="..\..\..\src\argss\classes\atilemap.h" />
+    <ClInclude Include="..\..\..\src\argss\classes\atilemapautotiles_xp.h" />
+    <ClInclude Include="..\..\..\src\argss\classes\atilemap_xp.h" />
+    <ClInclude Include="..\..\..\src\argss\classes\atone.h" />
+    <ClInclude Include="..\..\..\src\argss\classes\aviewport.h" />
+    <ClInclude Include="..\..\..\src\argss\classes\awindow.h" />
+    <ClInclude Include="..\..\..\src\argss\classes\awindow_xp.h" />
+    <ClInclude Include="..\..\..\src\argss\modules\aaudio.h" />
+    <ClInclude Include="..\..\..\src\argss\modules\agraphics.h" />
+    <ClInclude Include="..\..\..\src\argss\modules\ainput.h" />
+    <ClInclude Include="..\..\..\src\argss\modules\akeys.h" />
+    <ClInclude Include="..\..\..\src\argss\modules\aoutput.h" />
+    <ClInclude Include="..\..\..\src\argss\rpg\rpg.h" />
+    <ClInclude Include="..\..\..\src\argss\rpg\rpg_cache.h" />
+    <ClInclude Include="..\..\..\src\argss\rpg\rpg_sprite.h" />
+    <ClInclude Include="..\..\..\src\argss\rpg\rpg_weather.h" />
+    <ClInclude Include="..\..\..\src\aruby.h" />
+    <ClInclude Include="..\..\..\src\Audio\audio.h" />
     <ClInclude Include="..\..\..\src\defines.h" />
-    <ClInclude Include="..\..\..\src\event.h" />
-    <ClInclude Include="..\..\..\src\socket.h" />
+    <ClInclude Include="..\..\..\src\Graphics\bitmap.h" />
+    <ClInclude Include="..\..\..\src\Graphics\color.h" />
+    <ClInclude Include="..\..\..\src\Graphics\drawable.h" />
+    <ClInclude Include="..\..\..\src\Graphics\graphics.h" />
+    <ClInclude Include="..\..\..\src\Graphics\hslrgb.h" />
+    <ClInclude Include="..\..\..\src\Graphics\plane.h" />
+    <ClInclude Include="..\..\..\src\Graphics\rect.h" />
+    <ClInclude Include="..\..\..\src\Graphics\sprite.h" />
+    <ClInclude Include="..\..\..\src\Graphics\text.h" />
+    <ClInclude Include="..\..\..\src\Graphics\tilemap.h" />
+    <ClInclude Include="..\..\..\src\Graphics\tilemap_xp.h" />
+    <ClInclude Include="..\..\..\src\Graphics\tone.h" />
+    <ClInclude Include="..\..\..\src\Graphics\viewport.h" />
+    <ClInclude Include="..\..\..\src\Graphics\window.h" />
+    <ClInclude Include="..\..\..\src\Graphics\window_xp.h" />
+    <ClInclude Include="..\..\..\src\Graphics\zobj.h" />
+    <ClInclude Include="..\..\..\src\input\buttons.h" />
+    <ClInclude Include="..\..\..\src\Input\input.h" />
+    <ClInclude Include="..\..\..\src\input\keys.h" />
+    <ClInclude Include="..\..\..\src\input\win32\buttons.h" />
+    <ClInclude Include="..\..\..\src\Network\buffer.h" />
+    <ClInclude Include="..\..\..\src\Network\socket.h" />
     <ClInclude Include="..\..\..\src\options.h" />
     <ClInclude Include="..\..\..\src\output.h" />
     <ClInclude Include="..\..\..\src\player.h" />
     <ClInclude Include="..\..\..\src\system.h" />
-    <ClInclude Include="..\..\..\src\argss.h" />
-    <ClInclude Include="..\..\..\src\argss_ruby.h" />
-    <ClInclude Include="..\..\..\src\argss_bitmap.h" />
-    <ClInclude Include="..\..\..\src\argss_color.h" />
-    <ClInclude Include="..\..\..\src\argss_error.h" />
-    <ClInclude Include="..\..\..\src\argss_font.h" />
-    <ClInclude Include="..\..\..\src\argss_plane.h" />
-    <ClInclude Include="..\..\..\src\argss_rect.h" />
-    <ClInclude Include="..\..\..\src\argss_sprite.h" />
-    <ClInclude Include="..\..\..\src\argss_table.h" />
-    <ClInclude Include="..\..\..\src\argss_tilemap.h" />
-    <ClInclude Include="..\..\..\src\argss_tilemap_xp.h" />
-    <ClInclude Include="..\..\..\src\argss_tilemapautotiles_xp.h" />
-    <ClInclude Include="..\..\..\src\argss_tone.h" />
-    <ClInclude Include="..\..\..\src\argss_viewport.h" />
-    <ClInclude Include="..\..\..\src\argss_window.h" />
-    <ClInclude Include="..\..\..\src\argss_window_xp.h" />
-    <ClInclude Include="..\..\..\src\argss_audio.h" />
-    <ClInclude Include="..\..\..\src\argss_graphics.h" />
-    <ClInclude Include="..\..\..\src\argss_input.h" />
-    <ClInclude Include="..\..\..\src\argss_keys.h" />
-    <ClInclude Include="..\..\..\src\argss_output.h" />
-    <ClInclude Include="..\..\..\src\argss_rpg.h" />
-    <ClInclude Include="..\..\..\src\argss_rpg_cache.h" />
-    <ClInclude Include="..\..\..\src\argss_rpg_sprite.h" />
-    <ClInclude Include="..\..\..\src\argss_rpg_weather.h" />
-    <ClInclude Include="..\..\..\src\input.h" />
-    <ClInclude Include="..\..\..\src\inputbuttons.h" />
-    <ClInclude Include="..\..\..\src\inputkeys.h" />
-    <ClInclude Include="..\..\..\src\inputbuttons_win32.h" />
-    <ClInclude Include="..\..\..\src\bitmap.h" />
-    <ClInclude Include="..\..\..\src\color.h" />
-    <ClInclude Include="..\..\..\src\drawable.h" />
-    <ClInclude Include="..\..\..\src\graphics.h" />
-    <ClInclude Include="..\..\..\src\hslrgb.h" />
-    <ClInclude Include="..\..\..\src\plane.h" />
-    <ClInclude Include="..\..\..\src\rect.h" />
-    <ClInclude Include="..\..\..\src\sprite.h" />
-    <ClInclude Include="..\..\..\src\text.h" />
-    <ClInclude Include="..\..\..\src\tilemap.h" />
-    <ClInclude Include="..\..\..\src\tilemap_xp.h" />
-    <ClInclude Include="..\..\..\src\time.h" />
-    <ClInclude Include="..\..\..\src\time_win32.h" />
-    <ClInclude Include="..\..\..\src\tone.h" />
-    <ClInclude Include="..\..\..\src\viewport.h" />
-    <ClInclude Include="..\..\..\src\window.h" />
-    <ClInclude Include="..\..\..\src\windowui.h" />
-    <ClInclude Include="..\..\..\src\windowui_win32.h" />
-    <ClInclude Include="..\..\..\src\window_xp.h" />
-    <ClInclude Include="..\..\..\src\zobj.h" />
-    <ClInclude Include="..\..\..\src\audio.h" />
-    <ClInclude Include="..\..\..\src\console.h" />
-    <ClInclude Include="..\..\..\src\filefinder.h" />
-    <ClInclude Include="..\..\..\src\msgbox.h" />
-    <ClInclude Include="..\..\..\src\console_win32.h" />
-    <ClInclude Include="..\..\..\src\filefinder_win32.h" />
-    <ClInclude Include="..\..\..\src\msgbox_win32.h" />
-    <ClInclude Include="..\..\..\src\registry.h" />
+    <ClInclude Include="..\..\..\src\Tools\console.h" />
+    <ClInclude Include="..\..\..\src\Tools\event.h" />
+    <ClInclude Include="..\..\..\src\Tools\filefinder.h" />
+    <ClInclude Include="..\..\..\src\Tools\msgbox.h" />
+    <ClInclude Include="..\..\..\src\Tools\time.h" />
+    <ClInclude Include="..\..\..\src\tools\win32\console.h" />
+    <ClInclude Include="..\..\..\src\tools\win32\filefinder.h" />
+    <ClInclude Include="..\..\..\src\tools\win32\msgbox.h" />
+    <ClInclude Include="..\..\..\src\tools\win32\registry.h" />
+    <ClInclude Include="..\..\..\src\tools\win32\time.h" />
+    <ClInclude Include="..\..\..\src\tools\win32\windowui.h" />
+    <ClInclude Include="..\..\..\src\Tools\windowui.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\src\buffer.cpp" />
+    <ClCompile Include="..\..\..\src\argss\argss.cpp" />
+    <ClCompile Include="..\..\..\src\argss\classes\abitmap.cpp" />
+    <ClCompile Include="..\..\..\src\argss\classes\acolor.cpp" />
+    <ClCompile Include="..\..\..\src\argss\classes\aerror.cpp" />
+    <ClCompile Include="..\..\..\src\argss\classes\afont.cpp" />
+    <ClCompile Include="..\..\..\src\argss\classes\aplane.cpp" />
+    <ClCompile Include="..\..\..\src\argss\classes\arect.cpp" />
+    <ClCompile Include="..\..\..\src\argss\classes\asprite.cpp" />
+    <ClCompile Include="..\..\..\src\argss\classes\atable.cpp" />
+    <ClCompile Include="..\..\..\src\argss\classes\atilemapautotiles_xp.cpp" />
+    <ClCompile Include="..\..\..\src\argss\classes\atilemap_xp.cpp" />
+    <ClCompile Include="..\..\..\src\argss\classes\atone.cpp" />
+    <ClCompile Include="..\..\..\src\argss\classes\aviewport.cpp" />
+    <ClCompile Include="..\..\..\src\argss\classes\awindow_xp.cpp" />
+    <ClCompile Include="..\..\..\src\argss\modules\aaudio.cpp" />
+    <ClCompile Include="..\..\..\src\argss\modules\agraphics.cpp" />
+    <ClCompile Include="..\..\..\src\argss\modules\ainput.cpp" />
+    <ClCompile Include="..\..\..\src\argss\modules\akeys.cpp" />
+    <ClCompile Include="..\..\..\src\argss\modules\aoutput.cpp" />
+    <ClCompile Include="..\..\..\src\argss\rpg\rpg.cpp" />
+    <ClCompile Include="..\..\..\src\argss\rpg\rpg_cache.cpp" />
+    <ClCompile Include="..\..\..\src\argss\rpg\rpg_sprite.cpp" />
+    <ClCompile Include="..\..\..\src\argss\rpg\rpg_weather.cpp" />
+    <ClCompile Include="..\..\..\src\aruby.cpp" />
+    <ClCompile Include="..\..\..\src\Audio\audio.cpp" />
+    <ClCompile Include="..\..\..\src\Graphics\bitmap.cpp" />
+    <ClCompile Include="..\..\..\src\Graphics\color.cpp" />
+    <ClCompile Include="..\..\..\src\Graphics\graphics.cpp" />
+    <ClCompile Include="..\..\..\src\Graphics\hslrgb.cpp" />
+    <ClCompile Include="..\..\..\src\Graphics\plane.cpp" />
+    <ClCompile Include="..\..\..\src\Graphics\rect.cpp" />
+    <ClCompile Include="..\..\..\src\Graphics\sprite.cpp" />
+    <ClCompile Include="..\..\..\src\Graphics\text.cpp" />
+    <ClCompile Include="..\..\..\src\Graphics\tilemap_xp.cpp" />
+    <ClCompile Include="..\..\..\src\Graphics\tone.cpp" />
+    <ClCompile Include="..\..\..\src\Graphics\viewport.cpp" />
+    <ClCompile Include="..\..\..\src\Graphics\window_xp.cpp" />
+    <ClCompile Include="..\..\..\src\Graphics\zobj.cpp" />
+    <ClCompile Include="..\..\..\src\Input\input.cpp" />
+    <ClCompile Include="..\..\..\src\input\keys.cpp" />
+    <ClCompile Include="..\..\..\src\input\win32\buttons.cpp" />
     <ClCompile Include="..\..\..\src\main.cpp" />
-    <ClCompile Include="..\..\..\src\socket.cpp" />
+    <ClCompile Include="..\..\..\src\Network\buffer.cpp" />
+    <ClCompile Include="..\..\..\src\Network\socket.cpp" />
     <ClCompile Include="..\..\..\src\output.cpp" />
     <ClCompile Include="..\..\..\src\player.cpp" />
     <ClCompile Include="..\..\..\src\system.cpp" />
-    <ClCompile Include="..\..\..\src\argss.cpp" />
-    <ClCompile Include="..\..\..\src\argss_ruby.cpp" />
-    <ClCompile Include="..\..\..\src\argss_bitmap.cpp" />
-    <ClCompile Include="..\..\..\src\argss_color.cpp" />
-    <ClCompile Include="..\..\..\src\argss_error.cpp" />
-    <ClCompile Include="..\..\..\src\argss_font.cpp" />
-    <ClCompile Include="..\..\..\src\argss_plane.cpp" />
-    <ClCompile Include="..\..\..\src\argss_rect.cpp" />
-    <ClCompile Include="..\..\..\src\argss_sprite.cpp" />
-    <ClCompile Include="..\..\..\src\argss_table.cpp" />
-    <ClCompile Include="..\..\..\src\argss_tilemap_xp.cpp" />
-    <ClCompile Include="..\..\..\src\argss_tilemapautotiles_xp.cpp" />
-    <ClCompile Include="..\..\..\src\argss_tone.cpp" />
-    <ClCompile Include="..\..\..\src\argss_viewport.cpp" />
-    <ClCompile Include="..\..\..\src\argss_window_xp.cpp" />
-    <ClCompile Include="..\..\..\src\argss_audio.cpp" />
-    <ClCompile Include="..\..\..\src\argss_graphics.cpp" />
-    <ClCompile Include="..\..\..\src\argss_input.cpp" />
-    <ClCompile Include="..\..\..\src\argss_keys.cpp" />
-    <ClCompile Include="..\..\..\src\argss_output.cpp" />
-    <ClCompile Include="..\..\..\src\argss_rpg.cpp" />
-    <ClCompile Include="..\..\..\src\argss_rpg_cache.cpp" />
-    <ClCompile Include="..\..\..\src\argss_rpg_sprite.cpp" />
-    <ClCompile Include="..\..\..\src\argss_rpg_weather.cpp" />
-    <ClCompile Include="..\..\..\src\input.cpp" />
-    <ClCompile Include="..\..\..\src\inputkeys.cpp" />
-    <ClCompile Include="..\..\..\src\inputbuttons_win32.cpp" />
-    <ClCompile Include="..\..\..\src\bitmap.cpp" />
-    <ClCompile Include="..\..\..\src\color.cpp" />
-    <ClCompile Include="..\..\..\src\graphics.cpp" />
-    <ClCompile Include="..\..\..\src\hslrgb.cpp" />
-    <ClCompile Include="..\..\..\src\plane.cpp" />
-    <ClCompile Include="..\..\..\src\rect.cpp" />
-    <ClCompile Include="..\..\..\src\sprite.cpp" />
-    <ClCompile Include="..\..\..\src\text.cpp" />
-    <ClCompile Include="..\..\..\src\tilemap_xp.cpp" />
-    <ClCompile Include="..\..\..\src\time_win32.cpp" />
-    <ClCompile Include="..\..\..\src\tone.cpp" />
-    <ClCompile Include="..\..\..\src\viewport.cpp" />
-    <ClCompile Include="..\..\..\src\windowui_win32.cpp" />
-    <ClCompile Include="..\..\..\src\window_xp.cpp" />
-    <ClCompile Include="..\..\..\src\zobj.cpp" />
-    <ClCompile Include="..\..\..\src\audio.cpp" />
-    <ClCompile Include="..\..\..\src\console_win32.cpp" />
-    <ClCompile Include="..\..\..\src\filefinder_win32.cpp" />
-    <ClCompile Include="..\..\..\src\msgbox_win32.cpp" />
-    <ClCompile Include="..\..\..\src\registry.cpp" />
+    <ClCompile Include="..\..\..\src\tools\win32\console.cpp" />
+    <ClCompile Include="..\..\..\src\tools\win32\filefinder.cpp" />
+    <ClCompile Include="..\..\..\src\tools\win32\msgbox.cpp" />
+    <ClCompile Include="..\..\..\src\tools\win32\registry.cpp" />
+    <ClCompile Include="..\..\..\src\tools\win32\time.cpp" />
+    <ClCompile Include="..\..\..\src\tools\win32\windowui.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\..\..\resources\Windows\icon.rc" />

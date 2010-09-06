@@ -24,36 +24,34 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /////////////////////////////////////////////////////////////////////////////
 
+#ifndef _ARGSS_AUDIO_H_
+#define _ARGSS_AUDIO_H_
+
 ////////////////////////////////////////////////////////////
 // Headers
 ////////////////////////////////////////////////////////////
-#include "output.h"
-#include "system.h"
-#include "tools/filefinder.h"
-#include "player.h"
-#include "graphics/graphics.h"
-#include "audio/audio.h"
-#include "input/input.h"
-#include "argss/argss.h"
+#include "aruby.h"
 
 ////////////////////////////////////////////////////////////
-/// Main
+/// ARGSS Audio namespace
 ////////////////////////////////////////////////////////////
-#ifdef WIN32
-int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /*lpCmdLine*/, int /*nCmdShow*/) {
-#else
-int main(int argc, char** argv) {
+namespace ARGSS {
+	namespace AAudio {
+		extern VALUE id;
+		void Init();
+
+		VALUE rbgm_play(int argc, VALUE* argv, VALUE self);
+		VALUE rbgm_stop(VALUE self);
+		VALUE rbgm_fade(VALUE self, VALUE fade);
+		VALUE rbgs_play(int argc, VALUE* argv, VALUE self);
+		VALUE rbgs_stop(VALUE self);
+		VALUE rbgs_fade(VALUE self, VALUE fade);
+		VALUE rme_play(int argc, VALUE* argv, VALUE self);
+		VALUE rme_stop(VALUE self);
+		VALUE rme_fade(VALUE self, VALUE fade);
+		VALUE rse_play(int argc, VALUE* argv, VALUE self);
+		VALUE rse_stop(VALUE self);
+	};
+};
+
 #endif
-
-	// Common code
-	Output::Init();
-	System::Init();
-	FileFinder::Init();
-	Player::Init();
-	Graphics::Init();
-	Input::Init();
-	Audio::Init();
-	ARGSS::Init();
-
-	return 0;
-}

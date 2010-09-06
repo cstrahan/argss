@@ -24,36 +24,50 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /////////////////////////////////////////////////////////////////////////////
 
+#ifndef _ARGSS_FONT_H_
+#define _ARGSS_FONT_H_
+
 ////////////////////////////////////////////////////////////
 // Headers
 ////////////////////////////////////////////////////////////
-#include "output.h"
-#include "system.h"
-#include "tools/filefinder.h"
-#include "player.h"
-#include "graphics/graphics.h"
-#include "audio/audio.h"
-#include "input/input.h"
-#include "argss/argss.h"
+#include "aruby.h"
 
 ////////////////////////////////////////////////////////////
-/// Main
+/// ARGSS Font namespace
 ////////////////////////////////////////////////////////////
-#ifdef WIN32
-int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /*lpCmdLine*/, int /*nCmdShow*/) {
-#else
-int main(int argc, char** argv) {
+namespace ARGSS {
+	namespace AFont {
+		extern VALUE id;
+		void Init();
+		VALUE New();
+
+		VALUE rinitialize(int argc, VALUE* argv, VALUE self);
+		VALUE rexistQ(VALUE self);
+		VALUE rname(VALUE self);
+		VALUE rnameE(VALUE self, VALUE name);
+		VALUE rsize(VALUE self);
+		VALUE rsizeE(VALUE self, VALUE size);
+		VALUE rbold(VALUE self);
+		VALUE rboldE(VALUE self, VALUE bold);
+		VALUE ritalic(VALUE self);
+		VALUE ritalicE(VALUE self, VALUE italic);
+		VALUE rcolor(VALUE self);
+		VALUE rcolorE(VALUE self, VALUE color);
+		VALUE rshadow(VALUE self);
+		VALUE rshadowE(VALUE self, VALUE shadow);
+		VALUE rdefault_name(VALUE self);
+		VALUE rdefault_nameE(VALUE self, VALUE default_name);
+		VALUE rdefault_size(VALUE self);
+		VALUE rdefault_sizeE(VALUE self, VALUE default_size);
+		VALUE rdefault_bold(VALUE self);
+		VALUE rdefault_boldE(VALUE self, VALUE default_bold);
+		VALUE rdefault_italic(VALUE self);
+		VALUE rdefault_italicE(VALUE self, VALUE default_italic);
+		VALUE rdefault_color(VALUE self);
+		VALUE rdefault_colorE(VALUE self, VALUE default_color);
+		VALUE rdefault_shadow(VALUE self);
+		VALUE rdefault_shadowE(VALUE self, VALUE default_shadow);
+	};
+};
+
 #endif
-
-	// Common code
-	Output::Init();
-	System::Init();
-	FileFinder::Init();
-	Player::Init();
-	Graphics::Init();
-	Input::Init();
-	Audio::Init();
-	ARGSS::Init();
-
-	return 0;
-}

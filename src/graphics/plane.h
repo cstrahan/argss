@@ -24,36 +24,79 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /////////////////////////////////////////////////////////////////////////////
 
+#ifndef _PLANE_H_
+#define _PLANE_H_
+
 ////////////////////////////////////////////////////////////
 // Headers
 ////////////////////////////////////////////////////////////
-#include "output.h"
-#include "system.h"
-#include "tools/filefinder.h"
-#include "player.h"
-#include "graphics/graphics.h"
-#include "audio/audio.h"
-#include "input/input.h"
-#include "argss/argss.h"
+#include <string>
+#include "graphics/bitmap.h"
+#include "graphics/tone.h"
+#include "graphics/drawable.h"
 
 ////////////////////////////////////////////////////////////
-/// Main
+/// Plane class
 ////////////////////////////////////////////////////////////
-#ifdef WIN32
-int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /*lpCmdLine*/, int /*nCmdShow*/) {
-#else
-int main(int argc, char** argv) {
+class Plane : public Drawable {
+public:
+	Plane(unsigned long iid);
+	~Plane();
+
+	static bool IsDisposed(unsigned long id);
+	static void New(unsigned long id);
+	static Plane* Get(unsigned long id);
+	static void Dispose(unsigned long id);
+
+	void RefreshBitmaps();
+	void Draw(long z);
+	void Draw(long z, Bitmap* dst_bitmap);
+
+	unsigned long GetViewport();
+	void SetViewport(unsigned long nviewport);
+	unsigned long GetBitmap();
+	void SetBitmap(unsigned long nbitmap);
+	bool GetVisible();
+	void SetVisible(bool nvisible);
+	int GetZ();
+	void SetZ(int nz);
+	int GetOx();
+	void SetOx(int nox);
+	int GetOy();
+	void SetOy(int noy);
+	float GetZoomX();
+	void SetZoomX(float nzoom_x);
+	float GetZoomY();
+	void SetZoomY(float nzoom_y);
+	int GetOpacity();
+	void SetOpacity(int nopacity);
+	int GetBlendType();
+	void SetBlendType(int nblend_type);
+	unsigned long GetColor();
+	void SetColor(unsigned long ncolor);
+	unsigned long GetTone();
+	void SetTone(unsigned long ntone);
+
+private:
+	void Refresh();
+	void ApplyTone();
+	void ApplyZoom();
+	bool needs_refresh;
+	Tone tone_last;
+
+	unsigned long id;
+	unsigned long viewport;
+	unsigned long bitmap;
+	bool visible;
+	int z;
+	int ox;
+	int oy;
+	float zoom_x;
+	float zoom_y;
+	int opacity;
+	int blend_type;
+	unsigned long color;
+	unsigned long tone;
+};
+
 #endif
-
-	// Common code
-	Output::Init();
-	System::Init();
-	FileFinder::Init();
-	Player::Init();
-	Graphics::Init();
-	Input::Init();
-	Audio::Init();
-	ARGSS::Init();
-
-	return 0;
-}

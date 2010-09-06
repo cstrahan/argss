@@ -1,364 +1,364 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="..\..\..\src\argss.cpp">
-      <Filter>Source Files\argss</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\argss_audio.cpp">
-      <Filter>Source Files\argss\modules</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\argss_bitmap.cpp">
-      <Filter>Source Files\argss\classes</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\argss_color.cpp">
-      <Filter>Source Files\argss\classes</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\argss_error.cpp">
-      <Filter>Source Files\argss\classes</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\argss_font.cpp">
-      <Filter>Source Files\argss\classes</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\argss_graphics.cpp">
-      <Filter>Source Files\argss\modules</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\argss_input.cpp">
-      <Filter>Source Files\argss\modules</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\argss_keys.cpp">
-      <Filter>Source Files\argss\modules</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\argss_output.cpp">
-      <Filter>Source Files\argss\modules</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\argss_plane.cpp">
-      <Filter>Source Files\argss\classes</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\argss_rect.cpp">
-      <Filter>Source Files\argss\classes</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\argss_rpg.cpp">
-      <Filter>Source Files\argss\rpg</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\argss_rpg_cache.cpp">
-      <Filter>Source Files\argss\rpg</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\argss_rpg_sprite.cpp">
-      <Filter>Source Files\argss\rpg</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\argss_rpg_weather.cpp">
-      <Filter>Source Files\argss\rpg</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\argss_ruby.cpp">
-      <Filter>Source Files\argss</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\argss_sprite.cpp">
-      <Filter>Source Files\argss\classes</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\argss_table.cpp">
-      <Filter>Source Files\argss\classes</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\argss_tilemapautotiles_xp.cpp">
-      <Filter>Source Files\argss\classes</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\argss_tilemap_xp.cpp">
-      <Filter>Source Files\argss\classes</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\argss_tone.cpp">
-      <Filter>Source Files\argss\classes</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\argss_viewport.cpp">
-      <Filter>Source Files\argss\classes</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\argss_window_xp.cpp">
-      <Filter>Source Files\argss\classes</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\audio.cpp">
-      <Filter>Source Files\multimedia\audio</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\bitmap.cpp">
-      <Filter>Source Files\multimedia\graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\color.cpp">
-      <Filter>Source Files\multimedia\graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\console_win32.cpp">
-      <Filter>Source Files\tools\win32</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\filefinder_win32.cpp">
-      <Filter>Source Files\tools\win32</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\graphics.cpp">
-      <Filter>Source Files\multimedia\graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\hslrgb.cpp">
-      <Filter>Source Files\multimedia\graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\input.cpp">
-      <Filter>Source Files\multimedia\input</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\inputbuttons_win32.cpp">
-      <Filter>Source Files\multimedia\input\win32</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\inputkeys.cpp">
-      <Filter>Source Files\multimedia\input</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\main.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\msgbox_win32.cpp">
-      <Filter>Source Files\tools\win32</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\output.cpp">
-      <Filter>Source Files\tools</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\plane.cpp">
-      <Filter>Source Files\multimedia\graphics</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\player.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\rect.cpp">
-      <Filter>Source Files\multimedia\graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\registry.cpp">
-      <Filter>Source Files\tools\win32</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\sprite.cpp">
-      <Filter>Source Files\multimedia\graphics</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\system.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\text.cpp">
-      <Filter>Source Files\multimedia\graphics</Filter>
+    <ClCompile Include="..\..\..\src\output.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\tilemap_xp.cpp">
-      <Filter>Source Files\multimedia\graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\time_win32.cpp">
-      <Filter>Source Files\tools\win32</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\tone.cpp">
-      <Filter>Source Files\multimedia\graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\viewport.cpp">
-      <Filter>Source Files\multimedia\graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\windowui_win32.cpp">
-      <Filter>Source Files\tools\win32</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\window_xp.cpp">
-      <Filter>Source Files\multimedia\graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\zobj.cpp">
-      <Filter>Source Files\multimedia\graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\buffer.cpp">
+    <ClCompile Include="..\..\..\src\Network\buffer.cpp">
       <Filter>Source Files\multimedia\network</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\socket.cpp">
+    <ClCompile Include="..\..\..\src\Network\socket.cpp">
       <Filter>Source Files\multimedia\network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\Input\input.cpp">
+      <Filter>Source Files\multimedia\input</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\Graphics\bitmap.cpp">
+      <Filter>Source Files\multimedia\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\Graphics\color.cpp">
+      <Filter>Source Files\multimedia\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\Graphics\graphics.cpp">
+      <Filter>Source Files\multimedia\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\Graphics\hslrgb.cpp">
+      <Filter>Source Files\multimedia\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\Graphics\plane.cpp">
+      <Filter>Source Files\multimedia\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\Graphics\rect.cpp">
+      <Filter>Source Files\multimedia\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\Graphics\sprite.cpp">
+      <Filter>Source Files\multimedia\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\Graphics\text.cpp">
+      <Filter>Source Files\multimedia\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\Graphics\tilemap_xp.cpp">
+      <Filter>Source Files\multimedia\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\Graphics\tone.cpp">
+      <Filter>Source Files\multimedia\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\Graphics\viewport.cpp">
+      <Filter>Source Files\multimedia\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\Graphics\window_xp.cpp">
+      <Filter>Source Files\multimedia\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\Graphics\zobj.cpp">
+      <Filter>Source Files\multimedia\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\Audio\audio.cpp">
+      <Filter>Source Files\multimedia\audio</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\tools\win32\console.cpp">
+      <Filter>Source Files\tools\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\tools\win32\filefinder.cpp">
+      <Filter>Source Files\tools\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\tools\win32\msgbox.cpp">
+      <Filter>Source Files\tools\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\tools\win32\registry.cpp">
+      <Filter>Source Files\tools\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\tools\win32\time.cpp">
+      <Filter>Source Files\tools\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\tools\win32\windowui.cpp">
+      <Filter>Source Files\tools\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\input\win32\buttons.cpp">
+      <Filter>Source Files\multimedia\input\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\aruby.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\input\keys.cpp">
+      <Filter>Source Files\multimedia\input</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\argss\classes\abitmap.cpp">
+      <Filter>Source Files\argss\classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\argss\classes\acolor.cpp">
+      <Filter>Source Files\argss\classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\argss\classes\aerror.cpp">
+      <Filter>Source Files\argss\classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\argss\classes\afont.cpp">
+      <Filter>Source Files\argss\classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\argss\classes\aplane.cpp">
+      <Filter>Source Files\argss\classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\argss\classes\arect.cpp">
+      <Filter>Source Files\argss\classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\argss\classes\asprite.cpp">
+      <Filter>Source Files\argss\classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\argss\classes\atable.cpp">
+      <Filter>Source Files\argss\classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\argss\classes\atilemap_xp.cpp">
+      <Filter>Source Files\argss\classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\argss\classes\atilemapautotiles_xp.cpp">
+      <Filter>Source Files\argss\classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\argss\classes\atone.cpp">
+      <Filter>Source Files\argss\classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\argss\classes\aviewport.cpp">
+      <Filter>Source Files\argss\classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\argss\classes\awindow_xp.cpp">
+      <Filter>Source Files\argss\classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\argss\modules\aaudio.cpp">
+      <Filter>Source Files\argss\modules</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\argss\modules\agraphics.cpp">
+      <Filter>Source Files\argss\modules</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\argss\modules\ainput.cpp">
+      <Filter>Source Files\argss\modules</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\argss\modules\akeys.cpp">
+      <Filter>Source Files\argss\modules</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\argss\modules\aoutput.cpp">
+      <Filter>Source Files\argss\modules</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\argss\rpg\rpg.cpp">
+      <Filter>Source Files\argss\rpg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\argss\rpg\rpg_cache.cpp">
+      <Filter>Source Files\argss\rpg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\argss\rpg\rpg_sprite.cpp">
+      <Filter>Source Files\argss\rpg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\argss\rpg\rpg_weather.cpp">
+      <Filter>Source Files\argss\rpg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\argss\argss.cpp">
+      <Filter>Source Files\argss</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\src\argss.h">
-      <Filter>Source Files\argss</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\argss_audio.h">
-      <Filter>Source Files\argss\modules</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\argss_bitmap.h">
-      <Filter>Source Files\argss\classes</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\argss_color.h">
-      <Filter>Source Files\argss\classes</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\argss_error.h">
-      <Filter>Source Files\argss\classes</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\argss_font.h">
-      <Filter>Source Files\argss\classes</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\argss_graphics.h">
-      <Filter>Source Files\argss\modules</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\argss_input.h">
-      <Filter>Source Files\argss\modules</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\argss_keys.h">
-      <Filter>Source Files\argss\modules</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\argss_output.h">
-      <Filter>Source Files\argss\modules</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\argss_plane.h">
-      <Filter>Source Files\argss\classes</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\argss_rect.h">
-      <Filter>Source Files\argss\classes</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\argss_rpg.h">
-      <Filter>Source Files\argss\rpg</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\argss_rpg_cache.h">
-      <Filter>Source Files\argss\rpg</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\argss_rpg_sprite.h">
-      <Filter>Source Files\argss\rpg</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\argss_rpg_weather.h">
-      <Filter>Source Files\argss\rpg</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\argss_ruby.h">
-      <Filter>Source Files\argss</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\argss_sprite.h">
-      <Filter>Source Files\argss\classes</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\argss_table.h">
-      <Filter>Source Files\argss\classes</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\argss_tilemap.h">
-      <Filter>Source Files\argss\classes</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\argss_tilemapautotiles_xp.h">
-      <Filter>Source Files\argss\classes</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\argss_tilemap_xp.h">
-      <Filter>Source Files\argss\classes</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\argss_tone.h">
-      <Filter>Source Files\argss\classes</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\argss_viewport.h">
-      <Filter>Source Files\argss\classes</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\argss_window.h">
-      <Filter>Source Files\argss\classes</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\argss_window_xp.h">
-      <Filter>Source Files\argss\classes</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\audio.h">
-      <Filter>Source Files\multimedia\audio</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\bitmap.h">
-      <Filter>Source Files\multimedia\graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\color.h">
-      <Filter>Source Files\multimedia\graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\console.h">
-      <Filter>Source Files\tools</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\console_win32.h">
-      <Filter>Source Files\tools\win32</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\src\defines.h">
       <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\drawable.h">
-      <Filter>Source Files\multimedia\graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\event.h">
-      <Filter>Source Files\tools</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\filefinder.h">
-      <Filter>Source Files\tools</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\filefinder_win32.h">
-      <Filter>Source Files\tools\win32</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\graphics.h">
-      <Filter>Source Files\multimedia\graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\hslrgb.h">
-      <Filter>Source Files\multimedia\graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\input.h">
-      <Filter>Source Files\multimedia\input</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\inputbuttons.h">
-      <Filter>Source Files\multimedia\input</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\inputbuttons_win32.h">
-      <Filter>Source Files\multimedia\input\win32</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\inputkeys.h">
-      <Filter>Source Files\multimedia\input</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\msgbox.h">
-      <Filter>Source Files\tools</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\msgbox_win32.h">
-      <Filter>Source Files\tools\win32</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\options.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\output.h">
-      <Filter>Source Files\tools</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\plane.h">
-      <Filter>Source Files\multimedia\graphics</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\src\player.h">
       <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\rect.h">
-      <Filter>Source Files\multimedia\graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\registry.h">
-      <Filter>Source Files\tools\win32</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\sprite.h">
-      <Filter>Source Files\multimedia\graphics</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\system.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\text.h">
-      <Filter>Source Files\multimedia\graphics</Filter>
+    <ClInclude Include="..\..\..\src\output.h">
+      <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\tilemap.h">
-      <Filter>Source Files\multimedia\graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\tilemap_xp.h">
-      <Filter>Source Files\multimedia\graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\time.h">
+    <ClInclude Include="..\..\..\src\Tools\console.h">
       <Filter>Source Files\tools</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\time_win32.h">
-      <Filter>Source Files\tools\win32</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\tone.h">
-      <Filter>Source Files\multimedia\graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\viewport.h">
-      <Filter>Source Files\multimedia\graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\window.h">
-      <Filter>Source Files\multimedia\graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\windowui.h">
+    <ClInclude Include="..\..\..\src\Tools\event.h">
       <Filter>Source Files\tools</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\windowui_win32.h">
+    <ClInclude Include="..\..\..\src\Tools\filefinder.h">
+      <Filter>Source Files\tools</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\Tools\msgbox.h">
+      <Filter>Source Files\tools</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\Tools\time.h">
+      <Filter>Source Files\tools</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\Tools\windowui.h">
+      <Filter>Source Files\tools</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\Network\buffer.h">
+      <Filter>Source Files\multimedia\network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\Network\socket.h">
+      <Filter>Source Files\multimedia\network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\Input\input.h">
+      <Filter>Source Files\multimedia\input</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\Graphics\bitmap.h">
+      <Filter>Source Files\multimedia\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\Graphics\color.h">
+      <Filter>Source Files\multimedia\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\Graphics\drawable.h">
+      <Filter>Source Files\multimedia\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\Graphics\graphics.h">
+      <Filter>Source Files\multimedia\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\Graphics\hslrgb.h">
+      <Filter>Source Files\multimedia\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\Graphics\plane.h">
+      <Filter>Source Files\multimedia\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\Graphics\rect.h">
+      <Filter>Source Files\multimedia\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\Graphics\sprite.h">
+      <Filter>Source Files\multimedia\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\Graphics\text.h">
+      <Filter>Source Files\multimedia\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\Graphics\tilemap.h">
+      <Filter>Source Files\multimedia\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\Graphics\tilemap_xp.h">
+      <Filter>Source Files\multimedia\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\Graphics\tone.h">
+      <Filter>Source Files\multimedia\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\Graphics\viewport.h">
+      <Filter>Source Files\multimedia\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\Graphics\window.h">
+      <Filter>Source Files\multimedia\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\Graphics\window_xp.h">
+      <Filter>Source Files\multimedia\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\Graphics\zobj.h">
+      <Filter>Source Files\multimedia\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\Audio\audio.h">
+      <Filter>Source Files\multimedia\audio</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\ARGSS\argss.h">
+      <Filter>Source Files\argss</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\tools\win32\console.h">
       <Filter>Source Files\tools\win32</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\window_xp.h">
-      <Filter>Source Files\multimedia\graphics</Filter>
+    <ClInclude Include="..\..\..\src\tools\win32\filefinder.h">
+      <Filter>Source Files\tools\win32</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\zobj.h">
-      <Filter>Source Files\multimedia\graphics</Filter>
+    <ClInclude Include="..\..\..\src\tools\win32\msgbox.h">
+      <Filter>Source Files\tools\win32</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\buffer.h">
-      <Filter>Source Files\multimedia\network</Filter>
+    <ClInclude Include="..\..\..\src\tools\win32\registry.h">
+      <Filter>Source Files\tools\win32</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\socket.h">
-      <Filter>Source Files\multimedia\network</Filter>
+    <ClInclude Include="..\..\..\src\tools\win32\time.h">
+      <Filter>Source Files\tools\win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\tools\win32\windowui.h">
+      <Filter>Source Files\tools\win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\input\win32\buttons.h">
+      <Filter>Source Files\multimedia\input\win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\aruby.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\input\keys.h">
+      <Filter>Source Files\multimedia\input</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\input\buttons.h">
+      <Filter>Source Files\multimedia\input</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\argss\classes\awindow_xp.h">
+      <Filter>Source Files\argss\classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\argss\classes\abitmap.h">
+      <Filter>Source Files\argss\classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\argss\classes\acolor.h">
+      <Filter>Source Files\argss\classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\argss\classes\aerror.h">
+      <Filter>Source Files\argss\classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\argss\classes\afont.h">
+      <Filter>Source Files\argss\classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\argss\classes\aplane.h">
+      <Filter>Source Files\argss\classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\argss\classes\arect.h">
+      <Filter>Source Files\argss\classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\argss\classes\asprite.h">
+      <Filter>Source Files\argss\classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\argss\classes\atable.h">
+      <Filter>Source Files\argss\classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\argss\classes\atilemap.h">
+      <Filter>Source Files\argss\classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\argss\classes\atilemap_xp.h">
+      <Filter>Source Files\argss\classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\argss\classes\atilemapautotiles_xp.h">
+      <Filter>Source Files\argss\classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\argss\classes\atone.h">
+      <Filter>Source Files\argss\classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\argss\classes\aviewport.h">
+      <Filter>Source Files\argss\classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\argss\classes\awindow.h">
+      <Filter>Source Files\argss\classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\argss\modules\aaudio.h">
+      <Filter>Source Files\argss\modules</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\argss\modules\agraphics.h">
+      <Filter>Source Files\argss\modules</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\argss\modules\ainput.h">
+      <Filter>Source Files\argss\modules</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\argss\modules\akeys.h">
+      <Filter>Source Files\argss\modules</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\argss\modules\aoutput.h">
+      <Filter>Source Files\argss\modules</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\argss\rpg\rpg.h">
+      <Filter>Source Files\argss\rpg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\argss\rpg\rpg_cache.h">
+      <Filter>Source Files\argss\rpg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\argss\rpg\rpg_sprite.h">
+      <Filter>Source Files\argss\rpg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\argss\rpg\rpg_weather.h">
+      <Filter>Source Files\argss\rpg</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -24,36 +24,34 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /////////////////////////////////////////////////////////////////////////////
 
+#ifndef _ARGSS_INPUT_H_
+#define _ARGSS_INPUT_H_
+
 ////////////////////////////////////////////////////////////
 // Headers
 ////////////////////////////////////////////////////////////
-#include "output.h"
-#include "system.h"
-#include "tools/filefinder.h"
-#include "player.h"
-#include "graphics/graphics.h"
-#include "audio/audio.h"
-#include "input/input.h"
-#include "argss/argss.h"
+#include "aruby.h"
 
 ////////////////////////////////////////////////////////////
-/// Main
+/// ARGSS Input namespace
 ////////////////////////////////////////////////////////////
-#ifdef WIN32
-int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /*lpCmdLine*/, int /*nCmdShow*/) {
-#else
-int main(int argc, char** argv) {
+namespace ARGSS {
+	namespace AInput {
+		extern VALUE id;
+		void Init();
+
+		VALUE rupdate(VALUE self);
+		VALUE rpressQ(VALUE self, VALUE button);
+		VALUE rtriggerQ(VALUE self, VALUE button);
+		VALUE rrepeatQ(VALUE self, VALUE button);
+		VALUE rreleaseQ(VALUE self, VALUE button);
+		VALUE rdir4(VALUE self);
+		VALUE rdir8(VALUE self);
+		VALUE rpressed(VALUE self);
+		VALUE rtriggered(VALUE self);
+		VALUE rrepeated(VALUE self);
+		VALUE rreleased(VALUE self);
+	};
+};
+
 #endif
-
-	// Common code
-	Output::Init();
-	System::Init();
-	FileFinder::Init();
-	Player::Init();
-	Graphics::Init();
-	Input::Init();
-	Audio::Init();
-	ARGSS::Init();
-
-	return 0;
-}

@@ -31,10 +31,10 @@
 #include "options.h"
 #include "system.h"
 #include "output.h"
-#include "input.h"
-#include "graphics.h"
-#include "audio.h"
-#include "argss.h"
+#include "input/input.h"
+#include "graphics/graphics.h"
+#include "audio/audio.h"
+#include "argss/argss.h"
 
 ////////////////////////////////////////////////////////////
 // Global Variables
