@@ -24,49 +24,94 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /////////////////////////////////////////////////////////////////////////////
 
-#ifndef _ARGSS_RUBY_H_
-#define _ARGSS_RUBY_H_
+#ifndef _ARUBY_H_
+#define _ARUBY_H_
 
 ///////////////////////////////////////////////////////////
 // Headers
 ///////////////////////////////////////////////////////////
-#include <vector>
 extern "C" {
 	#include "ruby.h"
 }
 
 ///////////////////////////////////////////////////////////
-/// ARGSS::ARuby namespace
+/// ARuby namespace.
+/// It manages the ruby embedding.
 ///////////////////////////////////////////////////////////
-namespace ARGSS {
-	namespace ARuby {
-		void Init();
-		void Run();
+namespace ARuby {
+	///////////////////////////////////////////////////////
+	/// Initializes ruby.
+	///////////////////////////////////////////////////////
+	void Init();
 
-		void AddObject(VALUE id);
-		void RemoveObject(VALUE id);
-		extern VALUE protected_objects;
+	///////////////////////////////////////////////////////
+	/// Starts ruby.
+	///////////////////////////////////////////////////////
+	void Run();
 
-		VALUE rload_data(VALUE self, VALUE filename);
-		VALUE rsave_data(VALUE self, VALUE obj, VALUE filename);
-	}
+	///////////////////////////////////////////////////////
+	/// Stops ruby excecution.
+	///////////////////////////////////////////////////////
+	void Exit();
+
+	///////////////////////////////////////////////////////
+	/// Adds an object to the protected objects list.
+	///////////////////////////////////////////////////////
+	void AddObject(VALUE id);
+
+	///////////////////////////////////////////////////////
+	/// Removes an object from the protected objects list.
+	///////////////////////////////////////////////////////
+	void RemoveObject(VALUE id);
+
+	///////////////////////////////////////////////////////
+	/// Global ruby load_data function.
+	/// Loads from filename a marshaled object.
+	///////////////////////////////////////////////////////
+	VALUE rload_data(VALUE self, VALUE filename);
+
+	///////////////////////////////////////////////////////
+	/// Global ruby save_data function.
+	/// Saves to filename the given object marshaled.
+	///////////////////////////////////////////////////////
+	VALUE rsave_data(VALUE self, VALUE obj, VALUE filename);
+
+	/// List of protected objects.
+	/// Protected objects are not destroyed by ruby GC.
+	/// Useful for classes like Bitmap that needs to be
+	/// disposed before they can be totally destroyed.
+	extern VALUE protected_objects;
 }
 
 ///////////////////////////////////////////////////////////
-/// Ruby macros
+// Useful ruby related functions and macros
 ///////////////////////////////////////////////////////////
+
+/// C++ bool to Ruby boolean
 #define BOOL2NUM(x) (x ? Qtrue : Qfalse)
-#define INT2BOOL(x) (x == 0 ? (VALUE)0 : (VALUE)2)
-#define NUM2BOOL(x) (x == (VALUE)2)
+
+/// Ruby boolean to C++ bool
+#define NUM2BOOL(x) (x == Qtrue)
+
+/// Quick form for raising wrong number of argument error
 #define raise_argn(a, n) (rb_raise(rb_eArgError, "wrong number of arguments(%i for %i)", a, n))
 
-///////////////////////////////////////////////////////////
-/// Object type checking
-///////////////////////////////////////////////////////////
-void Check_Kind(VALUE o, VALUE c);
-void Check_Types2(VALUE x, VALUE t1, VALUE t2);
-void Check_Bool(VALUE x);
-void Check_Class(VALUE x, VALUE c);
-void Check_Classes_N(VALUE x, VALUE c);
+/// Checks if a object is kind of
+void Check_Kind(VALUE obj, VALUE kind);
+
+/// Checks if a object is type1 or type2
+void Check_Types2(VALUE obj, VALUE type1, VALUE type2);
+
+/// Checks if a object is a boolean
+void Check_Bool(VALUE obj);
+
+/// Checks if a object is instance of class
+void Check_Class(VALUE obj, VALUE _class);
+
+/// Checks if a object is instance of class or nils
+void Check_Classes_N(VALUE obj, VALUE _class);
+
+/// Typedef for creating ruby methods
+typedef VALUE (*rubyfunc)(...);
 
 #endif

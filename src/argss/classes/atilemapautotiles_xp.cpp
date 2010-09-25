@@ -36,7 +36,7 @@
 VALUE ARGSS::ATilemapAutotiles::id;
 
 ///////////////////////////////////////////////////////////
-/// ARGSS TilemapAutotiles ruby functions
+// ARGSS TilemapAutotiles instance methods
 ///////////////////////////////////////////////////////////
 VALUE ARGSS::ATilemapAutotiles::rinitialize(VALUE self) {
 	rb_iv_set(self, "@autotiles", rb_ary_new2(8));
@@ -52,10 +52,9 @@ VALUE ARGSS::ATilemapAutotiles::raset(VALUE self, VALUE index, VALUE bitmap) {
 }
 
 ///////////////////////////////////////////////////////////
-/// ARGSS TilemapAutotiles initialize
+// ARGSS TilemapAutotiles initialize
 ///////////////////////////////////////////////////////////
 void ARGSS::ATilemapAutotiles::Init() {
-	typedef VALUE (*rubyfunc)(...);
 	id = rb_define_class("TilemapAutotiles", rb_cObject);
 	rb_define_method(id, "initialize", (rubyfunc)rinitialize, 0);
 	rb_define_method(id, "[]", (rubyfunc)raref, 1);
@@ -63,7 +62,7 @@ void ARGSS::ATilemapAutotiles::Init() {
 }
 
 ///////////////////////////////////////////////////////////
-/// ARGSS TilemapAutotiles new ruby instance
+// ARGSS TilemapAutotiles create instance
 ///////////////////////////////////////////////////////////
 VALUE ARGSS::ATilemapAutotiles::New() {
 	return rb_class_new_instance(0, 0, id);

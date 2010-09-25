@@ -30,11 +30,11 @@
 #include <string>
 #include "argss/classes/abitmap.h"
 #include "argss/classes/acolor.h"
-#include "argss/classes/afont.h"
 #include "argss/classes/aerror.h"
+#include "argss/classes/afont.h"
 #include "graphics/bitmap.h"
-#include "graphics/rect.h"
 #include "graphics/color.h"
+#include "graphics/rect.h"
 
 ///////////////////////////////////////////////////////////
 // Global Variables
@@ -42,7 +42,7 @@
 VALUE ARGSS::ABitmap::id;
 
 ///////////////////////////////////////////////////////////
-/// ARGSS Bitmap ruby functions
+// ARGSS Bitmap instance methods
 ///////////////////////////////////////////////////////////
 VALUE ARGSS::ABitmap::rinitialize(int argc, VALUE* argv, VALUE self) {
 	if (argc == 0) raise_argn(argc, 1);
@@ -53,19 +53,18 @@ VALUE ARGSS::ABitmap::rinitialize(int argc, VALUE* argv, VALUE self) {
 	}
 	else raise_argn(argc, 2);
 	rb_iv_set(self, "@font", ARGSS::AFont::New());
-	ARGSS::ARuby::AddObject(self);
+	ARuby::AddObject(self);
 	return self;
 }
 VALUE ARGSS::ABitmap::rdispose(VALUE self) {
 	if (!Bitmap::IsDisposed(self)) {
 		Bitmap::Dispose(self);
-		ARGSS::ARuby::RemoveObject(self);
-		rb_gc_start();
+		ARuby::RemoveObject(self);
 	}
 	return self;
 }
 VALUE ARGSS::ABitmap::rdisposedQ(VALUE self) {
-	return INT2BOOL(Bitmap::IsDisposed(self));
+	return BOOL2NUM(Bitmap::IsDisposed(self));
 }
 VALUE ARGSS::ABitmap::rwidth(VALUE self) {
 	ARGSS::ABitmap::CheckDisposed(self);
@@ -243,10 +242,9 @@ VALUE ARGSS::ABitmap::rdup(VALUE self) {
 }
 
 ///////////////////////////////////////////////////////////
-/// ARGSS Bitmap initialize
+// ARGSS Bitmap initialize
 ///////////////////////////////////////////////////////////
 void ARGSS::ABitmap::Init() {
-	typedef VALUE (*rubyfunc)(...);
 	id = rb_define_class("Bitmap", rb_cObject);
 	rb_define_method(id, "initialize", (rubyfunc)rinitialize, -1);
 	rb_define_method(id, "dispose", (rubyfunc)rdispose, 0);
@@ -277,10 +275,10 @@ void ARGSS::ABitmap::Init() {
 }
 
 ///////////////////////////////////////////////////////////
-/// Check if bitmap isn't disposed
+// CheckDisposed
 ///////////////////////////////////////////////////////////
-void ARGSS::ABitmap::CheckDisposed(VALUE self) {
-	if (Bitmap::IsDisposed(self)) {
-		rb_raise(ARGSS::AError::id, "disposed bitmap <%i>", self << 1);
+void ARGSS::ABitmap::CheckDisposed(VALUE id) {
+	if (Bitmap::IsDisposed(id)) {
+		rb_raise(ARGSS::AError::id, "disposed bitmap <%i>", id << 1);
 	}
 }

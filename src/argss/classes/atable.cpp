@@ -27,9 +27,7 @@
 ///////////////////////////////////////////////////////////
 // Headers
 ///////////////////////////////////////////////////////////
-#include <string>
 #include "argss/classes/atable.h"
-#include "output.h"
 
 ///////////////////////////////////////////////////////////
 // Global Variables
@@ -37,7 +35,7 @@
 VALUE ARGSS::ATable::id;
 
 ///////////////////////////////////////////////////////////
-/// ARGSS Table ruby functions
+// ARGSS Table instance methods
 ///////////////////////////////////////////////////////////
 VALUE ARGSS::ATable::rinitialize(int argc, VALUE* argv, VALUE self) {
 	if (argc < 1) raise_argn(argc, 1);
@@ -166,6 +164,10 @@ VALUE ARGSS::ATable::rdump(int argc, VALUE* argv, VALUE self) {
 	rb_str_concat(str, rb_funcall(rb_iv_get(self, "@data"), rb_intern("pack"), 1, rb_str_times(rb_str_new2("S"), INT2NUM(items))));
 	return str;
 }
+
+///////////////////////////////////////////////////////////
+// ARGSS Table class methods
+///////////////////////////////////////////////////////////
 VALUE ARGSS::ATable::rload(VALUE self, VALUE str) {
 	VALUE arr = rb_funcall(str, rb_intern("unpack"), 1, rb_str_new2("L5"));
 	int dim = NUM2INT(rb_ary_entry(arr, 0));
@@ -178,10 +180,9 @@ VALUE ARGSS::ATable::rload(VALUE self, VALUE str) {
 }
 
 ///////////////////////////////////////////////////////////
-/// ARGSS Console initialize
+// ARGSS Table initialize
 ///////////////////////////////////////////////////////////
 void ARGSS::ATable::Init() {
-	typedef VALUE (*rubyfunc)(...);
 	id = rb_define_class("Table", rb_cObject);
 	rb_define_method(id, "initialize", (rubyfunc)rinitialize, -1);
 	rb_define_method(id, "resize", (rubyfunc)rresize, -1);
@@ -195,7 +196,7 @@ void ARGSS::ATable::Init() {
 }
 
 ///////////////////////////////////////////////////////////
-/// ARGSS Table new ruby instance
+// ARGSS Table create instance
 ///////////////////////////////////////////////////////////
 VALUE ARGSS::ATable::New(int xsize) {
 	VALUE args[1] = {INT2NUM(xsize)};

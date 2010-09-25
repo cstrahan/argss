@@ -30,8 +30,8 @@
 #include "argss/rpg/rpg.h"
 #include "argss/rpg/rpg_weather.h"
 #include "argss/classes/acolor.h"
-#include "argss/classes/arect.h"
 #include "argss/classes/abitmap.h"
+#include "argss/classes/arect.h"
 #include "argss/classes/asprite.h"
 
 ///////////////////////////////////////////////////////////
@@ -40,7 +40,7 @@
 VALUE ARGSS::ARPG::AWeather::id;
 
 ///////////////////////////////////////////////////////////
-/// ARGSS RPG::Weather ruby functions
+// ARGSS RPG::Weather instance methods
 ///////////////////////////////////////////////////////////
 VALUE ARGSS::ARPG::AWeather::rinitialize(int argc, VALUE* argv, VALUE self) {
 	if (argc > 1) raise_argn(argc, 1);
@@ -200,10 +200,9 @@ VALUE ARGSS::ARPG::AWeather::rupdate(VALUE self) {
 }
 
 ///////////////////////////////////////////////////////////
-/// ARGSS RPG::Weather initialize
+// ARGSS RPG::Weather initialize
 ///////////////////////////////////////////////////////////
 void ARGSS::ARPG::AWeather::Init() {
-	typedef VALUE (*rubyfunc)(...);
 	id = rb_define_class_under(ARGSS::ARPG::id, "Weather", rb_cObject);
 	rb_define_method(id, "initialize", (rubyfunc)rinitialize, -1);
 	rb_define_method(id, "dispose", (rubyfunc)rdispose, 0);

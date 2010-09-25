@@ -30,40 +30,53 @@
 #include <string>
 #include <stdarg.h>
 #include "aruby.h"
-#include "options.h"
-#include "system.h"
-#include "player.h"
-#include "output.h"
 #include "rubylibs.h"
+#include "options.h"
+#include "output.h"
+#include "player.h"
+#include "system.h"
+
+#include "argss/argss.h"
 
 ///////////////////////////////////////////////////////////
 // Global Variables
 ///////////////////////////////////////////////////////////
-VALUE ARGSS::ARuby::protected_objects;
+VALUE ARuby::protected_objects;
 
 ///////////////////////////////////////////////////////////
-/// ARGSS Ruby functions
+// Static code
 ///////////////////////////////////////////////////////////
-VALUE ARGSS::ARuby::rload_data(VALUE self, VALUE filename) {
-	VALUE file = rb_file_open(StringValuePtr(filename), "rb");
-	VALUE obj = rb_marshal_load(file);
-	rb_io_close(file);
-	return obj;
+
+// Wrap functions for rb_protect
+#if (SCRIPTS_ZLIB == YES)
+static VALUE eval_wrap(VALUE arg) {
+	return rb_funcall(rb_cObject, rb_intern("eval"), 2, rb_ary_entry(arg, 0), rb_ary_entry(arg, 1));
 }
-VALUE ARGSS::ARuby::rsave_data(VALUE self, VALUE obj, VALUE filename) {
-	VALUE file = rb_file_open(StringValuePtr(filename), "wb");
-	rb_marshal_dump(obj, file);
-	rb_io_close(file);
-	return Qnil;
+#else
+static VALUE require_wrap(VALUE arg) {
+	return rb_require(System::ScriptsPath.c_str());
 }
+#endif
+
+// Ruby types names for error generating.
+static struct types {
+	int type;
+	const char* name;
+} builtin_types[] = {
+	{T_NIL, "nil"}, {T_OBJECT, "Object"}, {T_CLASS, "Class"}, {T_ICLASS, "iClass"}, {T_MODULE, "Module"},
+	{T_FLOAT, "Float"}, {T_STRING, "String"}, {T_REGEXP, "Regexp"}, {T_ARRAY, "Array"}, {T_FIXNUM, "Fixnum"},
+	{T_HASH, "Hash"}, {T_STRUCT, "Struct"}, {T_BIGNUM, "Bignum"}, {T_FILE, "File"}, {T_TRUE, "true"},
+	{T_FALSE, "false"}, {T_SYMBOL, "Symbol"}, {T_DATA, "Data"}, {T_MATCH, "MatchData"}, {T_VARMAP, "Varmap"},
+	{T_SCOPE, "Scope"}, {T_NODE, "Node"}, {T_UNDEF, "undef"}, {-1, 0}
+};
 
 ///////////////////////////////////////////////////////////
-/// ARGSS Ruby initialize
+// Ruby initialize
 ///////////////////////////////////////////////////////////
-void ARGSS::ARuby::Init() {
+void ARuby::Init() {
 	ruby_init();
 	ruby_init_loadpath();
-	//atexit(ruby_finalize);
+
 	protected_objects = rb_hash_new();
 	rb_gc_register_address(&protected_objects);
 
@@ -71,22 +84,24 @@ void ARGSS::ARuby::Init() {
 	rb_define_global_function("load_data", (rubyfunc)rload_data, 1);
 	rb_define_global_function("save_data", (rubyfunc)rsave_data, 2);
 
+#ifdef HAVE_RUBY_ZLIB
 	Init_zlib();
+#endif
+
+#ifdef HAVE_RUBY_WIN32API
 	Init_Win32API();
+#endif
+
+	ARGSS::Init();
 }
 
 ///////////////////////////////////////////////////////////
-/// ARGSS Ruby run
+// Ruby run
 ///////////////////////////////////////////////////////////
-VALUE require_wrap(VALUE arg) {
-	return rb_require(System::ScriptsPath.c_str());
-}
-VALUE eval_wrap(VALUE arg) {
-	return rb_funcall(rb_cObject, rb_intern("eval"), 2, rb_ary_entry(arg, 0), rb_ary_entry(arg, 1));
-}
-void ARGSS::ARuby::Run() {
+void ARuby::Run() {
 	int error;
 	VALUE result;
+
 	#if (SCRIPTS_ZLIB == YES)
 		VALUE cZlib = rb_const_get(rb_cObject, rb_intern("Zlib"));
 		VALUE cInflate = rb_const_get(cZlib, rb_intern("Inflate"));
@@ -100,14 +115,19 @@ void ARGSS::ARuby::Run() {
 			section = rb_ary_entry(section_arr, 2);
 			section = rb_funcall3(cInflate, rb_intern("inflate"), 1, &section);
 			result = rb_protect(eval_wrap, rb_ary_new3(2, StringValuePtr(section), rb_ary_entry(section_arr, 1)), &error);
+			if (error) break;
 		}
 	#else
 		result = rb_protect(require_wrap, Qundef, &error);
 	#endif
+
+	// Custom error printing
 	if (error) {
 		VALUE lasterr = rb_gv_get("$!");
 		VALUE klass = rb_class_path(CLASS_OF(lasterr));
 		VALUE message = rb_obj_as_string(lasterr);
+
+		// Avoid normal ruby exit
 		if (CLASS_OF(lasterr) != rb_eSystemExit) {
 			std::string report = "RUBY ERROR\n";
 			report += (std::string)RSTRING(klass)->ptr;
@@ -124,25 +144,47 @@ void ARGSS::ARuby::Run() {
 			return;
 		}
 	}
-	Player::Exit();
 }
 
 ///////////////////////////////////////////////////////////
-/// Add a ruby object to the protected list
+// Exit
 ///////////////////////////////////////////////////////////
-void ARGSS::ARuby::AddObject(VALUE id) {
+void ARuby::Exit() {
+	ruby_finalize();
+}
+
+///////////////////////////////////////////////////////////
+// AddObject
+///////////////////////////////////////////////////////////
+void ARuby::AddObject(VALUE id) {
 	rb_hash_aset(protected_objects, id, id);
 }
 
 ///////////////////////////////////////////////////////////
-/// Remove a ruby object from the protected list
+// RemoveObject
 ///////////////////////////////////////////////////////////
-void ARGSS::ARuby::RemoveObject(VALUE id) {
+void ARuby::RemoveObject(VALUE id) {
 	rb_hash_delete(protected_objects, id);
 }
 
 ///////////////////////////////////////////////////////////
-/// Check if object o is kind of c
+// Global ruby functions
+///////////////////////////////////////////////////////////
+VALUE ARuby::rload_data(VALUE self, VALUE filename) {
+	VALUE file = rb_file_open(StringValuePtr(filename), "rb");
+	VALUE obj = rb_marshal_load(file);
+	rb_io_close(file);
+	return obj;
+}
+VALUE ARuby::rsave_data(VALUE self, VALUE obj, VALUE filename) {
+	VALUE file = rb_file_open(StringValuePtr(filename), "wb");
+	rb_marshal_dump(obj, file);
+	rb_io_close(file);
+	return Qnil;
+}
+
+///////////////////////////////////////////////////////////
+// Check_Kind
 ///////////////////////////////////////////////////////////
 void Check_Kind(VALUE o, VALUE c) {
 	if (!rb_obj_is_kind_of(o, c)) {
@@ -150,19 +192,8 @@ void Check_Kind(VALUE o, VALUE c) {
 	};
 }
 
-static struct types {
-	int type;
-	const char* name;
-} builtin_types[] = {
-	{T_NIL, "nil"}, {T_OBJECT, "Object"}, {T_CLASS, "Class"}, {T_ICLASS, "iClass"}, {T_MODULE, "Module"},
-	{T_FLOAT, "Float"}, {T_STRING, "String"}, {T_REGEXP, "Regexp"}, {T_ARRAY, "Array"}, {T_FIXNUM, "Fixnum"},
-	{T_HASH, "Hash"}, {T_STRUCT, "Struct"}, {T_BIGNUM, "Bignum"}, {T_FILE, "File"}, {T_TRUE, "true"},
-	{T_FALSE, "false"}, {T_SYMBOL, "Symbol"}, {T_DATA, "Data"}, {T_MATCH, "MatchData"}, {T_VARMAP, "Varmap"},
-	{T_SCOPE, "Scope"}, {T_NODE, "Node"}, {T_UNDEF, "undef"}, {-1, 0}
-};
-
 ///////////////////////////////////////////////////////////
-/// Check if object x is type of t1 or t2
+// Check_Types2
 ///////////////////////////////////////////////////////////
 void Check_Types2(VALUE x, VALUE t1, VALUE t2) {
 	struct types* type = builtin_types;
@@ -185,7 +216,7 @@ void Check_Types2(VALUE x, VALUE t1, VALUE t2) {
 }
 
 ///////////////////////////////////////////////////////////
-/// Check if object x is a boolean
+// Check_Bool
 ///////////////////////////////////////////////////////////
 void Check_Bool(VALUE x) {
 	if (x == Qundef) rb_bug("undef leaked to the Ruby space");
@@ -201,7 +232,7 @@ void Check_Bool(VALUE x) {
 }
 
 ///////////////////////////////////////////////////////////
-/// Check if object x class is c
+// Check_Class
 ///////////////////////////////////////////////////////////
 void Check_Class(VALUE x, VALUE c) {
 	if (x == Qundef) {rb_bug("undef leaked to the Ruby space");}
@@ -224,7 +255,7 @@ void Check_Class(VALUE x, VALUE c) {
 }
 
 ///////////////////////////////////////////////////////////
-/// Check if object x is nil or its class is c
+// Check_Classes_N
 ///////////////////////////////////////////////////////////
 void Check_Classes_N(VALUE x, VALUE c) {
 	if (x == Qnil) return;

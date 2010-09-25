@@ -31,6 +31,7 @@
 // Headers
 ///////////////////////////////////////////////////////////
 #include <map>
+#include <vector>
 #include <string>
 #include "defines.h"
 #include "aruby.h"

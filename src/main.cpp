@@ -28,13 +28,13 @@
 // Headers
 ///////////////////////////////////////////////////////////
 #include "output.h"
-#include "system.h"
-#include "tools/filefinder.h"
 #include "player.h"
-#include "graphics/graphics.h"
+#include "system.h"
+#include "aruby.h"
 #include "audio/audio.h"
+#include "graphics/graphics.h"
 #include "input/input.h"
-#include "argss/argss.h"
+#include "tools/filefinder.h"
 
 ///////////////////////////////////////////////////////////
 /// Main
@@ -52,7 +52,11 @@ int main(int argc, char** argv) {
 	Graphics::Init();
 	Input::Init();
 	Audio::Init();
-	ARGSS::Init();
+	ARuby::Init();
+
+	ARuby::Run();
+
+	Player::Exit();
 
 	return 0;
 }

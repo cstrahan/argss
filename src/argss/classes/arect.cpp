@@ -35,7 +35,7 @@
 VALUE ARGSS::ARect::id;
 
 ///////////////////////////////////////////////////////////
-/// ARGSS Rect ruby functions
+// ARGSS Rect instance methods
 ///////////////////////////////////////////////////////////
 VALUE ARGSS::ARect::rinitialize(VALUE self, VALUE x, VALUE y, VALUE w, VALUE h) {
 	Check_Kind(x, rb_cNumeric);
@@ -96,18 +96,25 @@ VALUE ARGSS::ARect::rempty(VALUE self) {
 }
 VALUE ARGSS::ARect::rinspect(VALUE self) {
 	char str[255];
-	long n;
-	n = sprintf(str, "(%i, %i, %i, %i)", NUM2INT(rb_iv_get(self, "@x")),
-										NUM2INT(rb_iv_get(self, "@y")),
-										NUM2INT(rb_iv_get(self, "@width")),
-										NUM2INT(rb_iv_get(self, "@height")));
-	return rb_str_new(str, n);
+	long str_size = sprintf(
+		str,
+		"(%i, %i, %i, %i)",
+		NUM2INT(rb_iv_get(self, "@x")),
+		NUM2INT(rb_iv_get(self, "@y")),
+		NUM2INT(rb_iv_get(self, "@width")),
+		NUM2INT(rb_iv_get(self, "@height"))
+	);
+	return rb_str_new(str, str_size);
 }
 VALUE ARGSS::ARect::rdump(int argc, VALUE* argv, VALUE self) {
 	if (argc > 1) raise_argn(argc, 1);
 	VALUE arr = rb_ary_new3(4, rb_iv_get(self, "@x"), rb_iv_get(self, "@y"), rb_iv_get(self, "@width"), rb_iv_get(self, "@height"));
 	return rb_funcall(arr, rb_intern("pack"), 1, rb_str_new2("l4"));
 }
+
+///////////////////////////////////////////////////////////
+// ARGSS Rect class methods
+///////////////////////////////////////////////////////////
 VALUE ARGSS::ARect::rload(VALUE self, VALUE str) {
 	VALUE arr = rb_funcall(str, rb_intern("unpack"), 1, rb_str_new2("l4"));
 	VALUE args[4] = {rb_ary_entry(arr, 0), rb_ary_entry(arr, 1), rb_ary_entry(arr, 2), rb_ary_entry(arr, 3)};
@@ -116,10 +123,9 @@ VALUE ARGSS::ARect::rload(VALUE self, VALUE str) {
 }
 
 ///////////////////////////////////////////////////////////
-/// ARGSS Rect initialize
+// ARGSS Rect initialize
 ///////////////////////////////////////////////////////////
 void ARGSS::ARect::Init() {
-	typedef VALUE (*rubyfunc)(...);
 	id = rb_define_class("Rect", rb_cObject);
 	rb_define_method(id, "initialize", (rubyfunc)rinitialize, 4);
 	rb_define_method(id, "set", (rubyfunc)rset, 4);
@@ -138,7 +144,7 @@ void ARGSS::ARect::Init() {
 }
 
 ///////////////////////////////////////////////////////////
-/// ARGSS Rect new instance
+// ARGSS Rect new instance
 ///////////////////////////////////////////////////////////
 VALUE ARGSS::ARect::New(double x, double y, double width, double height) {
 	VALUE args[4] = {rb_float_new(x), rb_float_new(y), rb_float_new(width), rb_float_new(height)};

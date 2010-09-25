@@ -40,7 +40,7 @@ VALUE ARGSS::AOutput::stderr_id;
 VALUE ARGSS::AOutput::stdin_id;
 
 ///////////////////////////////////////////////////////////
-/// ARGSS Output ruby functions
+// ARGSS Output module methods
 ///////////////////////////////////////////////////////////
 VALUE ARGSS::AOutput::rconsole(VALUE self) {
 	Output::Console();
@@ -60,7 +60,7 @@ VALUE ARGSS::AOutput::rnone(VALUE self) {
 }
 
 ///////////////////////////////////////////////////////////
-/// ARGSS Stdout, Stderr and Stdin
+// ARGSS Stdout, Stderr and Stdin methods
 ///////////////////////////////////////////////////////////
 VALUE ARGSS::AOutput::rstdout_write(VALUE self, VALUE str) {
 	if (TYPE(str) != T_STRING) str = rb_obj_as_string(str);
@@ -71,7 +71,7 @@ VALUE ARGSS::AOutput::rstdout_write(VALUE self, VALUE str) {
 VALUE ARGSS::AOutput::rstderr_write(VALUE self, VALUE str) {
 	if (TYPE(str) != T_STRING) str = rb_obj_as_string(str);
 	if (RSTRING(str)->len == 0) return INT2FIX(0);
-	//Output::ErrorStr(StringValuePtr(str));
+	//Output::Error(StringValuePtr(str));
 	return INT2FIX(RSTRING(str)->len);
 }
 VALUE ARGSS::AOutput::stdin_gets(int argc, VALUE* argv, VALUE self) {
@@ -84,10 +84,9 @@ VALUE ARGSS::AOutput::stdin_getc(int argc, VALUE* argv, VALUE self) {
 }
 
 ///////////////////////////////////////////////////////////
-/// ARGSS Output initialize
+// ARGSS Output initialize
 ///////////////////////////////////////////////////////////
 void ARGSS::AOutput::Init() {
-	typedef VALUE (*rubyfunc)(...);
 	id = rb_define_module("Output");
 	rb_define_singleton_method(id, "console", (rubyfunc)rconsole, 0);
 	rb_define_singleton_method(id, "msgbox", (rubyfunc)rmsgbox, 0);

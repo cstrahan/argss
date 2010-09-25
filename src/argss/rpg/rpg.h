@@ -32,11 +32,19 @@
 ///////////////////////////////////////////////////////////
 #include "aruby.h"
 
-///////////////////////////////////////////////////////////
-/// ARGSS RPG namespace
-///////////////////////////////////////////////////////////
 namespace ARGSS {
+	///////////////////////////////////////////////////////
+	/// ARGSS::RPG namespace
+	///////////////////////////////////////////////////////
 	namespace ARPG {
+		///////////////////////////////////////////////////
+		/// Initialize RPG module and subclasses.
+		///////////////////////////////////////////////////
+		void Init();
+
+		/// RPG module and subclasses ids.
+		//@{
+
 		extern VALUE id;
 		extern VALUE Map_id;
 		extern VALUE MapInfo_id;
@@ -70,7 +78,13 @@ namespace ARGSS {
 		extern VALUE SystemWords_id;
 		extern VALUE SystemTestBattler_id;
 		extern VALUE AudioFile_id;
-		void Init();
+
+		//@}
+		
+		///////////////////////////////////////////////////
+		/// RPG subclasses methods.
+		///////////////////////////////////////////////////
+		//@{
 
 		VALUE rmap_initialize(VALUE self, VALUE width, VALUE height);
 		VALUE rmapinfo_initialize(VALUE self);
@@ -104,6 +118,8 @@ namespace ARGSS {
 		VALUE rsystemwords_initialize(VALUE self);
 		VALUE rsystemtestbattler_initialize(VALUE self);
 		VALUE raudiofile_initialize(int argc, VALUE* argv, VALUE self);
+
+		//@}
 	};
 };
 

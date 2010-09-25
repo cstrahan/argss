@@ -28,15 +28,15 @@
 // Headers
 ///////////////////////////////////////////////////////////
 #include "argss/rpg/rpg.h"
-#include "argss/rpg/rpg_sprite.h"
 #include "argss/rpg/rpg_cache.h"
-#include "argss/classes/acolor.h"
-#include "argss/classes/arect.h"
-#include "argss/classes/afont.h"
+#include "argss/rpg/rpg_sprite.h"
 #include "argss/classes/abitmap.h"
+#include "argss/classes/acolor.h"
+#include "argss/classes/afont.h"
+#include "argss/classes/arect.h"
 #include "argss/classes/asprite.h"
-#include "argss/modules/agraphics.h"
 #include "argss/modules/aaudio.h"
+#include "argss/modules/agraphics.h"
 
 ///////////////////////////////////////////////////////////
 // Global Variables
@@ -44,7 +44,7 @@
 VALUE ARGSS::ARPG::ASprite::id;
 
 ///////////////////////////////////////////////////////////
-/// ARGSS RPG::Sprite ruby functions
+// ARGSS RPG::Sprite instance methods
 ///////////////////////////////////////////////////////////
 VALUE ARGSS::ARPG::ASprite::rinitialize(int argc, VALUE* argv, VALUE self) {
 	if (argc > 1) raise_argn(argc, 1);
@@ -510,10 +510,9 @@ VALUE ARGSS::ARPG::ASprite::ryE(VALUE self, VALUE y) {
 }
 
 ///////////////////////////////////////////////////////////
-/// ARGSS RPG::Sprite initialize
+// ARGSS RPG::Sprite initialize
 ///////////////////////////////////////////////////////////
 void ARGSS::ARPG::ASprite::Init() {
-	typedef VALUE (*rubyfunc)(...);
 	id = rb_define_class_under(ARGSS::ARPG::id, "Sprite", ARGSS::ASprite::id);
 	rb_define_method(id, "initialize", (rubyfunc)rinitialize, -1);
 	rb_define_method(id, "dispose", (rubyfunc)rdispose, 0);

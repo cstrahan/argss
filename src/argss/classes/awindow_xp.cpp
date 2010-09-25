@@ -29,11 +29,11 @@
 ///////////////////////////////////////////////////////////
 #include <string>
 #include "argss/classes/awindow_xp.h"
-#include "argss/classes/aviewport.h"
 #include "argss/classes/abitmap.h"
 #include "argss/classes/acolor.h"
-#include "argss/classes/arect.h"
 #include "argss/classes/aerror.h"
+#include "argss/classes/arect.h"
+#include "argss/classes/aviewport.h"
 #include "graphics/window_xp.h"
 
 ///////////////////////////////////////////////////////////
@@ -42,14 +42,14 @@
 VALUE ARGSS::AWindow::id;
 
 ///////////////////////////////////////////////////////////
-/// Cap opacity value between 0 and 255
+// Limit opacity value between 0 and 255
 ///////////////////////////////////////////////////////////
-int CapOpacityValue(int v) {
+static int LimitOpacityValue(int v) {
 	return (v > 255) ? 255 : (v < 0) ? 0 : v;
 }
 
 ///////////////////////////////////////////////////////////
-/// ARGSS Window ruby functions
+// ARGSS Window instance methods
 ///////////////////////////////////////////////////////////
 VALUE ARGSS::AWindow::rinitialize(int argc, VALUE* argv, VALUE self) {
 	if (argc == 1) {
@@ -77,20 +77,18 @@ VALUE ARGSS::AWindow::rinitialize(int argc, VALUE* argv, VALUE self) {
 	rb_iv_set(self, "@back_opacity", INT2NUM(255));
 	rb_iv_set(self, "@contents_opacity", INT2NUM(255));
 	Window::New(self);
-	ARGSS::ARuby::AddObject(self);
+	ARuby::AddObject(self);
 	return self;
 }
 VALUE ARGSS::AWindow::rdispose(VALUE self) {
 	if (!Window::IsDisposed(self)) {
-		ARGSS::AWindow::CheckDisposed(self);
 		Window::Dispose(self);
-		ARGSS::ARuby::RemoveObject(self);
-		rb_gc_start();
+		ARuby::RemoveObject(self);
 	}
 	return self;
 }
 VALUE ARGSS::AWindow::rdisposedQ(VALUE self) {
-	return INT2BOOL(Window::IsDisposed(self));
+	return BOOL2NUM(Window::IsDisposed(self));
 }
 VALUE ARGSS::AWindow::rupdate(VALUE self) {
 	ARGSS::AWindow::CheckDisposed(self);
@@ -254,7 +252,7 @@ VALUE ARGSS::AWindow::ropacity(VALUE self) {
 }
 VALUE ARGSS::AWindow::ropacityE(VALUE self, VALUE opacity) {
 	ARGSS::AWindow::CheckDisposed(self);
-	opacity = CapOpacityValue(NUM2INT(opacity));
+	opacity = LimitOpacityValue(NUM2INT(opacity));
 	Window::Get(self)->SetOpacity(opacity);
 	return rb_iv_set(self, "@opacity", INT2NUM(opacity));
 }
@@ -264,7 +262,7 @@ VALUE ARGSS::AWindow::rback_opacity(VALUE self) {
 }
 VALUE ARGSS::AWindow::rback_opacityE(VALUE self, VALUE back_opacity) {
 	ARGSS::AWindow::CheckDisposed(self);
-	back_opacity = CapOpacityValue(NUM2INT(back_opacity));
+	back_opacity = LimitOpacityValue(NUM2INT(back_opacity));
 	Window::Get(self)->SetBackOpacity(back_opacity);
 	return rb_iv_set(self, "@back_opacity", INT2NUM(back_opacity));
 }
@@ -274,16 +272,15 @@ VALUE ARGSS::AWindow::rcontents_opacity(VALUE self) {
 }
 VALUE ARGSS::AWindow::rcontents_opacityE(VALUE self, VALUE contents_opacity) {
 	ARGSS::AWindow::CheckDisposed(self);
-	contents_opacity = CapOpacityValue(NUM2INT(contents_opacity));
+	contents_opacity = LimitOpacityValue(NUM2INT(contents_opacity));
 	Window::Get(self)->SetContentsOpacity(contents_opacity);
 	return rb_iv_set(self, "@contents_opacity", INT2NUM(contents_opacity));
 }
 
 ///////////////////////////////////////////////////////////
-/// ARGSS Window initialize
+// ARGSS Window initialize
 ///////////////////////////////////////////////////////////
 void ARGSS::AWindow::Init() {
-	typedef VALUE (*rubyfunc)(...);
 	id = rb_define_class("Window", rb_cObject);
 	rb_define_method(id, "initialize", (rubyfunc)rinitialize, -1);
 	rb_define_method(id, "dispose", (rubyfunc)rdispose, 0);
@@ -330,10 +327,10 @@ void ARGSS::AWindow::Init() {
 }
 
 ///////////////////////////////////////////////////////////
-/// Check if window isn't disposed
+// CheckDisposed
 ///////////////////////////////////////////////////////////
-void ARGSS::AWindow::CheckDisposed(VALUE self) {
-	if (Window::IsDisposed(self)) {
-		rb_raise(ARGSS::AError::id, "disposed window <%i>", self);
+void ARGSS::AWindow::CheckDisposed(VALUE id) {
+	if (Window::IsDisposed(id)) {
+		rb_raise(ARGSS::AError::id, "disposed window <%i>", id);
 	}
 }

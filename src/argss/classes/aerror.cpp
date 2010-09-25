@@ -35,7 +35,7 @@
 VALUE ARGSS::AError::id;
 
 ///////////////////////////////////////////////////////////
-/// ARGSS Error initialize
+// ARGSS Error initialize
 ///////////////////////////////////////////////////////////
 void ARGSS::AError::Init() {
 	id = rb_define_class("ARGSSError", rb_eStandardError);

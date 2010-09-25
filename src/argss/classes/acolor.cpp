@@ -36,91 +36,94 @@
 VALUE ARGSS::AColor::id;
 
 ///////////////////////////////////////////////////////////
-/// Cap color value between 0 and 255
+// Limit color value between 0 and 255
 ///////////////////////////////////////////////////////////
-double CapColorValue(double v) {
+static double LimitColorValue(double v) {
 	return (v > 255) ? 255 : (v < 0) ? 0 : v;
 }
 
 ///////////////////////////////////////////////////////////
-/// ARGSS Color ruby functions
+// ARGSS Color instance methods
 ///////////////////////////////////////////////////////////
 VALUE ARGSS::AColor::rinitialize(int argc, VALUE* argv, VALUE self) {
 	if (argc < 3) raise_argn(argc, 3);
 	else if (argc > 4) raise_argn(argc, 4);
-	rb_iv_set(self, "@red", rb_float_new(CapColorValue(NUM2DBL(argv[0]))));
-	rb_iv_set(self, "@green", rb_float_new(CapColorValue(NUM2DBL(argv[1]))));
-	rb_iv_set(self, "@blue", rb_float_new(CapColorValue(NUM2DBL(argv[2]))));
-	if (argc == 4) {
-		rb_iv_set(self, "@alpha", rb_float_new(CapColorValue(NUM2DBL(argv[3]))));
-	} else {
+	rb_iv_set(self, "@red", rb_float_new(LimitColorValue(NUM2DBL(argv[0]))));
+	rb_iv_set(self, "@green", rb_float_new(LimitColorValue(NUM2DBL(argv[1]))));
+	rb_iv_set(self, "@blue", rb_float_new(LimitColorValue(NUM2DBL(argv[2]))));
+	if (argc == 4)
+		rb_iv_set(self, "@alpha", rb_float_new(LimitColorValue(NUM2DBL(argv[3]))));
+	else
 		rb_iv_set(self, "@alpha", rb_float_new(255));
-	}
 	return self;
 }
 VALUE ARGSS::AColor::rset(int argc, VALUE* argv, VALUE self) {
 	if (argc < 3) raise_argn(argc, 3);
 	else if (argc > 4) raise_argn(argc, 4);
-	rb_iv_set(self, "@red", rb_float_new(CapColorValue(NUM2DBL(argv[0]))));
-	rb_iv_set(self, "@green", rb_float_new(CapColorValue(NUM2DBL(argv[1]))));
-	rb_iv_set(self, "@blue", rb_float_new(CapColorValue(NUM2DBL(argv[2]))));
-	if (argc == 4) {
-		rb_iv_set(self, "@alpha", rb_float_new(CapColorValue(NUM2DBL(argv[3]))));
-	} else {
+	rb_iv_set(self, "@red", rb_float_new(LimitColorValue(NUM2DBL(argv[0]))));
+	rb_iv_set(self, "@green", rb_float_new(LimitColorValue(NUM2DBL(argv[1]))));
+	rb_iv_set(self, "@blue", rb_float_new(LimitColorValue(NUM2DBL(argv[2]))));
+	if (argc == 4)
+		rb_iv_set(self, "@alpha", rb_float_new(LimitColorValue(NUM2DBL(argv[3]))));
+	else
 		rb_iv_set(self, "@alpha", rb_float_new(255));
-	}
 	return self;
 }
 VALUE ARGSS::AColor::rred(VALUE self) {
 	return rb_iv_get(self, "@red");
 }
 VALUE ARGSS::AColor::rredE(VALUE self, VALUE red) {
-	return rb_iv_set(self, "@red", rb_float_new(CapColorValue(NUM2DBL(red))));
+	return rb_iv_set(self, "@red", rb_float_new(LimitColorValue(NUM2DBL(red))));
 }
 VALUE ARGSS::AColor::rgreen(VALUE self) {
 	return rb_iv_get(self, "@green");
 }
 VALUE ARGSS::AColor::rgreenE(VALUE self, VALUE green) {
-	return rb_iv_set(self, "@green", rb_float_new(CapColorValue(NUM2DBL(green))));
+	return rb_iv_set(self, "@green", rb_float_new(LimitColorValue(NUM2DBL(green))));
 }
 VALUE ARGSS::AColor::rblue(VALUE self) {
 	return rb_iv_get(self, "@blue");
 }
 VALUE ARGSS::AColor::rblueE(VALUE self, VALUE blue) {
-	return rb_iv_set(self, "@blue", rb_float_new(CapColorValue(NUM2DBL(blue))));
+	return rb_iv_set(self, "@blue", rb_float_new(LimitColorValue(NUM2DBL(blue))));
 }
 VALUE ARGSS::AColor::ralpha(VALUE self) {
 	return rb_iv_get(self, "@alpha");
 }
 VALUE ARGSS::AColor::ralphaE(VALUE self, VALUE alpha) {
-	return rb_iv_set(self, "@alpha", rb_float_new(CapColorValue(NUM2DBL(alpha))));
+	return rb_iv_set(self, "@alpha", rb_float_new(LimitColorValue(NUM2DBL(alpha))));
 }
 VALUE ARGSS::AColor::rinspect(VALUE self) {
 	char str[255];
-	long n;
-	n = sprintf(str, "(%f, %f, %f, %f)", NUM2DBL(rb_iv_get(self, "@red")),
-										NUM2DBL(rb_iv_get(self, "@green")),
-										NUM2DBL(rb_iv_get(self, "@blue")),
-										NUM2DBL(rb_iv_get(self, "@alpha")));
-	return rb_str_new(str, n);
+	long str_size = sprintf(
+		str,
+		"(%f, %f, %f, %f)", 
+		NUM2DBL(rb_iv_get(self, "@red")),
+		NUM2DBL(rb_iv_get(self, "@green")),
+		NUM2DBL(rb_iv_get(self, "@blue")),
+		NUM2DBL(rb_iv_get(self, "@alpha"))
+	);
+	return rb_str_new(str, str_size);
 }
 VALUE ARGSS::AColor::rdump(int argc, VALUE* argv, VALUE self) {
 	if (argc > 1) raise_argn(argc, 1);
 	VALUE arr = rb_ary_new3(4, rb_iv_get(self, "@red"), rb_iv_get(self, "@green"), rb_iv_get(self, "@blue"), rb_iv_get(self, "@alpha"));
 	return rb_funcall(arr, rb_intern("pack"), 1, rb_str_new2("d4"));
 }
+
+///////////////////////////////////////////////////////////
+// ARGSS Color class methods
+///////////////////////////////////////////////////////////
 VALUE ARGSS::AColor::rload(VALUE self, VALUE str) {
 	VALUE arr = rb_funcall(str, rb_intern("unpack"), 1, rb_str_new2("d4"));
 	VALUE args[4] = {rb_ary_entry(arr, 0), rb_ary_entry(arr, 1), rb_ary_entry(arr, 2), rb_ary_entry(arr, 3)};
-	VALUE color = rb_class_new_instance(4, args, ARGSS::AColor::id);
-	return color;
+	return rb_class_new_instance(4, args, ARGSS::AColor::id);
 }
 
 ///////////////////////////////////////////////////////////
-/// ARGSS Color initialize
+// ARGSS Color initialize
 ///////////////////////////////////////////////////////////
 void ARGSS::AColor::Init() {
-	typedef VALUE (*rubyfunc)(...);
 	id = rb_define_class("Color", rb_cObject);
 	rb_define_method(id, "initialize", (rubyfunc)rinitialize, -1);
 	rb_define_method(id, "set", (rubyfunc)rset, -1);
@@ -138,7 +141,7 @@ void ARGSS::AColor::Init() {
 }
 
 ///////////////////////////////////////////////////////////
-/// ARGSS Color new ruby instance
+// ARGSS Color create new instance
 ///////////////////////////////////////////////////////////
 VALUE ARGSS::AColor::New() {
 	VALUE args[4] = {rb_float_new(0), rb_float_new(0), rb_float_new(0), rb_float_new(255)};

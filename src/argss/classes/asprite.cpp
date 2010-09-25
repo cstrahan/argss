@@ -29,14 +29,14 @@
 ///////////////////////////////////////////////////////////
 #include <string>
 #include "argss/classes/asprite.h"
-#include "argss/classes/aviewport.h"
 #include "argss/classes/abitmap.h"
 #include "argss/classes/acolor.h"
-#include "argss/classes/atone.h"
-#include "argss/classes/arect.h"
 #include "argss/classes/aerror.h"
-#include "graphics/sprite.h"
+#include "argss/classes/arect.h"
+#include "argss/classes/atone.h"
+#include "argss/classes/aviewport.h"
 #include "graphics/color.h"
+#include "graphics/sprite.h"
 
 ///////////////////////////////////////////////////////////
 // Global Variables
@@ -44,7 +44,7 @@
 VALUE ARGSS::ASprite::id;
 
 ///////////////////////////////////////////////////////////
-/// ARGSS Sprite ruby functions
+// ARGSS Sprite instance methods
 ///////////////////////////////////////////////////////////
 VALUE ARGSS::ASprite::rinitialize(int argc, VALUE* argv, VALUE self) {
 	if (argc == 1) {
@@ -73,23 +73,21 @@ VALUE ARGSS::ASprite::rinitialize(int argc, VALUE* argv, VALUE self) {
 	rb_iv_set(self, "@color", ARGSS::AColor::New());
 	rb_iv_set(self, "@tone", ARGSS::ATone::New());
 	Sprite::New(self);
-	ARGSS::ARuby::AddObject(self);
+	ARuby::AddObject(self);
 	return self;
 }
 VALUE ARGSS::ASprite::rdispose(VALUE self) {
 	if (!Sprite::IsDisposed(self)) {
-		ARGSS::ASprite::Check(self);
 		Sprite::Dispose(self);
-		ARGSS::ARuby::RemoveObject(self);
-		rb_gc_start();
+		ARuby::RemoveObject(self);
 	}
 	return self;
 }
 VALUE ARGSS::ASprite::rdisposedQ(VALUE self) {
-	return INT2BOOL(Sprite::IsDisposed(self));
+	return BOOL2NUM(Sprite::IsDisposed(self));
 }
 VALUE ARGSS::ASprite::rflash(VALUE self, VALUE color, VALUE duration) {
-	ARGSS::ASprite::Check(self);
+	ARGSS::ASprite::CheckDisposed(self);
 	if (color == Qnil) {
 		Sprite::Get(self)->Flash(NUM2INT(duration));
 	} else {
@@ -98,35 +96,35 @@ VALUE ARGSS::ASprite::rflash(VALUE self, VALUE color, VALUE duration) {
 	return Qnil;
 }
 VALUE ARGSS::ASprite::rupdate(VALUE self) {
-	ARGSS::ASprite::Check(self);
+	ARGSS::ASprite::CheckDisposed(self);
 	Sprite::Get(self)->Update();
 	return Qnil;
 }
 VALUE ARGSS::ASprite::rwidth(VALUE self) {
-	ARGSS::ASprite::Check(self);
+	ARGSS::ASprite::CheckDisposed(self);
 	return rb_iv_get(rb_iv_get(self, "@src_rect"), "@width");
 }
 VALUE ARGSS::ASprite::rheight(VALUE self) {
-	ARGSS::ASprite::Check(self);
+	ARGSS::ASprite::CheckDisposed(self);
 	return rb_iv_get(rb_iv_get(self, "@src_rect"), "@height");
 }
 VALUE ARGSS::ASprite::rviewport(VALUE self) {
-	ARGSS::ASprite::Check(self);
+	ARGSS::ASprite::CheckDisposed(self);
 	return rb_iv_get(self, "@viewport");
 }
 VALUE ARGSS::ASprite::rviewportE(VALUE self, VALUE viewport) {
-	ARGSS::ASprite::Check(self);
+	ARGSS::ASprite::CheckDisposed(self);
 	Check_Classes_N(viewport, ARGSS::AViewport::id);
 	if (viewport != Qnil) ARGSS::AViewport::CheckDisposed(viewport);
 	Sprite::Get(self)->SetViewport(viewport);
 	return rb_iv_set(self, "@viewport", viewport);
 }
 VALUE ARGSS::ASprite::rbitmap(VALUE self) {
-	ARGSS::ASprite::Check(self);
+	ARGSS::ASprite::CheckDisposed(self);
 	return rb_iv_get(self, "@bitmap");
 }
 VALUE ARGSS::ASprite::rbitmapE(VALUE self, VALUE bitmap) {
-	ARGSS::ASprite::Check(self);
+	ARGSS::ASprite::CheckDisposed(self);
 	Check_Classes_N(bitmap, ARGSS::ABitmap::id);
 	if (bitmap != Qnil) {
 		VALUE src_rect = rb_iv_get(self, "@src_rect");
@@ -144,186 +142,188 @@ VALUE ARGSS::ASprite::rbitmapE(VALUE self, VALUE bitmap) {
 	return rb_iv_set(self, "@bitmap", bitmap);
 }
 VALUE ARGSS::ASprite::rsrc_rect(VALUE self) {
-	ARGSS::ASprite::Check(self);
+	ARGSS::ASprite::CheckDisposed(self);
 	return rb_iv_get(self, "@src_rect");
 }
 VALUE ARGSS::ASprite::rsrc_rectE(VALUE self, VALUE src_rect) {
-	ARGSS::ASprite::Check(self);
+	ARGSS::ASprite::CheckDisposed(self);
 	Check_Class(src_rect, ARGSS::ARect::id);
 	Sprite::Get(self)->SetSrcRect(src_rect);
 	return rb_iv_set(self, "@src_rect", src_rect);
 }
 VALUE ARGSS::ASprite::rvisible(VALUE self) {
-	ARGSS::ASprite::Check(self);
+	ARGSS::ASprite::CheckDisposed(self);
 	return rb_iv_get(self, "@visible");
 }
 VALUE ARGSS::ASprite::rvisibleE(VALUE self, VALUE visible) {
-	ARGSS::ASprite::Check(self);
+	ARGSS::ASprite::CheckDisposed(self);
 	Sprite::Get(self)->SetVisible(NUM2BOOL(visible));
 	return rb_iv_set(self, "@visible", visible);
 }
 VALUE ARGSS::ASprite::rx(VALUE self) {
-	ARGSS::ASprite::Check(self);
+	ARGSS::ASprite::CheckDisposed(self);
 	return rb_to_int(rb_iv_get(self, "@x"));
 }
 VALUE ARGSS::ASprite::rfx(VALUE self) {
-	ARGSS::ASprite::Check(self);
+	ARGSS::ASprite::CheckDisposed(self);
 	return rb_Float(rb_iv_get(self, "@x"));
 }
 VALUE ARGSS::ASprite::rxE(VALUE self, VALUE x) {
-	ARGSS::ASprite::Check(self);
+	ARGSS::ASprite::CheckDisposed(self);
 	Sprite::Get(self)->SetX(NUM2INT(x));
 	return rb_iv_set(self, "@x", x);
 }
 VALUE ARGSS::ASprite::ry(VALUE self) {
-	ARGSS::ASprite::Check(self);
+	ARGSS::ASprite::CheckDisposed(self);
 	return rb_to_int(rb_iv_get(self, "@y"));
 }
 VALUE ARGSS::ASprite::rfy(VALUE self) {
-	ARGSS::ASprite::Check(self);
+	ARGSS::ASprite::CheckDisposed(self);
 	return rb_Float(rb_iv_get(self, "@y"));
 }
 VALUE ARGSS::ASprite::ryE(VALUE self, VALUE y) {
-	ARGSS::ASprite::Check(self);
+	ARGSS::ASprite::CheckDisposed(self);
 	Sprite::Get(self)->SetY(NUM2INT(y));
 	return rb_iv_set(self, "@y", y);
 }
 VALUE ARGSS::ASprite::rz(VALUE self) {
-	ARGSS::ASprite::Check(self);
+	ARGSS::ASprite::CheckDisposed(self);
 	return rb_iv_get(self, "@z");
 }
 VALUE ARGSS::ASprite::rzE(VALUE self, VALUE z) {
-	ARGSS::ASprite::Check(self);
+	ARGSS::ASprite::CheckDisposed(self);
 	Sprite::Get(self)->SetZ(NUM2INT(z));
 	return rb_iv_set(self, "@z", rb_to_int(z));
 }
 VALUE ARGSS::ASprite::rox(VALUE self) {
-	ARGSS::ASprite::Check(self);
+	ARGSS::ASprite::CheckDisposed(self);
 	return rb_iv_get(self, "@ox");
 }
 VALUE ARGSS::ASprite::roxE(VALUE self, VALUE ox) {
-	ARGSS::ASprite::Check(self);
+	ARGSS::ASprite::CheckDisposed(self);
 	Sprite::Get(self)->SetOx(NUM2INT(ox));
 	return rb_iv_set(self, "@ox", ox);
 }
 VALUE ARGSS::ASprite::roy(VALUE self) {
-	ARGSS::ASprite::Check(self);
+	ARGSS::ASprite::CheckDisposed(self);
 	return rb_iv_get(self, "@oy");
 }
 VALUE ARGSS::ASprite::royE(VALUE self, VALUE oy) {
-	ARGSS::ASprite::Check(self);
+	ARGSS::ASprite::CheckDisposed(self);
 	Sprite::Get(self)->SetOy(NUM2INT(oy));
 	return rb_iv_set(self, "@oy", oy);
 }
 VALUE ARGSS::ASprite::rzoom_x(VALUE self) {
-	ARGSS::ASprite::Check(self);
+	ARGSS::ASprite::CheckDisposed(self);
 	return rb_iv_get(self, "@zoom_x");
 }
 VALUE ARGSS::ASprite::rzoom_xE(VALUE self, VALUE zoom_x) {
-	ARGSS::ASprite::Check(self);
+	ARGSS::ASprite::CheckDisposed(self);
 	Sprite::Get(self)->SetZoomX((float)NUM2DBL(zoom_x));
 	return rb_iv_set(self, "@zoom_x", rb_Float(zoom_x));
 }
 VALUE ARGSS::ASprite::rzoom_y(VALUE self) {
-	ARGSS::ASprite::Check(self);
+	ARGSS::ASprite::CheckDisposed(self);
 	return rb_iv_get(self, "@zoom_y");
 }
 VALUE ARGSS::ASprite::rzoom_yE(VALUE self, VALUE zoom_y) {
-	ARGSS::ASprite::Check(self);
+	ARGSS::ASprite::CheckDisposed(self);
 	Sprite::Get(self)->SetZoomY((float)NUM2DBL(zoom_y));
 	return rb_iv_set(self, "@zoom_y", rb_Float(zoom_y));
 }
 VALUE ARGSS::ASprite::rangle(VALUE self) {
-	ARGSS::ASprite::Check(self);
+	ARGSS::ASprite::CheckDisposed(self);
 	return rb_iv_get(self, "@angle");
 }
 VALUE ARGSS::ASprite::rangleE(VALUE self, VALUE angle) {
-	ARGSS::ASprite::Check(self);
+	ARGSS::ASprite::CheckDisposed(self);
 	Sprite::Get(self)->SetAngle((float)NUM2DBL(angle));
 	return rb_iv_set(self, "@angle", rb_Float(angle));
 }
 VALUE ARGSS::ASprite::rmirror(VALUE self) {
-	ARGSS::ASprite::Check(self);
+	ARGSS::ASprite::CheckDisposed(self);
 	return rb_iv_get(self, "@flipx");
 }
 VALUE ARGSS::ASprite::rmirrorE(VALUE self, VALUE mirror) {
-	ARGSS::ASprite::Check(self);
+	ARGSS::ASprite::CheckDisposed(self);
 	Sprite::Get(self)->SetFlipX(NUM2BOOL(mirror));
 	return rb_iv_set(self, "@flipx", mirror);
 }
 VALUE ARGSS::ASprite::rflipx(VALUE self) {
-	ARGSS::ASprite::Check(self);
+	ARGSS::ASprite::CheckDisposed(self);
 	return rb_iv_get(self, "@flipx");
 }
 VALUE ARGSS::ASprite::rflipxE(VALUE self, VALUE flipx) {
-	ARGSS::ASprite::Check(self);
+	ARGSS::ASprite::CheckDisposed(self);
 	Sprite::Get(self)->SetFlipX(NUM2BOOL(flipx));
 	return rb_iv_set(self, "@flipx", flipx);
 }
 VALUE ARGSS::ASprite::rflipy(VALUE self) {
-	ARGSS::ASprite::Check(self);
+	ARGSS::ASprite::CheckDisposed(self);
 	return rb_iv_get(self, "@flipy");
 }
 VALUE ARGSS::ASprite::rflipyE(VALUE self, VALUE flipy) {
-	ARGSS::ASprite::Check(self);
+	ARGSS::ASprite::CheckDisposed(self);
 	Sprite::Get(self)->SetFlipY(NUM2BOOL(flipy));
 	return rb_iv_set(self, "@flipy", flipy);
 }
 VALUE ARGSS::ASprite::rbush_depth(VALUE self) {
-	ARGSS::ASprite::Check(self);
+	ARGSS::ASprite::CheckDisposed(self);
 	return rb_iv_get(self, "@bush_depth");
 }
 VALUE ARGSS::ASprite::rbush_depthE(VALUE self, VALUE bush_depth) {
-	ARGSS::ASprite::Check(self);
+	ARGSS::ASprite::CheckDisposed(self);
 	Sprite::Get(self)->SetBushDepth(NUM2INT(bush_depth));
 	return rb_iv_set(self, "@bush_depth", bush_depth);
 }
 VALUE ARGSS::ASprite::ropacity(VALUE self) {
-	ARGSS::ASprite::Check(self);
+	ARGSS::ASprite::CheckDisposed(self);
 	return rb_iv_get(self, "@opacity");
 }
 VALUE ARGSS::ASprite::ropacityE(VALUE self, VALUE opacity) {
-	ARGSS::ASprite::Check(self);
-	Sprite::Get(self)->SetOpacity(NUM2INT(opacity));
-	return rb_iv_set(self, "@opacity", opacity);
+	ARGSS::ASprite::CheckDisposed(self);
+	int opacity_temp = NUM2INT(opacity);
+	if (opacity_temp < 0) opacity_temp = 0;
+	else if (opacity_temp > 255) opacity_temp = 255;
+	Sprite::Get(self)->SetOpacity(opacity_temp);
+	return rb_iv_set(self, "@opacity", INT2NUM(opacity_temp));
 }
 VALUE ARGSS::ASprite::rblend_type(VALUE self) {
-	ARGSS::ASprite::Check(self);
+	ARGSS::ASprite::CheckDisposed(self);
 	return rb_iv_get(self, "@blend_type");
 }
 VALUE ARGSS::ASprite::rblend_typeE(VALUE self, VALUE blend_type) {
-	ARGSS::ASprite::Check(self);
+	ARGSS::ASprite::CheckDisposed(self);
 	int type = NUM2INT(blend_type);
 	if (type < 0 || type > 3) type = 0;
 	Sprite::Get(self)->SetBlendType(type);
 	return rb_iv_set(self, "@blend_type", INT2NUM(type));
 }
 VALUE ARGSS::ASprite::rcolor(VALUE self) {
-	ARGSS::ASprite::Check(self);
+	ARGSS::ASprite::CheckDisposed(self);
 	return rb_iv_get(self, "@color");
 }
 VALUE ARGSS::ASprite::rcolorE(VALUE self, VALUE color) {
-	ARGSS::ASprite::Check(self);
+	ARGSS::ASprite::CheckDisposed(self);
 	Check_Class(color, ARGSS::AColor::id);
 	Sprite::Get(self)->SetColor(color);
 	return rb_iv_set(self, "@color", color);
 }
 VALUE ARGSS::ASprite::rtone(VALUE self) {
-	ARGSS::ASprite::Check(self);
+	ARGSS::ASprite::CheckDisposed(self);
 	return rb_iv_get(self, "@tone");
 }
 VALUE ARGSS::ASprite::rtoneE(VALUE self, VALUE tone) {
-	ARGSS::ASprite::Check(self);
+	ARGSS::ASprite::CheckDisposed(self);
 	Check_Class(tone, ARGSS::ATone::id);
 	Sprite::Get(self)->SetTone(tone);
 	return rb_iv_set(self, "@tone", tone);
 }
 
 ///////////////////////////////////////////////////////////
-/// ARGSS Sprite initialize
+// ARGSS Sprite initialize
 ///////////////////////////////////////////////////////////
 void ARGSS::ASprite::Init() {
-	typedef VALUE (*rubyfunc)(...);
 	id = rb_define_class("Sprite", rb_cObject);
 	rb_define_method(id, "initialize", (rubyfunc)rinitialize, -1);
 	rb_define_method(id, "dispose", (rubyfunc)rdispose, 0);
@@ -377,10 +377,10 @@ void ARGSS::ASprite::Init() {
 }
 
 ///////////////////////////////////////////////////////////
-/// Check if sprite isn't disposed
+// CheckDisposed
 ///////////////////////////////////////////////////////////
-void ARGSS::ASprite::Check(VALUE self) {
-	if (Sprite::IsDisposed(self)) {
-		rb_raise(ARGSS::AError::id, "disposed sprite <%i>", self);
+void ARGSS::ASprite::CheckDisposed(VALUE id) {
+	if (Sprite::IsDisposed(id)) {
+		rb_raise(ARGSS::AError::id, "disposed sprite <%i>", id);
 	}
 }

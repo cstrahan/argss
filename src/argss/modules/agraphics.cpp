@@ -30,8 +30,8 @@
 #include <string>
 #include "argss/modules/agraphics.h"
 #include "argss/classes/acolor.h"
-#include "system.h"
 #include "graphics/graphics.h"
+#include "system.h"
 
 ///////////////////////////////////////////////////////////
 // Global Variables
@@ -39,7 +39,7 @@
 VALUE ARGSS::AGraphics::id;
 
 ///////////////////////////////////////////////////////////
-/// ARGSS Graphics ruby functions
+// ARGSS Graphics module methods
 ///////////////////////////////////////////////////////////
 VALUE ARGSS::AGraphics::rupdate(VALUE self) {
 	Graphics::Update();
@@ -140,10 +140,9 @@ VALUE ARGSS::AGraphics::rbrightnessE(VALUE self, VALUE brightness) {
 }
 
 ///////////////////////////////////////////////////////////
-/// ARGSS Graphics initialize
+// ARGSS Graphics initialize
 ///////////////////////////////////////////////////////////
 void ARGSS::AGraphics::Init() {
-	typedef VALUE (*rubyfunc)(...);
 	id = rb_define_module("Graphics");
 	rb_define_singleton_method(id, "update", (rubyfunc)rupdate, 0);
 	rb_define_singleton_method(id, "freeze", (rubyfunc)rfreeze, 0);

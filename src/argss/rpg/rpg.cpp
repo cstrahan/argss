@@ -69,7 +69,7 @@ VALUE ARGSS::ARPG::SystemTestBattler_id;
 VALUE ARGSS::ARPG::AudioFile_id;
 
 ///////////////////////////////////////////////////////////
-/// ARGSS RPG ruby functions
+// ARGSS RPG subclasses methods
 ///////////////////////////////////////////////////////////
 VALUE ARGSS::ARPG::rmap_initialize(VALUE self, VALUE width, VALUE height) {
 	rb_iv_set(self, "@tileset_id", INT2NUM(1));
@@ -556,10 +556,9 @@ VALUE ARGSS::ARPG::raudiofile_initialize(int argc, VALUE* argv, VALUE self) {
 }
 
 ///////////////////////////////////////////////////////////
-/// ARGSS RPG initialize
+// ARGSS RPG initialize
 ///////////////////////////////////////////////////////////
 void ARGSS::ARPG::Init() {
-	typedef VALUE (*rubyfunc)(...);
 	id = rb_define_module("RPG");
 	Map_id = rb_define_class_under(id, "Map", rb_cObject);
 	MapInfo_id = rb_define_class_under(id, "MapInfo", rb_cObject);

@@ -83,7 +83,7 @@ void Audio::Continue() {
 ///////////////////////////////////////////////////////////
 // ME finish callback
 ///////////////////////////////////////////////////////////
-void ME_finish() {
+void Audio::ME_finish() {
 	Mix_VolumeMusic(Audio::bgm_volume);
 	Mix_FadeInMusic(Audio::bgm, -1, 1000);
 	Audio::bgm_playing = true;

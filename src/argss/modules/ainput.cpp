@@ -28,7 +28,6 @@
 // Headers
 ///////////////////////////////////////////////////////////
 #include "argss/modules/ainput.h"
-#include "aruby.h"
 #include "input/input.h"
 
 ///////////////////////////////////////////////////////////
@@ -37,7 +36,7 @@
 VALUE ARGSS::AInput::id;
 
 ///////////////////////////////////////////////////////////
-/// ARGSS Input ruby functions
+// ARGSS Input module methods
 ///////////////////////////////////////////////////////////
 VALUE ARGSS::AInput::rupdate(VALUE self) {
 	Input::Update();
@@ -45,19 +44,19 @@ VALUE ARGSS::AInput::rupdate(VALUE self) {
 }
 VALUE ARGSS::AInput::rpressQ(VALUE self, VALUE button) {
 	Check_Type(button, T_FIXNUM);
-	return INT2BOOL(Input::IsPressed(button));
+	return BOOL2NUM(Input::IsPressed(button));
 }
 VALUE ARGSS::AInput::rtriggerQ(VALUE self, VALUE button) {
 	Check_Type(button, T_FIXNUM);
-	return INT2BOOL(Input::IsTriggered(button));
+	return BOOL2NUM(Input::IsTriggered(button));
 }
 VALUE ARGSS::AInput::rrepeatQ(VALUE self, VALUE button) {
 	Check_Type(button, T_FIXNUM);
-	return INT2BOOL(Input::IsRepeated(button));
+	return BOOL2NUM(Input::IsRepeated(button));
 }
 VALUE ARGSS::AInput::rreleaseQ(VALUE self, VALUE button) {
 	Check_Type(button, T_FIXNUM);
-	return INT2BOOL(Input::IsReleased(button));
+	return BOOL2NUM(Input::IsReleased(button));
 }
 VALUE ARGSS::AInput::rdir4(VALUE self) {
 	return INT2NUM(Input::dir4);
@@ -79,10 +78,9 @@ VALUE ARGSS::AInput::rreleased(VALUE self) {
 }
 
 ///////////////////////////////////////////////////////////
-/// ARGSS Input initialize
+// ARGSS Input initialize
 ///////////////////////////////////////////////////////////
 void ARGSS::AInput::Init() {
-	typedef VALUE (*rubyfunc)(...);
 	id = rb_define_module("Input");
 	rb_define_singleton_method(id, "update", (rubyfunc)rupdate, 0);
 	rb_define_singleton_method(id, "press?", (rubyfunc)rpressQ, 1);

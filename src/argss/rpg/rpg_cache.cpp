@@ -27,7 +27,6 @@
 ///////////////////////////////////////////////////////////
 // Headers
 ///////////////////////////////////////////////////////////
-#include <string>
 #include "argss/rpg/rpg.h"
 #include "argss/rpg/rpg_cache.h"
 #include "argss/classes/abitmap.h"
@@ -39,7 +38,7 @@
 VALUE ARGSS::ARPG::ACache::id;
 
 ///////////////////////////////////////////////////////////
-/// ARGSS RPG::Cache ruby functions
+// ARGSS RPG::Cache module methods
 ///////////////////////////////////////////////////////////
 VALUE ARGSS::ARPG::ACache::rload_bitmap(int argc, VALUE* argv, VALUE self) {
 	if (argc > 3) raise_argn(argc, 3);
@@ -159,10 +158,9 @@ VALUE ARGSS::ARPG::ACache::rclear(VALUE self) {
 }
 
 ///////////////////////////////////////////////////////////
-/// ARGSS RPG::Cache initialize
+// ARGSS RPG::Cache initialize
 ///////////////////////////////////////////////////////////
 void ARGSS::ARPG::ACache::Init() {
-	typedef VALUE (*rubyfunc)(...);
 	id = rb_define_module_under(ARGSS::ARPG::id, "Cache");
 	rb_define_singleton_method(id, "load_bitmap", (rubyfunc)rload_bitmap, -1);
 	rb_define_singleton_method(id, "animation", (rubyfunc)ranimation, 2);

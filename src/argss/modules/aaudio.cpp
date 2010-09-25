@@ -37,7 +37,7 @@
 VALUE ARGSS::AAudio::id;
 
 ///////////////////////////////////////////////////////////
-/// ARGSS Audio ruby functions
+// ARGSS Audio module methods
 ///////////////////////////////////////////////////////////
 VALUE ARGSS::AAudio::rbgm_play(int argc, VALUE* argv, VALUE self) {
 	if (argc == 0) raise_argn(argc, 1);
@@ -140,10 +140,9 @@ VALUE ARGSS::AAudio::rse_stop(VALUE self) {
 }
 
 ///////////////////////////////////////////////////////////
-/// ARGSS Audio initialize
+// ARGSS Audio initialize
 ///////////////////////////////////////////////////////////
 void ARGSS::AAudio::Init() {
-	typedef VALUE (*rubyfunc)(...);
 	id = rb_define_module("Audio");
 	rb_define_singleton_method(id, "bgm_play", (rubyfunc)rbgm_play, -1);
 	rb_define_singleton_method(id, "bgm_stop", (rubyfunc)rbgm_stop, 0);

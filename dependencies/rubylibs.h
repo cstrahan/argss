@@ -2,10 +2,11 @@
 extern "C" {
 #endif
 
-// Initialize zlib ruby class
+#define HAVE_RUBY_ZLIB
+#define HAVE_RUBY_WIN32API
+
 void Init_zlib();
 
-// Initialize Win32API ruby class
 void Init_Win32API();
 
 #if defined(__cplusplus)

@@ -29,10 +29,10 @@
 ///////////////////////////////////////////////////////////
 #include <string>
 #include "argss/classes/aviewport.h"
-#include "argss/classes/arect.h"
 #include "argss/classes/acolor.h"
-#include "argss/classes/atone.h"
 #include "argss/classes/aerror.h"
+#include "argss/classes/arect.h"
+#include "argss/classes/atone.h"
 #include "graphics/viewport.h"
 
 ///////////////////////////////////////////////////////////
@@ -41,7 +41,7 @@
 VALUE ARGSS::AViewport::id;
 
 ///////////////////////////////////////////////////////////
-/// ARGSS Viewport ruby functions
+// ARGSS Viewport instance methods
 ///////////////////////////////////////////////////////////
 VALUE ARGSS::AViewport::rinitialize(int argc, VALUE* argv, VALUE self) {
 	if (argc == 0) raise_argn(argc, 1);
@@ -55,20 +55,18 @@ VALUE ARGSS::AViewport::rinitialize(int argc, VALUE* argv, VALUE self) {
 	rb_iv_set(self, "@color", ARGSS::AColor::New(0, 0, 0, 0));
 	rb_iv_set(self, "@tone", ARGSS::ATone::New());
 	Viewport::New(self);
-	ARGSS::ARuby::AddObject(self);
+	ARuby::AddObject(self);
 	return self;
 }
 VALUE ARGSS::AViewport::rdispose(VALUE self) {
 	if (!Viewport::IsDisposed(self)) {
-		ARGSS::AViewport::CheckDisposed(self);
 		Viewport::Dispose(self);
-		ARGSS::ARuby::RemoveObject(self);
-		rb_gc_start();
+		ARuby::RemoveObject(self);
 	}
 	return self;
 }
 VALUE ARGSS::AViewport::rdisposedQ(VALUE self) {
-	return INT2BOOL(Viewport::IsDisposed(self));
+	return BOOL2NUM(Viewport::IsDisposed(self));
 }
 VALUE ARGSS::AViewport::rflash(VALUE self, VALUE color, VALUE duration) {
 	ARGSS::AViewport::CheckDisposed(self);
@@ -152,10 +150,9 @@ VALUE ARGSS::AViewport::rtoneE(VALUE self, VALUE tone) {
 }
 
 ///////////////////////////////////////////////////////////
-/// ARGSS Viewport initialize
+// ARGSS Viewport initialize
 ///////////////////////////////////////////////////////////
 void ARGSS::AViewport::Init() {
-	typedef VALUE (*rubyfunc)(...);
 	id = rb_define_class("Viewport", rb_cObject);
 	rb_define_method(id, "initialize", (rubyfunc)rinitialize, -1);
 	rb_define_method(id, "dispose", (rubyfunc)rdispose, 0);
@@ -179,10 +176,10 @@ void ARGSS::AViewport::Init() {
 }
 
 ///////////////////////////////////////////////////////////
-/// Check if plane isn't disposed
+// CheckDisposed
 ///////////////////////////////////////////////////////////
-void ARGSS::AViewport::CheckDisposed(VALUE self) {
-	if (Viewport::IsDisposed(self)) {
-		rb_raise(ARGSS::AError::id, "disposed viewport <%i>", self);
+void ARGSS::AViewport::CheckDisposed(VALUE id) {
+	if (Viewport::IsDisposed(id)) {
+		rb_raise(ARGSS::AError::id, "disposed viewport <%i>", id);
 	}
 }

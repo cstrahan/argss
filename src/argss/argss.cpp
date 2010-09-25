@@ -27,16 +27,15 @@
 ///////////////////////////////////////////////////////////
 // Headers
 ///////////////////////////////////////////////////////////
+extern "C" {
+	#include "ruby.h"
+}
+
 #include "argss/argss.h"
-#include "aruby.h"
-#include "argss/modules/aoutput.h"
-#include "argss/modules/aaudio.h"
-#include "argss/modules/agraphics.h"
-#include "argss/modules/ainput.h"
-#include "argss/modules/akeys.h"
 #include "argss/classes/abitmap.h"
 #include "argss/classes/acolor.h"
 #include "argss/classes/afont.h"
+#include "argss/classes/aerror.h"
 #include "argss/classes/aplane.h"
 #include "argss/classes/arect.h"
 #include "argss/classes/asprite.h"
@@ -45,26 +44,23 @@
 #include "argss/classes/atone.h"
 #include "argss/classes/aviewport.h"
 #include "argss/classes/awindow.h"
-#include "argss/classes/aerror.h"
+#include "argss/modules/aaudio.h"
+#include "argss/modules/agraphics.h"
+#include "argss/modules/ainput.h"
+#include "argss/modules/akeys.h"
+#include "argss/modules/aoutput.h"
 #include "argss/rpg/rpg.h"
 #include "argss/rpg/rpg_cache.h"
 #include "argss/rpg/rpg_weather.h"
 #include "argss/rpg/rpg_sprite.h"
 
 ///////////////////////////////////////////////////////////
-/// ARGSS initialize
+// Initialize
 ///////////////////////////////////////////////////////////
 void ARGSS::Init() {
-	ARGSS::ARuby::Init();
-
-	ARGSS::AOutput::Init();
-	ARGSS::AAudio::Init();
-	ARGSS::AGraphics::Init();
-	ARGSS::AInput::Init();
-	ARGSS::AKeys::Init();
-
 	ARGSS::ABitmap::Init();
 	ARGSS::AColor::Init();
+	ARGSS::AError::Init();
 	ARGSS::AFont::Init();
 	ARGSS::APlane::Init();
 	ARGSS::ARect::Init();
@@ -74,19 +70,16 @@ void ARGSS::Init() {
 	ARGSS::ATone::Init();
 	ARGSS::AViewport::Init();
 	ARGSS::AWindow::Init();
-	ARGSS::AError::Init();
+
+	ARGSS::AAudio::Init();
+	ARGSS::AGraphics::Init();
+	ARGSS::AInput::Init();
+	ARGSS::AKeys::Init();
+	ARGSS::AOutput::Init();
 
 	ARGSS::ARPG::Init();
 	/*ARGSS::ARPG::ACache::Init();
-	ARGSS::ARPG::AWeather::Init();
-	ARGSS::ARPG::ASprite::Init();*/
-
-	ARGSS::ARuby::Run();
+	ARGSS::ARPG::ASprite::Init();
+	ARGSS::ARPG::AWeather::Init();*/
 }
 
-///////////////////////////////////////////////////////////
-/// ARGSS Exit
-///////////////////////////////////////////////////////////
-void ARGSS::Exit() {
-	rb_exit(1);
-}

@@ -28,7 +28,6 @@
 // Headers
 ///////////////////////////////////////////////////////////
 #include "argss/modules/akeys.h"
-#include "input/input.h"
 
 ///////////////////////////////////////////////////////////
 // Global Variables
@@ -36,10 +35,9 @@
 VALUE ARGSS::AKeys::id;
 
 ///////////////////////////////////////////////////////////
-/// ARGSS Keys initialize
+// ARGSS Keys initialize
 ///////////////////////////////////////////////////////////
 void ARGSS::AKeys::Init() {
-	typedef VALUE (*rubyfunc)(...);
 	id = rb_define_module("Keys");
 	rb_define_const(id, "BACKSPACE",	INT2FIX(1001));
 	rb_define_const(id, "TAB",			INT2FIX(1002));

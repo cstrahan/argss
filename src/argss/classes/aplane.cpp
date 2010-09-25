@@ -29,11 +29,11 @@
 ///////////////////////////////////////////////////////////
 #include <string>
 #include "argss/classes/aplane.h"
-#include "argss/classes/aviewport.h"
 #include "argss/classes/abitmap.h"
 #include "argss/classes/acolor.h"
-#include "argss/classes/atone.h"
 #include "argss/classes/aerror.h"
+#include "argss/classes/atone.h"
+#include "argss/classes/aviewport.h"
 #include "graphics/plane.h"
 
 ///////////////////////////////////////////////////////////
@@ -42,7 +42,7 @@
 VALUE ARGSS::APlane::id;
 
 ///////////////////////////////////////////////////////////
-/// ARGSS Plane ruby functions
+// ARGSS Plane instance functions
 ///////////////////////////////////////////////////////////
 VALUE ARGSS::APlane::rinitialize(int argc, VALUE* argv, VALUE self) {
 	if (argc == 1) {
@@ -50,8 +50,9 @@ VALUE ARGSS::APlane::rinitialize(int argc, VALUE* argv, VALUE self) {
 		rb_iv_set(self, "@viewport", argv[0]);
 	} else if (argc == 0) {
 		rb_iv_set(self, "@viewport", Qnil);
+	} else {
+		raise_argn(argc, 1);
 	}
-	else raise_argn(argc, 1);
 	rb_iv_set(self, "@bitmap", Qnil);
 	rb_iv_set(self, "@visible", Qtrue);
 	rb_iv_set(self, "@z", INT2NUM(0));
@@ -64,20 +65,18 @@ VALUE ARGSS::APlane::rinitialize(int argc, VALUE* argv, VALUE self) {
 	rb_iv_set(self, "@color", ARGSS::AColor::New());
 	rb_iv_set(self, "@tone", ARGSS::ATone::New());
 	Plane::New(self);
-	ARGSS::ARuby::AddObject(self);
+	ARuby::AddObject(self);
 	return self;
 }
 VALUE ARGSS::APlane::rdispose(VALUE self) {
 	if (!Plane::IsDisposed(self)) {
-		ARGSS::APlane::CheckDisposed(self);
 		Plane::Dispose(self);
-		ARGSS::ARuby::RemoveObject(self);
-		rb_gc_start();
+		ARuby::RemoveObject(self);
 	}
 	return self;
 }
 VALUE ARGSS::APlane::rdisposedQ(VALUE self) {
-	return INT2BOOL(Plane::IsDisposed(self));
+	return BOOL2NUM(Plane::IsDisposed(self));
 }
 VALUE ARGSS::APlane::rviewport(VALUE self) {
 	ARGSS::APlane::CheckDisposed(self);
@@ -193,10 +192,9 @@ VALUE ARGSS::APlane::rtoneE(VALUE self, VALUE tone) {
 }
 
 ///////////////////////////////////////////////////////////
-/// ARGSS Plane initialize
+// ARGSS Plane initialize
 ///////////////////////////////////////////////////////////
 void ARGSS::APlane::Init() {
-	typedef VALUE (*rubyfunc)(...);
 	id = rb_define_class("Plane", rb_cObject);
 	rb_define_method(id, "initialize", (rubyfunc)rinitialize, -1);
 	rb_define_method(id, "dispose", (rubyfunc)rdispose, 0);
@@ -228,10 +226,10 @@ void ARGSS::APlane::Init() {
 }
 
 ///////////////////////////////////////////////////////////
-/// Check if plane isn't disposed
+// CheckDisposed
 ///////////////////////////////////////////////////////////
-void ARGSS::APlane::CheckDisposed(VALUE self) {
-	if (Plane::IsDisposed(self)) {
-		rb_raise(ARGSS::AError::id, "disposed plane <%i>", self);
+void ARGSS::APlane::CheckDisposed(VALUE id) {
+	if (Plane::IsDisposed(id)) {
+		rb_raise(ARGSS::AError::id, "disposed plane <%i>", id);
 	}
 }

@@ -36,7 +36,7 @@
 VALUE ARGSS::AFont::id;
 
 ///////////////////////////////////////////////////////////
-/// ARGSS Font ruby functions
+// ARGSS Font instance methods
 ///////////////////////////////////////////////////////////
 VALUE ARGSS::AFont::rinitialize(int argc, VALUE* argv, VALUE self) {
 	if (argc > 2) raise_argn(argc, 2);
@@ -109,6 +109,10 @@ VALUE ARGSS::AFont::rshadowE(VALUE self, VALUE shadow) {
 	rb_iv_set(self, "@shadow", shadow);
 	return shadow;
 }
+
+///////////////////////////////////////////////////////////
+// ARGSS Font class methods
+///////////////////////////////////////////////////////////
 VALUE ARGSS::AFont::rdefault_name(VALUE self) {
 	return rb_cv_get(ARGSS::AFont::id, "@@default_name");
 }
@@ -162,7 +166,6 @@ VALUE ARGSS::AFont::rdefault_shadowE(VALUE self, VALUE default_shadow) {
 /// ARGSS Font initialize
 ///////////////////////////////////////////////////////////
 void ARGSS::AFont::Init() {
-	typedef VALUE (*rubyfunc)(...);
 	id = rb_define_class("Font", rb_cObject);
 	rb_define_method(id, "initialize", (rubyfunc)rinitialize, -1);
 	rb_define_method(id, "exist?", (rubyfunc)rexistQ, 0);
@@ -199,7 +202,7 @@ void ARGSS::AFont::Init() {
 }
 
 ///////////////////////////////////////////////////////////
-/// ARGSS Font new ruby instance
+// ARGSS Font create new instance
 ///////////////////////////////////////////////////////////
 VALUE ARGSS::AFont::New() {
 	return rb_class_new_instance(0, 0, id);

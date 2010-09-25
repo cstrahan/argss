@@ -28,12 +28,12 @@
 // Headers
 ///////////////////////////////////////////////////////////
 #include <string>
+#include "graphics/graphics.h"
 #include "argss/classes/atilemap_xp.h"
-#include "argss/classes/atilemapautotiles_xp.h"
-#include "argss/classes/aviewport.h"
 #include "argss/classes/abitmap.h"
-#include "argss/classes/atable.h"
 #include "argss/classes/aerror.h"
+#include "argss/classes/atable.h"
+#include "argss/classes/aviewport.h"
 #include "graphics/tilemap_xp.h"
 
 ///////////////////////////////////////////////////////////
@@ -42,7 +42,7 @@
 VALUE ARGSS::ATilemap::id;
 
 ///////////////////////////////////////////////////////////
-/// ARGSS Tilemap ruby functions
+// ARGSS Tilemap instance methods
 ///////////////////////////////////////////////////////////
 VALUE ARGSS::ATilemap::rinitialize(int argc, VALUE* argv, VALUE self) {
 	if (argc == 1) {
@@ -61,20 +61,18 @@ VALUE ARGSS::ATilemap::rinitialize(int argc, VALUE* argv, VALUE self) {
 	rb_iv_set(self, "@ox", INT2NUM(0));
 	rb_iv_set(self, "@oy", INT2NUM(0));
 	Tilemap::New(self);
-	ARGSS::ARuby::AddObject(self);
+	ARuby::AddObject(self);
 	return self;
 }
 VALUE ARGSS::ATilemap::rdispose(VALUE self) {
 	if (!Tilemap::IsDisposed(self)) {
-		ARGSS::ATilemap::CheckDisposed(self);
 		Tilemap::Dispose(self);
-		ARGSS::ARuby::RemoveObject(self);
-		rb_gc_start();
+		ARuby::RemoveObject(self);
 	}
 	return self;
 }
 VALUE ARGSS::ATilemap::rdisposeQ(VALUE self) {
-	return INT2BOOL(Tilemap::IsDisposed(self));
+	return BOOL2NUM(Tilemap::IsDisposed(self));
 }
 VALUE ARGSS::ATilemap::rupdate(VALUE self) {
 	ARGSS::ATilemap::CheckDisposed(self);
@@ -164,11 +162,11 @@ VALUE ARGSS::ATilemap::royE(VALUE self, VALUE oy) {
 }
 
 ///////////////////////////////////////////////////////////
-/// ARGSS Tilemap initialize
+// ARGSS Tilemap initialize
 ///////////////////////////////////////////////////////////
 void ARGSS::ATilemap::Init() {
 	ARGSS::ATilemapAutotiles::Init();
-	typedef VALUE (*rubyfunc)(...);
+
 	id = rb_define_class("Tilemap", rb_cObject);
 	rb_define_method(id, "initialize", (rubyfunc)rinitialize, -1);
 	rb_define_method(id, "dispose", (rubyfunc)rdispose, 0);
@@ -194,10 +192,10 @@ void ARGSS::ATilemap::Init() {
 }
 
 ///////////////////////////////////////////////////////////
-/// Check if tilemap isn't disposed
+// CheckDisposed
 ///////////////////////////////////////////////////////////
-void ARGSS::ATilemap::CheckDisposed(VALUE self) {
-	if (Tilemap::IsDisposed(self)) {
-		rb_raise(ARGSS::AError::id, "disposed tilemap <%i>", self);
+void ARGSS::ATilemap::CheckDisposed(VALUE id) {
+	if (Tilemap::IsDisposed(id)) {
+		rb_raise(ARGSS::AError::id, "disposed tilemap <%i>", id);
 	}
 }

@@ -32,16 +32,32 @@
 ///////////////////////////////////////////////////////////
 #include "aruby.h"
 
-///////////////////////////////////////////////////////////
-/// ARGSS Output namespace
-///////////////////////////////////////////////////////////
 namespace ARGSS {
+	///////////////////////////////////////////////////////
+	/// ARGSS::Output namespace
+	///////////////////////////////////////////////////////
 	namespace AOutput {
-		extern VALUE id;
-		extern VALUE stdout_id;
-		extern VALUE stderr_id;
-		extern VALUE stdin_id;
+		///////////////////////////////////////////////////
+		/// Initialize Output module.
+		///////////////////////////////////////////////////
 		void Init();
+
+		/// Output module id.
+		extern VALUE id;
+
+		/// Ruby stdout id.
+		extern VALUE stdout_id;
+
+		/// Ruby stderr id.
+		extern VALUE stderr_id;
+
+		/// Ruby stdin id.
+		extern VALUE stdin_id;
+
+		///////////////////////////////////////////////////
+		/// Output module methods.
+		///////////////////////////////////////////////////
+		//@{
 
 		VALUE rconsole(VALUE self);
 		VALUE rmsgbox(VALUE self);
@@ -51,6 +67,8 @@ namespace ARGSS {
 		VALUE rstderr_write(VALUE self, VALUE str);
 		VALUE stdin_gets(int argc, VALUE* argv, VALUE self);
 		VALUE stdin_getc(int argc, VALUE* argv, VALUE self);
+
+		//@}
 	};
 };
 

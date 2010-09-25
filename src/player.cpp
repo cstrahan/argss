@@ -28,13 +28,14 @@
 // Headers
 ///////////////////////////////////////////////////////////
 #include "player.h"
+#include "aruby.h"
 #include "options.h"
-#include "system.h"
 #include "output.h"
+#include "system.h"
+#include "audio/audio.h"
 #include "input/input.h"
 #include "graphics/graphics.h"
-#include "audio/audio.h"
-#include "argss/argss.h"
+
 
 ///////////////////////////////////////////////////////////
 // Global Variables
@@ -63,8 +64,10 @@ void Player::Update() {
 	do {
 		result = main_window->GetEvent(evnt);
 		if (evnt.type == Event::Quit) {
-			ARGSS::Exit();
-			break;
+			ARuby::Exit();
+			Player::Exit();
+			exit(0);
+			return;
 		} else if (evnt.type == Event::KeyDown) {
 			if (evnt.param1 == Input::Keys::ALT) {
 				alt_pressing = true;
