@@ -34,7 +34,7 @@
 #include "defines.h"
 #include "hslrgb.h"
 #include "graphics/graphics.h"
-#include "system.h"
+#include "config.h"
 #include "argss/classes/aerror.h"
 #include "tools/filefinder.h"
 

@@ -27,6 +27,8 @@
 ///////////////////////////////////////////////////////////
 // Headers
 ///////////////////////////////////////////////////////////
+#include <string>
+
 extern "C" {
 	#include "ruby.h"
 }
@@ -82,4 +84,3 @@ void ARGSS::Init() {
 	ARGSS::ARPG::ASprite::Init();
 	ARGSS::ARPG::AWeather::Init();*/
 }
-

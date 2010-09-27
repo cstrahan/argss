@@ -29,7 +29,7 @@
 ///////////////////////////////////////////////////////////
 #include "output.h"
 #include "player.h"
-#include "system.h"
+#include "config.h"
 #include "aruby.h"
 #include "audio/audio.h"
 #include "graphics/graphics.h"
@@ -46,7 +46,7 @@ int main(int argc, char** argv) {
 #endif
 
 	Output::Init();
-	System::Init();
+	Config::Init();
 	FileFinder::Init();
 	Player::Init();
 	Graphics::Init();

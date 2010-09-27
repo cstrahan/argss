@@ -34,7 +34,7 @@
 #include "options.h"
 #include "output.h"
 #include "player.h"
-#include "system.h"
+#include "config.h"
 
 #include "argss/argss.h"
 
@@ -54,7 +54,7 @@ static VALUE eval_wrap(VALUE arg) {
 }
 #else
 static VALUE require_wrap(VALUE arg) {
-	return rb_require(System::ScriptsPath.c_str());
+	return rb_require(Config::ScriptsPath.c_str());
 }
 #endif
 
@@ -105,7 +105,7 @@ void ARuby::Run() {
 	#if (SCRIPTS_ZLIB == YES)
 		VALUE cZlib = rb_const_get(rb_cObject, rb_intern("Zlib"));
 		VALUE cInflate = rb_const_get(cZlib, rb_intern("Inflate"));
-		VALUE file = rb_file_open(System::ScriptsPath.c_str(), "rb");
+		VALUE file = rb_file_open(Config::ScriptsPath.c_str(), "rb");
 		VALUE scripts = rb_marshal_load(file);
 		RArray* arr = RARRAY(scripts);
 		VALUE section_arr;

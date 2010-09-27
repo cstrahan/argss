@@ -27,7 +27,7 @@
 ///////////////////////////////////////////////////////////
 // Headers
 ///////////////////////////////////////////////////////////
-#include "system.h"
+#include "config.h"
 #include "output.h"
 #include "options.h"
 #include "simpleini.h"
@@ -35,16 +35,16 @@
 ///////////////////////////////////////////////////////////
 // Global Variables
 ///////////////////////////////////////////////////////////
-std::string System::Title;
-std::string System::ScriptsPath;
-std::string System::RTPS[3];
-int System::Width;
-int System::Height;
+std::string Config::Title;
+std::string Config::ScriptsPath;
+std::string Config::RTPS[3];
+int Config::Width;
+int Config::Height;
 
 ///////////////////////////////////////////////////////////
-/// Initialize system
+// Initialize Config
 ///////////////////////////////////////////////////////////
-void System::Init() {
+void Config::Init() {
 	Title = GAME_TITLE;
 	ScriptsPath = SCRIPTS_PATH;
 	RTPS[0] = RTP1;
@@ -56,7 +56,7 @@ void System::Init() {
 		CSimpleIniA ini(true, false, false);
 		SI_Error rc = ini.LoadFile(INI_NAME);
 		if (rc < 0) {
-			Output::Warning("ARGSS could not open %s file.", INI_NAME);
+			Output::Error("ARGSS could not open %s file.", INI_NAME);
 		}
 		#if (READ_INI_SCRIPTS_PATH)
 			ScriptsPath = ini.GetValue("Game", "Scripts", SCRIPTS_PATH);

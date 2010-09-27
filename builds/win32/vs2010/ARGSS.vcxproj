@@ -201,7 +201,7 @@
     <ClInclude Include="..\..\..\src\options.h" />
     <ClInclude Include="..\..\..\src\output.h" />
     <ClInclude Include="..\..\..\src\player.h" />
-    <ClInclude Include="..\..\..\src\system.h" />
+    <ClInclude Include="..\..\..\src\config.h" />
     <ClInclude Include="..\..\..\src\Tools\console.h" />
     <ClInclude Include="..\..\..\src\Tools\event.h" />
     <ClInclude Include="..\..\..\src\Tools\filefinder.h" />
@@ -262,7 +262,7 @@
     <ClCompile Include="..\..\..\src\Network\socket.cpp" />
     <ClCompile Include="..\..\..\src\output.cpp" />
     <ClCompile Include="..\..\..\src\player.cpp" />
-    <ClCompile Include="..\..\..\src\system.cpp" />
+    <ClCompile Include="..\..\..\src\config.cpp" />
     <ClCompile Include="..\..\..\src\tools\win32\console.cpp" />
     <ClCompile Include="..\..\..\src\tools\win32\filefinder.cpp" />
     <ClCompile Include="..\..\..\src\tools\win32\msgbox.cpp" />

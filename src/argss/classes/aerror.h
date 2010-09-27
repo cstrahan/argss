@@ -30,6 +30,7 @@
 ///////////////////////////////////////////////////////////
 // Headers
 ///////////////////////////////////////////////////////////
+#include <string>
 #include "aruby.h"
 
 namespace ARGSS {
@@ -44,6 +45,13 @@ namespace ARGSS {
 
 		/// Error class id.
 		extern VALUE id;
+
+		void FileNotFound(std::string file);
+
+		void AudioNotLoad(std::string type, std::string file);
+		void AudioNotLoad(std::string type, std::string file, std::string description);
+		void AudioNotPlay(std::string type, std::string file);
+		void AudioNotPlay(std::string type, std::string file, std::string description);
 	};
 };
 

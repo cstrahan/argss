@@ -31,7 +31,7 @@
 #include "argss/modules/agraphics.h"
 #include "argss/classes/acolor.h"
 #include "graphics/graphics.h"
-#include "system.h"
+#include "config.h"
 
 ///////////////////////////////////////////////////////////
 // Global Variables
@@ -106,10 +106,10 @@ VALUE ARGSS::AGraphics::rwait(VALUE self, VALUE duration) {
 	return Qnil;
 }
 VALUE ARGSS::AGraphics::rwidth(VALUE self) {
-	return INT2NUM(System::Width);
+	return INT2NUM(Config::Width);
 }
 VALUE ARGSS::AGraphics::rheight(VALUE self) {
-	return INT2NUM(System::Height);
+	return INT2NUM(Config::Height);
 }
 VALUE ARGSS::AGraphics::rresize_screen(VALUE self, VALUE width, VALUE height) {
 	Check_Kind(width, rb_cNumeric);

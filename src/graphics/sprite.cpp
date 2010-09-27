@@ -34,7 +34,7 @@
 #include "graphics/viewport.h"
 #include "player.h"
 #include "graphics/graphics.h"
-#include "system.h"
+#include "config.h"
 #ifdef MACOSX
 #include "gl.h"
 #else

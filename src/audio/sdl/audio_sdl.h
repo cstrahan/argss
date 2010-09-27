@@ -36,15 +36,15 @@
 #include "SDL_mixer.h"
 
 ///////////////////////////////////////////////////////////
-/// Audio namespace.
+// Audio namespace.
 ///////////////////////////////////////////////////////////
 namespace Audio {
 	///////////////////////////////////////////////////////
-	// ME finish callback
-	// Only one midi at a time can be playing with
-	// SDL_mixer, so we have to pause the BGM playback and
-	// resume it after finishing the ME. This callback will
-	// continue the BGM playback.
+	/// ME finish callback.
+	/// Only one midi at a time can be playing with
+	/// SDL_mixer, so we have to pause the BGM playback and
+	/// resume it after finishing the ME. This callback will
+	/// continue the BGM playback.
 	///////////////////////////////////////////////////////
 	void ME_finish();
 

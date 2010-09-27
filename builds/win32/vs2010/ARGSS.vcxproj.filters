@@ -7,9 +7,6 @@
     <ClCompile Include="..\..\..\src\player.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\system.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\output.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -160,6 +157,9 @@
     <ClCompile Include="..\..\..\src\audio\sdl\audio_sdl.cpp">
       <Filter>Source Files\multimedia\audio\sdl</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\src\config.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\src\defines.h">
@@ -169,9 +169,6 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\player.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\system.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\output.h">
@@ -362,6 +359,9 @@
     </ClInclude>
     <ClInclude Include="..\..\..\src\audio\sdl\audio_sdl.h">
       <Filter>Source Files\multimedia\audio\sdl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\config.h">
+      <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

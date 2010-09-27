@@ -31,7 +31,7 @@
 #include "aruby.h"
 #include "options.h"
 #include "output.h"
-#include "system.h"
+#include "config.h"
 #include "audio/audio.h"
 #include "input/input.h"
 #include "graphics/graphics.h"
@@ -48,7 +48,7 @@ bool Player::alt_pressing;
 /// Initialize
 ///////////////////////////////////////////////////////////
 void Player::Init() {
-	main_window = new WindowUi(System::Width, System::Height, System::Title, true, RUN_FULLSCREEN);
+	main_window = new WindowUi(Config::Width, Config::Height, Config::Title, true, RUN_FULLSCREEN);
 
 	focus = true;
 	alt_pressing = false;
@@ -121,7 +121,7 @@ void Player::ToggleFullscreen() {
 	bool toggle = !main_window->IsFullscreen();
 	main_window->Dispose();
 	delete main_window;
-	main_window = new WindowUi(System::Width, System::Height, System::Title, true, toggle);
+	main_window = new WindowUi(Config::Width, Config::Height, Config::Title, true, toggle);
 	Graphics::InitOpenGL();
 	Graphics::RefreshAll();
 }

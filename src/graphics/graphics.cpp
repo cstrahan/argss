@@ -32,7 +32,7 @@
 #include "graphics/graphics.h"
 #include "aruby.h"
 #include "argss/classes/aerror.h"
-#include "system.h"
+#include "config.h"
 #include "player.h"
 #include "output.h"
 #include "graphics/sprite.h"
@@ -179,7 +179,7 @@ void Graphics::Update() {
 			frames = 0;
 
 			char title[255];
-			sprintf(title, "%s - %d FPS", System::Title.c_str(), fps);
+			sprintf(title, "%s - %d FPS", Config::Title.c_str(), fps);
 			Player::main_window->SetTitle(title);
 		}
 	} else {

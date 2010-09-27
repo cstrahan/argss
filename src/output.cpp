@@ -36,7 +36,7 @@
 #include <stdarg.h>
 #include "output.h"
 #include "options.h"
-#include "system.h"
+#include "config.h"
 #include "player.h"
 #include "tools/console.h"
 #include "tools/msgbox.h"
@@ -126,7 +126,7 @@ void Output::PostStr(std::string msg) {
 		Console::Write(msg);
 		break;
 	case 3:
-		MsgBox::OK(msg, System::Title);
+		MsgBox::OK(msg, Config::Title);
 		break;
 	case 4:
 		PostFile(msg);
@@ -137,7 +137,7 @@ void Output::PostStr(std::string msg) {
 		break;
 	case 6:
 		if (Console::Active()) Console::Write(msg);
-		else MsgBox::OK(msg, System::Title);
+		else MsgBox::OK(msg, Config::Title);
 	}
 	Graphics::TimerContinue();
 }

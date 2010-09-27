@@ -33,7 +33,7 @@
 #include <fstream>
 #include <windows.h>
 #include "tools/win32/filefinder.h"
-#include "system.h"
+#include "config.h"
 #include "tools/win32/registry.h"
 #include "options.h"
 
@@ -48,16 +48,16 @@ std::string FileFinder::fonts_path;
 ///////////////////////////////////////////////////////////
 void FileFinder::Init() {
 	for (int i = 0; i < 3; i++) {
-		if (System::RTPS[i] == "") continue;
+		if (Config::RTPS[i] == "") continue;
 		#if (RPGMAKER == RPGXP)
-			rtp_paths[i] = Registry::ReadStrValue(HKEY_CURRENT_USER, "SOFTWARE\\Enterbrain\\RGSS\\RTP", System::RTPS[i]);
+			rtp_paths[i] = Registry::ReadStrValue(HKEY_CURRENT_USER, "SOFTWARE\\Enterbrain\\RGSS\\RTP", Config::RTPS[i]);
 			if (rtp_paths[i].size() == 0) {
-				rtp_paths[i] = Registry::ReadStrValue(HKEY_LOCAL_MACHINE, "SOFTWARE\\Enterbrain\\RGSS\\RTP", System::RTPS[i]);
+				rtp_paths[i] = Registry::ReadStrValue(HKEY_LOCAL_MACHINE, "SOFTWARE\\Enterbrain\\RGSS\\RTP", Config::RTPS[i]);
 			}
 		#elif (RPGMAKER == RPGVX)
-			rtp_paths[i] = Registry::ReadStrValue(HKEY_CURRENT_USER, "SOFTWARE\\Enterbrain\\RGSS2\\RTP", System::RTPS[i]);
+			rtp_paths[i] = Registry::ReadStrValue(HKEY_CURRENT_USER, "SOFTWARE\\Enterbrain\\RGSS2\\RTP", Config::RTPS[i]);
 			if (rtp_paths[i].size() == 0) {
-				rtp_paths[i] = Registry::ReadStrValue(HKEY_LOCAL_MACHINE, "SOFTWARE\\Enterbrain\\RGSS2\\RTP", System::RTPS[i]);
+				rtp_paths[i] = Registry::ReadStrValue(HKEY_LOCAL_MACHINE, "SOFTWARE\\Enterbrain\\RGSS2\\RTP", Config::RTPS[i]);
 			}
 		#endif
 	}
